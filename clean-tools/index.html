@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🛠️ 實用工具集 - 紗窗計算器 & 虛擬幣交易輔助</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  /* 規範必要：避免元素超出容器 */
+  * { box-sizing: border-box; }
+  input, select, textarea { max-width: 100%; }
+
+  /* 暖色系活潑風格 */
+  :root{
+    --font:'Microsoft JhengHei',system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial,sans-serif;
+    --bg:#fff7ed; --card:#fff; --ink:#5b3a29; --sub:#7b5b4a;
+    --brand:#ff7f50; --brand2:#ffb703; --muted:#fff0e0; --line:#f2d3b1;
+    --shadow:0 8px 16px rgba(0,0,0,.08); --r:14px;
+  }
+  html,body{ margin:0; font-family:var(--font); background:var(--bg); color:var(--ink); }
+  .wrap{ max-width:1100px; margin:auto; padding:clamp(10px,3vw,18px); }
+
+  .hero{
+    background:linear-gradient(135deg,var(--muted),#fff); border:1px solid #ffd6ad; border-radius:var(--r);
+    box-shadow:var(--shadow); padding:clamp(12px,3vw,20px); margin-bottom:20px;
+  }
+  .hero h1{ margin:0; font-size:clamp(20px,5.2vw,30px); display:flex; align-items:center; gap:10px }
+  .hero p{ margin:8px 0 0; color:var(--sub); font-size:clamp(14px,3.5vw,16px); }
+
+  .tools-grid{
+    display:grid; gap:20px; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+    margin-bottom:30px;
+  }
+
+  .tool-card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--r); 
+    box-shadow:var(--shadow); padding:20px; transition:transform 0.2s, box-shadow 0.2s;
+    cursor:pointer; text-decoration:none; color:inherit;
+  }
+  .tool-card:hover{
+    transform:translateY(-2px); box-shadow:0 12px 24px rgba(0,0,0,.12);
+  }
+
+  .tool-icon{ font-size:40px; margin-bottom:12px; }
+  .tool-title{ font-size:clamp(18px,4.5vw,22px); font-weight:700; margin:0 0 8px; color:var(--brand); }
+  .tool-desc{ color:var(--sub); font-size:14px; line-height:1.5; margin:0 0 16px; }
+  .tool-features{ list-style:none; padding:0; margin:0; }
+  .tool-features li{ 
+    padding:4px 0; color:var(--ink); font-size:13px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .tool-features li::before{ content:"✓"; color:var(--brand); font-weight:bold; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; justify-content:center; font-weight:700;
+    padding:.7rem 1rem; border-radius:12px; border:0; cursor:pointer; color:#fff;
+    background:linear-gradient(180deg,#ff9f68,var(--brand)); box-shadow:0 8px 14px rgba(255,127,80,.28);
+    font-size:clamp(14px,4.2vw,16px); text-decoration:none;
+  }
+  .btn:hover{ transform:translateY(-1px); box-shadow:0 10px 20px rgba(255,127,80,.35); }
+
+  .footer{
+    text-align:center; padding:20px; color:var(--sub); font-size:13px;
+    border-top:1px solid var(--line); margin-top:40px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 頁首 -->
+    <section class="hero">
+      <h1><i class="bi bi-tools"></i> 實用工具集</h1>
+      <p>專業的網頁工具集合，包含紗窗計算器、虛擬幣交易輔助等多種實用功能</p>
+    </section>
+
+    <!-- 工具列表 -->
+    <div class="tools-grid">
+      <!-- 紗窗計算器 -->
+      <a href="screens-calculator.html" class="tool-card">
+        <div class="tool-icon">🧮</div>
+        <h2 class="tool-title">紗窗報價計算器</h2>
+        <p class="tool-desc">專業的紗窗報價計算工具，專為紗窗業者設計，支援多種紗窗類型和陽台工程計算。</p>
+        <ul class="tool-features">
+          <li>精確計算平紗、捲紗等多種類型</li>
+          <li>內建陽台工程計算功能</li>
+          <li>自動計算材料費、工本費、稅金</li>
+          <li>響應式設計，支援各種設備</li>
+        </ul>
+        <div style="margin-top:16px;">
+          <span class="btn">立即使用</span>
+        </div>
+      </a>
+
+      <!-- 虛擬幣交易輔助 -->
+      <a href="crypto-trading.html" class="tool-card">
+        <div class="tool-icon">📈</div>
+        <h2 class="tool-title">虛擬幣交易輔助系統</h2>
+        <p class="tool-desc">專業的 BTC/ETH 交易輔助工具，提供假突破檢測與進場建議，支援多週期分析。</p>
+        <ul class="tool-features">
+          <li>即時監控 K 線突破/跌破信號</li>
+          <li>多週期技術分析支援</li>
+          <li>價量驗證與信號確認</li>
+          <li>進場點、停損與目標位建議</li>
+        </ul>
+        <div style="margin-top:16px;">
+          <span class="btn">立即使用</span>
+        </div>
+      </a>
+
+      <!-- 身心靈瘦身小測驗 -->
+      <a href="mind-body-soul-quiz.html" class="tool-card">
+        <div class="tool-icon">🧘‍♀️</div>
+        <h2 class="tool-title">身心靈瘦身小測驗</h2>
+        <p class="tool-desc">專業的身心靈瘦身測驗工具，幫助您了解自己的瘦身傾向，提供個性化的健康建議。</p>
+        <ul class="tool-features">
+          <li>塔羅星空風格設計</li>
+          <li>身心靈瘦身傾向分析</li>
+          <li>個性化健康建議</li>
+          <li>美麗的星空背景效果</li>
+        </ul>
+        <div style="margin-top:16px;">
+          <span class="btn">立即測驗</span>
+        </div>
+      </a>
+
+      <!-- 自動化上傳工具 -->
+      <a href="auto-upload.html" class="tool-card">
+        <div class="tool-icon">🚀</div>
+        <h2 class="tool-title">完全自動化上傳系統</h2>
+        <p class="tool-desc">一鍵上傳 HTML 文件到 GitHub Pages，支援拖拽上傳和自動部署，無需複雜設定。</p>
+        <ul class="tool-features">
+          <li>拖拽上傳多個文件</li>
+          <li>自動部署到 GitHub Pages</li>
+          <li>即時進度顯示</li>
+          <li>支援多種文件格式</li>
+        </ul>
+        <div style="margin-top:16px;">
+          <span class="btn">立即使用</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+      <p>© 2025 實用工具集 | 採用 MIT 授權條款 | <a href="https://github.com/sky770825/internation" style="color:var(--brand);">GitHub</a></p>
+    </footer>
+  </div>
+</body>
+</html>

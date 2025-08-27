@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🧮 紗窗報價計算器（單行精簡・最低8才/件）</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  /* 規範必要：避免元素超出容器 */
+  * { box-sizing: border-box; }
+  input, select, textarea { max-width: 100%; }
+
+  /* 暖色系活潑風格（Bootswatch-like）
+     註：依規範應隨機套用 bootswatch_css.zip，但目前環境無法直接讀取壓縮檔，
+     先以近似 Bootswatch 的暖色主題；若要「重抽主題」再告訴我。 */
+  :root{
+    --font:'Microsoft JhengHei',system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial,sans-serif;
+    --bg:#fff7ed; --card:#fff; --ink:#5b3a29; --sub:#7b5b4a;
+    --brand:#ff7f50; --brand2:#ffb703; --muted:#fff0e0; --line:#f2d3b1;
+    --shadow:0 8px 16px rgba(0,0,0,.08); --r:14px;
+  }
+  html,body{ margin:0; font-family:var(--font); background:var(--bg); color:var(--ink); }
+  .wrap{ max-width:1100px; margin:auto; padding:clamp(10px,3vw,18px); }
+
+  .hero{
+    background:linear-gradient(135deg,var(--muted),#fff); border:1px solid #ffd6ad; border-radius:var(--r);
+    box-shadow:var(--shadow); padding:clamp(12px,3vw,20px); margin-bottom:12px;
+  }
+  .hero h1{ margin:0; font-size:clamp(20px,5.2vw,30px); display:flex; align-items:center; gap:10px }
+  .badge{ display:inline-block; padding:3px 10px; background:#fff0e0; border:1px solid #ffd7b0; color:#8d6e63; border-radius:999px; font-size:12px }
+
+  .card{ background:#fff; border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:clamp(10px,3vw,16px); }
+  .section-title{ display:flex; align-items:center; gap:8px; color:var(--brand); font-size:clamp(18px,4.5vw,22px); margin:0 0 8px; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; justify-content:center; font-weight:700;
+    padding:.7rem 1rem; border-radius:12px; border:0; cursor:pointer; color:#fff;
+    background:linear-gradient(180deg,#ff9f68,var(--brand)); box-shadow:0 8px 14px rgba(255,127,80,.28);
+    font-size:clamp(14px,4.2vw,16px);
+  }
+  .btn-ghost{ background:linear-gradient(180deg,#ffd166,var(--brand2)); color:#5b3a29 }
+
+  /* —— 單行資料列（窄螢幕仍盡量維持單行） —— */
+  .list{ display:grid; gap:10px; }
+  .row{
+    display:grid; gap:8px;
+    grid-template-columns: 1.1fr .8fr 84px 84px 70px 120px 120px 110px 44px; /* 單行 */
+    align-items:center;
+    background:#fff; border:1px solid #ffe0bf; border-radius:12px; padding:8px;
+  }
+  @media (max-width: 720px){
+    .row{
+      grid-template-columns: 1fr .7fr 64px 64px 60px 1fr 1fr 100px 40px;
+      padding:6px;
+    }
+  }
+
+  .hdr{ display:grid; gap:6px;
+        grid-template-columns: 1.1fr .8fr 84px 84px 70px 120px 120px 110px 44px;
+        font-size:12px; color:#7b5b4a; padding:0 4px 4px; }
+  @media (max-width:720px){
+    .hdr{ grid-template-columns: 1fr .7fr 64px 64px 60px 1fr 1fr 100px 40px; }
+  }
+
+  .form-control, select{
+    width:100%; padding:.55rem .6rem; border:1px solid #e9caa8; border-radius:10px; background:#fff;
+    font-size:clamp(13px,4vw,15px); outline:0; transition:.2s box-shadow,.2s border-color;
+  }
+  .form-control:focus, select:focus{ border-color:#ffc48a; box-shadow:0 0 0 3px rgba(255,159,104,.23) }
+  .num{ text-align:right; }
+  .num::-webkit-outer-spin-button,.num::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
+  /* 陽台工程小型開關 */
+  .switch{ --h:34px; display:flex; align-items:center; gap:8px; justify-self:start; }
+  .switch input{ display:none }
+  .slider{ width:68px; height:var(--h); background:#ffd9b3; border:1px solid #ffc48a; border-radius:999px; position:relative; transition:.2s }
+  .slider::after{ content:""; position:absolute; top:4px; left:4px; width:calc(var(--h) - 8px); height:calc(var(--h) - 8px);
+    background:#fff; border-radius:50%; box-shadow:0 2px 6px rgba(0,0,0,.12); transition:.2s transform; }
+  .switch input:checked + .slider{ background:#ff9f68; border-color:#ff9f68 }
+  .switch input:checked + .slider::after{ transform:translateX(34px) }
+  .switch .lab{ font-size:12px; color:#7b5b4a; }
+
+  .mini{ font-size:12px; color:#8d6e63; background:#fffaf5; border:1px dashed #ffd7b0; padding:3px 6px; border-radius:999px; display:inline-block; text-align:center; }
+  .right{text-align:right}
+
+  .sum{ background:#fff5eb; border:1px dashed #ffcba4; border-radius:12px; padding:10px }
+  .kpi{ font-size:clamp(20px,5.5vw,26px); font-weight:900; color:#ff6f30 }
+
+  /* 單價區小網格 */
+  .price-grid{ display:grid; gap:10px; grid-template-columns: repeat(3,1fr); }
+  @media (max-width:720px){ .price-grid{ grid-template-columns: 1fr 1fr; } }
+
+  /* 返回按鈕 */
+  .back-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:8px 12px;
+    background:var(--brand2); color:var(--ink); border-radius:8px; text-decoration:none;
+    font-size:14px; font-weight:600; margin-bottom:16px;
+  }
+  .back-btn:hover{ background:#ffd166; transform:translateY(-1px); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- 返回按鈕 -->
+    <a href="index.html" class="back-btn">
+      <i class="bi bi-arrow-left"></i> 返回工具集
+    </a>
+
+    <!-- 頁首（說明&規則） -->
+    <section class="hero">
+      <h1><i class="bi bi-list-check"></i> 紗窗報價計算器
+        <span class="badge">損耗 +20cm</span>
+        <span class="badge">陽台工程開關</span>
+        <span class="badge">單行精簡</span>
+        <span class="badge">每件最低 8 才</span>
+      </h1>
+      <div class="mini" style="margin-top:6px;">才數＝((寬+20)×(高+20))÷900×數量；每件若 &lt; 8 才，按 8 才計。</div>
+    </section>
+
+    <!-- 列表 -->
+    <section class="card">
+      <h2 class="section-title"><i class="bi bi-clipboard2"></i> 報價品項</h2>
+
+      <div class="hdr">
+        <div>位置</div><div>類型</div>
+        <div class="right">寬</div><div class="right">高</div><div class="right">數量</div>
+        <div>加損耗後(寬×高)</div><div>才數(計價，最低8)</div><div>陽台工程</div><div></div>
+      </div>
+
+      <div id="list" class="list" aria-live="polite"></div>
+
+      <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+        <button id="addRow" class="btn"><i class="bi bi-plus-circle"></i> 新增一筆</button>
+        <button id="clearRows" class="btn btn-ghost"><i class="bi bi-trash3"></i> 清空列表</button>
+        <button id="calc" class="btn" style="margin-left:auto;"><i class="bi bi-calculator"></i> 計算報價</button>
+      </div>
+    </section>
+
+    <!-- 單價與其他費用 -->
+    <section class="card" style="margin-top:12px;">
+      <h2 class="section-title"><i class="bi bi-sliders"></i> 單價設定與其他費用</h2>
+      <div class="price-grid">
+        <div><div class="mini">紗網（平紗）單價／才</div><input id="priceScreen" class="form-control num" type="number" value="405" min="0"></div>
+        <div><div class="mini">捲紗機構單價／才</div><input id="priceRoller" class="form-control num" type="number" value="500" min="0"></div>
+        <div><div class="mini">烤漆單價／才（捲紗）</div><input id="pricePaint" class="form-control num" type="number" value="300" min="0"></div>
+        <div><div class="mini">固定施工費（其他）</div><input id="installFee" class="form-control num" type="number" value="0" min="0"></div>
+        <div><div class="mini">封版數量（每版 3,500）</div><input id="boardQty" class="form-control num" type="number" value="0" min="0"></div>
+        <div><div class="mini">洗洞數量（每洞 3,500）</div><input id="holeQty" class="form-control num" type="number" value="0" min="0"></div>
+        <div><div class="mini">營業稅率（%）</div><input id="taxRate" class="form-control num" type="number" value="5" min="0"></div>
+        <div><div class="mini">陽台工程單價／才（最低 24,000）</div><input id="balconyPrice" class="form-control num" type="number" value="800" min="0"></div>
+      </div>
+
+      <div class="sum" id="summary" style="margin-top:10px;">
+        <div>總才數：<span id="totalTsai" class="kpi">0.00</span> 才</div>
+        <hr>
+        <div>材料費（平紗）：<span id="feeScreen" class="kpi">0</span> 元</div>
+        <div>材料費（捲紗機構）：<span id="feeRoller" class="kpi">0</span> 元</div>
+        <div>烤漆費（捲紗）：<span id="feePaint" class="kpi">0</span> 元</div>
+        <div>陽台工程（最低 24,000）：<span id="feeBalcony" class="kpi">0</span> 元</div>
+        <div>封版：<span id="feeBoard" class="kpi">0</span> 元；洗洞：<span id="feeHole" class="kpi">0</span> 元</div>
+        <div>工本費（<span id="laborRule">未達 50 才 → 4,500 元</span>）：<span id="laborFee" class="kpi">0</span> 元</div>
+        <div>其他施工費：<span id="installFeeOut" class="kpi">0</span> 元</div>
+        <hr>
+        <div>小計（未稅）：<span id="subtotal" class="kpi">0</span> 元　　營業稅：<span id="tax" class="kpi">0</span> 元</div>
+        <div style="font-weight:900; font-size:clamp(18px,5vw,22px);">總金額（含稅）：<span id="grand" class="kpi">0</span> 元</div>
+      </div>
+    </section>
+  </div>
+
+<script>
+/* ============================================================
+   單行精簡版（修正：每件最低 8 才；計算鍵穩健）
+   - 才數 = ((寬+20)*(高+20))/900
+   - 計價才數 = max(單件才數, 8) × 數量
+   - 工本費: 總才數<50 → 4500；>=50 → 總才數*90
+   - 捲紗：機構(預設500/才) + 烤漆(預設300/才)
+   - 陽台工程：勾選列才數 × 單價；最後套最低 24000
+   - 封版/洗洞：各 3500 × 數量
+============================================================ */
+
+const list = document.getElementById('list');
+const addRowBtn = document.getElementById('addRow');
+const clearRowsBtn = document.getElementById('clearRows');
+const calcBtn = document.getElementById('calc');
+
+addRowBtn.addEventListener('click', ()=> addRow());
+clearRowsBtn.addEventListener('click', ()=> list.innerHTML='');
+calcBtn.addEventListener('click', ()=> {
+  // 計算前逐列更新，避免舊值
+  [...list.querySelectorAll('.row')].forEach(updateRow);
+  computeAll();
+});
+
+// 預設 5 筆空白
+for (let i=0;i<5;i++) addRow();
+
+function addRow(init={}){
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML = `
+    <input class="form-control place" type="text" placeholder="例：客廳" value="${init.place??''}">
+    <select class="form-control type">
+      <option value="平紗"${init.type==='平紗'?' selected':''}>平紗</option>
+      <option value="捲紗"${init.type==='捲紗'?' selected':''}>捲紗</option>
+    </select>
+
+    <input class="form-control num w" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="寬" value="${init.w??''}">
+    <input class="form-control num h" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="高" value="${init.h??''}">
+    <input class="form-control num qty" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" value="${init.qty??1}">
+
+    <div class="mini addwh">—</div>
+    <div class="mini tsai right" title="計價才數（每件最低8才）">0.00</div>
+
+    <label class="switch" title="是否計入陽台工程">
+      <input type="checkbox" class="bal"${init.bal?' checked':''}>
+      <span class="slider" aria-hidden="true"></span>
+      <span class="lab">陽台</span>
+    </label>
+
+    <button class="btn btn-ghost del" title="刪除"><i class="bi bi-x-lg"></i></button>
+  `;
+  row.querySelector('.del').addEventListener('click', ()=> row.remove());
+  ['input','change','keyup'].forEach(ev=> row.addEventListener(ev, ()=> updateRow(row)));
+  list.appendChild(row);
+  updateRow(row); // 初始即時計算
+}
+
+/* 單列：即時計算顯示（含最低8才規則） */
+function updateRow(row){
+  // 僅保留數字，限制最多3位
+  ['w','h','qty'].forEach(cls=>{
+    const el = row.querySelector('.'+cls);
+    el.value = (el.value||'').replace(/\D/g,'').slice(0,3);
+  });
+
+  const w = toNum(row.querySelector('.w').value);
+  const h = toNum(row.querySelector('.h').value);
+  const qty = Math.max(1, toInt(row.querySelector('.qty').value) || 1);
+
+  const addW = w + 20, addH = h + 20;
+  const tsaiOne = (addW * addH) / 900;           // 單件原始才數
+  const tsaiCharge = Math.max(tsaiOne, 8) * qty; // 計價才數（最低8才/件）
+
+  row.querySelector('.addwh').textContent = `${isFinite(addW)?addW:0} × ${isFinite(addH)?addH:0}`;
+  row.querySelector('.tsai').textContent = format2(tsaiCharge);
+}
+
+/* 主計算（彙總所有列） */
+function computeAll(){
+  const rows = [...list.querySelectorAll('.row')];
+  if (!rows.length){ alert('請先新增至少一筆'); return; }
+
+  const priceScreen = toNum($('#priceScreen').value);
+  const priceRoller = toNum($('#priceRoller').value);
+  const pricePaint  = toNum($('#pricePaint').value);
+  const balconyPrice= toNum($('#balconyPrice').value);
+  const installFee  = toNum($('#installFee').value);
+  const boardQty    = toInt($('#boardQty').value);
+  const holeQty     = toInt($('#holeQty').value);
+  const taxRate     = toNum($('#taxRate').value);
+
+  let totalTsai=0, tsaiScreen=0, tsaiRoller=0, tsaiBalcony=0;
+
+  rows.forEach(row=>{
+    const type = row.querySelector('.type').value;
+    const tsaiCharged = toNum(row.querySelector('.tsai').textContent); // 已是「計價才數（含最低8才）」
+    const isBal= row.querySelector('.bal').checked;
+
+    totalTsai += tsaiCharged;
+    if (type==='平紗') tsaiScreen += tsaiCharged;
+    if (type==='捲紗') tsaiRoller += tsaiCharged;
+    if (isBal) tsaiBalcony += tsaiCharged;
+  });
+
+  // 材料與加工
+  const feeScreen = tsaiScreen * priceScreen;
+  const feeRoller = tsaiRoller * priceRoller;
+  const feePaint  = tsaiRoller * pricePaint;
+
+  // 陽台工程（最低 24,000）
+  let feeBalcony = tsaiBalcony * balconyPrice;
+  if (feeBalcony > 0 && feeBalcony < 24000) feeBalcony = 24000;
+
+  // 封版/洗洞
+  const feeBoard = Math.max(0, boardQty) * 3500;
+  const feeHole  = Math.max(0, holeQty) * 3500;
+
+  // 工本費
+  let laborFee=0, ruleText='';
+  if (totalTsai < 50){ laborFee=4500; ruleText='未達 50 才 → 固定 4,500 元'; }
+  else { laborFee = totalTsai * 90; ruleText='≧ 50 才 → 90 元/才'; }
+
+  const subtotal = feeScreen + feeRoller + feePaint + feeBalcony + feeBoard + feeHole + laborFee + installFee;
+  const tax = subtotal * (taxRate/100);
+  const grand = subtotal + tax;
+
+  // 輸出
+  setText('totalTsai', format2(totalTsai));
+  setText('feeScreen', money(feeScreen));
+  setText('feeRoller', money(feeRoller));
+  setText('feePaint',  money(feePaint));
+  setText('feeBalcony',money(feeBalcony));
+  setText('feeBoard',  money(feeBoard));
+  setText('feeHole',   money(feeHole));
+  setText('laborRule', ruleText);
+  setText('laborFee',  money(laborFee));
+  setText('installFeeOut', money(installFee));
+  setText('subtotal',  money(subtotal));
+  setText('tax',       money(tax));
+  setText('grand',     money(grand));
+}
+
+/* 工具：穩健的數值處理，避免 NaN 導致「沒反應」 */
+function $(id){ return document.getElementById(id); }
+function toNum(v){
+  if (v === null || v === undefined) return 0;
+  const n = parseFloat(String(v).replace(/[^\d.\-]/g,''));
+  return Number.isFinite(n) ? n : 0;
+}
+function toInt(v){
+  if (v === null || v === undefined) return 0;
+  const n = parseInt(String(v).replace(/[^\d\-]/g,''),10);
+  return Number.isFinite(n) ? n : 0;
+}
+function format2(n){ return (Math.round(n*100)/100).toFixed(2); }
+function money(n){ return Math.round(n).toLocaleString('zh-Hant-TW'); }
+function setText(id,txt){ document.getElementById(id).textContent = txt; }
+</script>
+</body>
+</html>

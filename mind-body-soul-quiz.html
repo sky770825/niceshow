@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>身心靈瘦身小測驗｜塔羅星空風</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bs-primary:#2ecc71;
+      --bs-secondary:#6c757d;
+      --bs-dark:#212529;
+      --bs-light:#f8f9fa;
+      --bs-body-color:#f5f5f8;
+      --bs-body-bg:#0d0b18;
+      --card-bg:rgba(23, 20, 38, 0.65);
+      --glass:rgba(255,255,255,0.08);
+      --accent:#b892ff;
+      --accent-2:#ffd08a;
+      --muted:#a2a2a8;
+      --ring:0 0 0 .2rem rgba(46,204,113,.35);
+      --success:#39d98a;
+      --danger:#ff6b6b;
+      --warning:#ffd166;
+      --info:#66d9ff;
+    }
+    * { box-sizing: border-box; }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:"Microsoft JhengHei", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Heiti TC", sans-serif;
+      color:var(--bs-body-color);
+      background: radial-gradient(1200px 800px at 10% 10%, #1a1430 0%, #0d0b18 60%, #080611 100%);
+      letter-spacing: .2px;
+      line-height: 1.7;
+      font-size: 17px;
+    }
+
+    /* 星空背景 */
+    .stars {
+      position: fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(1px 1px at 10% 20%, #fff 70%, transparent 72%) repeat,
+        radial-gradient(1px 1px at 30% 80%, #fff 70%, transparent 72%) repeat,
+        radial-gradient(1px 1px at 70% 30%, #fff 70%, transparent 72%) repeat,
+        radial-gradient(1px 1px at 90% 60%, #fff 70%, transparent 72%) repeat;
+      background-size: 400px 400px, 500px 500px, 600px 600px, 700px 700px;
+      opacity:.45;
+      animation: drift 60s linear infinite;
+    }
+    @keyframes drift{ to{ background-position: 600px 0, -700px 0, 800px 0, -900px 0; } }
+
+    .wrap{
+      position: relative;
+      z-index: 1;
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 20px 14px 80px;
+    }
+    .card{
+      width: 100%;
+      max-width: 920px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,.3);
+    }
+
+    .hero{
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .hero h1{
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 700;
+      margin: 0 0 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p{
+      color: var(--muted);
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .quiz-container{
+      display: none;
+    }
+    .quiz-container.active{
+      display: block;
+    }
+
+    .question{
+      margin-bottom: 24px;
+    }
+    .question h3{
+      font-size: 20px;
+      margin: 0 0 16px;
+      color: var(--accent);
+    }
+
+    .options{
+      display: grid;
+      gap: 12px;
+    }
+    .option{
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .option:hover{
+      background: rgba(255,255,255,.15);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .option.selected{
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: var(--accent);
+      color: var(--bs-dark);
+    }
+
+    .btn{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--bs-primary), #27ae60);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(46,204,113,.3);
+    }
+    .btn:disabled{
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .result{
+      text-align: center;
+      display: none;
+    }
+    .result.active{
+      display: block;
+    }
+    .result-icon{
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .result h2{
+      font-size: 28px;
+      margin: 0 0 16px;
+      color: var(--accent-2);
+    }
+    .result p{
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .result-advice{
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .back-btn{
+      display:inline-flex; align-items:center; gap:6px; padding:8px 12px;
+      background:var(--accent); color:var(--bs-dark); border-radius:8px; text-decoration:none;
+      font-size:14px; font-weight:600; margin-bottom:16px;
+    }
+    .back-btn:hover{ background:var(--accent-2); transform:translateY(-1px); }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  
+  <div class="wrap">
+    <div class="card">
+      <!-- 返回按鈕 -->
+      <a href="index.html" class="back-btn">
+        <i class="bi bi-arrow-left"></i> 返回工具集
+      </a>
+
+      <!-- 開始頁面 -->
+      <div id="start" class="quiz-container active">
+        <div class="hero">
+          <h1>🌟 身心靈瘦身小測驗</h1>
+          <p>透過塔羅星空的神秘力量，探索您的瘦身傾向與健康建議</p>
+        </div>
+        
+        <div style="text-align: center;">
+          <p style="margin-bottom: 24px; color: var(--muted);">
+            這個測驗將幫助您了解自己的身心靈瘦身傾向，<br>
+            並提供個性化的健康建議。
+          </p>
+          
+          <button class="btn" onclick="startQuiz()">
+            <i class="bi bi-stars"></i> 開始測驗
+          </button>
+        </div>
+      </div>
+
+      <!-- 測驗問題 -->
+      <div id="quiz" class="quiz-container">
+        <div class="hero">
+          <h1>🧘‍♀️ 身心靈瘦身測驗</h1>
+          <p>問題 <span id="currentQuestion">1</span> / 5</p>
+        </div>
+        
+        <div id="questionContainer"></div>
+        
+        <div style="text-align: center; margin-top: 24px;">
+          <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>
+            下一題 <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 結果頁面 -->
+      <div id="result" class="result">
+        <div class="result-icon" id="resultIcon">🌟</div>
+        <h2 id="resultTitle">您的瘦身傾向</h2>
+        <p id="resultDesc">根據您的回答，我們為您分析出以下結果：</p>
+        
+        <div class="result-advice" id="resultAdvice">
+          <!-- 結果內容將在這裡顯示 -->
+        </div>
+        
+        <button class="btn" onclick="restartQuiz()" style="margin-top: 20px;">
+          <i class="bi bi-arrow-clockwise"></i> 重新測驗
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "當您感到壓力時，您最常選擇什麼方式來放鬆？",
+        options: [
+          "冥想或瑜伽",
+          "運動健身",
+          "享受美食",
+          "與朋友聊天"
+        ]
+      },
+      {
+        question: "您認為瘦身最重要的是什麼？",
+        options: [
+          "內心的平靜與平衡",
+          "身體的健康與活力",
+          "外在的美觀與自信",
+          "生活品質的提升"
+        ]
+      },
+      {
+        question: "您最喜歡的運動類型是？",
+        options: [
+          "柔和的伸展運動",
+          "高強度的有氧運動",
+          "力量訓練",
+          "戶外活動"
+        ]
+      },
+      {
+        question: "您的飲食習慣偏向？",
+        options: [
+          "清淡均衡",
+          "高蛋白低碳水",
+          "隨心所欲",
+          "注重營養搭配"
+        ]
+      },
+      {
+        question: "您希望透過瘦身達到什麼目標？",
+        options: [
+          "身心靈的平衡",
+          "強健的體魄",
+          "完美的身材",
+          "健康的生活方式"
+        ]
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let answers = [];
+
+    function startQuiz() {
+      document.getElementById('start').classList.remove('active');
+      document.getElementById('quiz').classList.add('active');
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const question = questions[currentQuestionIndex];
+      const container = document.getElementById('questionContainer');
+      
+      document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+      
+      container.innerHTML = `
+        <div class="question">
+          <h3>${question.question}</h3>
+          <div class="options">
+            ${question.options.map((option, index) => `
+              <div class="option" onclick="selectOption(${index})">
+                ${option}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function selectOption(optionIndex) {
+      // 移除所有選中的狀態
+      document.querySelectorAll('.option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      // 選中當前選項
+      event.target.classList.add('selected');
+      
+      // 啟用下一題按鈕
+      document.getElementById('nextBtn').disabled = false;
+      
+      // 儲存答案
+      answers[currentQuestionIndex] = optionIndex;
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        showQuestion();
+        document.getElementById('nextBtn').disabled = true;
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz').classList.remove('active');
+      document.getElementById('result').classList.add('active');
+      
+      // 分析結果
+      const result = analyzeResult();
+      
+      document.getElementById('resultIcon').textContent = result.icon;
+      document.getElementById('resultTitle').textContent = result.title;
+      document.getElementById('resultDesc').textContent = result.description;
+      document.getElementById('resultAdvice').innerHTML = result.advice;
+    }
+
+    function analyzeResult() {
+      // 簡單的結果分析邏輯
+      const avgAnswer = answers.reduce((sum, answer) => sum + answer, 0) / answers.length;
+      
+      if (avgAnswer < 1.5) {
+        return {
+          icon: "🧘‍♀️",
+          title: "心靈瘦身型",
+          description: "您傾向於透過內在的平靜與平衡來達到瘦身目標",
+          advice: `
+            <h4>🌟 專屬建議：</h4>
+            <ul style="text-align: left; margin-top: 12px;">
+              <li>每天進行 10-15 分鐘的冥想練習</li>
+              <li>嘗試瑜伽或太極等身心運動</li>
+              <li>保持規律的作息時間</li>
+              <li>學習正念飲食，細嚼慢嚥</li>
+              <li>定期進行深呼吸練習</li>
+            </ul>
+          `
+        };
+      } else if (avgAnswer < 2.5) {
+        return {
+          icon: "💪",
+          title: "體能瘦身型",
+          description: "您偏好透過運動和健身來達到瘦身效果",
+          advice: `
+            <h4>💪 專屬建議：</h4>
+            <ul style="text-align: left; margin-top: 12px;">
+              <li>每週進行 3-4 次有氧運動</li>
+              <li>加入力量訓練提升基礎代謝</li>
+              <li>注意運動後的營養補充</li>
+              <li>保持運動的多樣性</li>
+              <li>設定漸進式的運動目標</li>
+            </ul>
+          `
+        };
+      } else if (avgAnswer < 3.5) {
+        return {
+          icon: "🎯",
+          title: "目標導向型",
+          description: "您注重外在效果，追求明確的瘦身目標",
+          advice: `
+            <h4>🎯 專屬建議：</h4>
+            <ul style="text-align: left; margin-top: 12px;">
+              <li>設定具體可測量的瘦身目標</li>
+              <li>定期記錄體重和體脂變化</li>
+              <li>拍照記錄身體變化</li>
+              <li>尋找志同道合的夥伴</li>
+              <li>獎勵自己的進步</li>
+            </ul>
+          `
+        };
+      } else {
+        return {
+          icon: "🌿",
+          title: "生活平衡型",
+          description: "您追求整體生活品質的提升，包括健康的生活方式",
+          advice: `
+            <h4>🌿 專屬建議：</h4>
+            <ul style="text-align: left; margin-top: 12px;">
+              <li>建立規律的生活作息</li>
+              <li>均衡飲食，適量運動</li>
+              <li>保持充足的睡眠</li>
+              <li>減少壓力，增加休閒活動</li>
+              <li>培養健康的興趣愛好</li>
+            </ul>
+          `
+        };
+      }
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      answers = [];
+      document.getElementById('result').classList.remove('active');
+      document.getElementById('start').classList.add('active');
+    }
+  </script>
+</body>
+</html>
