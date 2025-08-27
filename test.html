@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試頁面 - GitHub Pages 部署確認</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .links {
+            margin-top: 30px;
+        }
+        .links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .links a:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 GitHub Pages 部署成功！</h1>
+        <div class="status">✅ 網站已正常運行</div>
+        <p>您的實用工具集已經成功部署到 GitHub Pages。</p>
+        
+        <div class="links">
+            <a href="index.html">🏠 前往主頁</a>
+            <a href="screens-calculator.html">🧮 紗窗計算器</a>
+            <a href="crypto-trading.html">📈 虛擬幣交易</a>
+            <a href="mind-body-soul-quiz.html">🧘‍♀️ 身心靈測驗</a>
+            <a href="auto-upload.html">🚀 自動上傳工具</a>
+        </div>
+        
+        <p style="margin-top: 30px; color: #666; font-size: 14px;">
+            部署時間：<span id="deployTime"></span>
+        </p>
+    </div>
+    
+    <script>
+        document.getElementById('deployTime').textContent = new Date().toLocaleString('zh-TW');
+    </script>
+</body>
+</html>
