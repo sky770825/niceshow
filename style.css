@@ -3062,7 +3062,7 @@ body.loaded {
     position: relative;
     z-index: 999 !important;
     box-shadow: 0 0 0 2px #ff6b6b !important;
-    animation: overlapPulse 1s ease-in-out infinite alternate;
+    /* 動畫已關閉，避免閃爍 */
 }
 
 @keyframes overlapPulse {
@@ -3070,7 +3070,7 @@ body.loaded {
         box-shadow: 0 0 0 2px #ff6b6b;
     }
     100% {
-        box-shadow: 0 0 0 4px #ff6b6b, 0 0 10px rgba(255, 107, 107, 0.5);
+        box-shadow: 0 0 0 3px #ff6b6b, 0 0 5px rgba(255, 107, 107, 0.3);
     }
 }
 
@@ -3117,7 +3117,7 @@ body.loaded {
     border-radius: inherit;
     z-index: -1;
     opacity: 0.1;
-    animation: alignmentPulse 2s ease-in-out infinite;
+    /* 動畫已關閉，避免閃爍 */
 }
 
 @keyframes alignmentPulse {
@@ -3126,8 +3126,8 @@ body.loaded {
         transform: scale(1);
     }
     50% {
-        opacity: 0.3;
-        transform: scale(1.02);
+        opacity: 0.2;
+        transform: scale(1.01);
     }
 }
 

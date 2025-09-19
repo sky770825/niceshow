@@ -18,7 +18,8 @@ const performanceConfig = {
     throttleDelay: 100,        // 節流延遲
     maxRetries: 3,             // 最大重試次數
     cacheTimeout: 5 * 60 * 1000, // 快取超時時間 (5分鐘)
-    imageLoadTimeout: 10000    // 圖片載入超時時間 (10秒)
+    imageLoadTimeout: 10000,   // 圖片載入超時時間 (10秒)
+    enableAnimations: false    // 關閉動畫效果，避免閃爍
 };
 
 // 快取管理
@@ -1297,14 +1298,19 @@ function initOverlapDetection() {
     if ('IntersectionObserver' in window) {
         detectOverlaps();
         
-        // 當內容動態更新時重新檢測
+        // 當內容動態更新時重新檢測 - 減少頻率
         const mutationObserver = new MutationObserver((mutations) => {
+            let shouldRefresh = false;
             mutations.forEach((mutation) => {
-                if (mutation.type === 'childList') {
-                    // 重新檢測新添加的元素
-                    setTimeout(detectOverlaps, 100);
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    shouldRefresh = true;
                 }
             });
+            
+            // 只在有實際內容變化時才重新檢測
+            if (shouldRefresh) {
+                setTimeout(detectOverlaps, 500);
+            }
         });
         
         // 監控整個文檔的變化
@@ -1555,6 +1561,7 @@ class AlignmentDetector {
 
 // 初始化對齊檢測器
 let alignmentDetector = null;
+let detectionTimeout = null;
 
 function initAlignmentDetection() {
     // 為需要檢測對齊的元素添加標記
@@ -1571,20 +1578,31 @@ function initAlignmentDetection() {
         });
     });
     
-    // 創建對齊檢測器
-    alignmentDetector = new AlignmentDetector();
+    // 延遲創建對齊檢測器，避免頁面載入時過度檢測
+    setTimeout(() => {
+        alignmentDetector = new AlignmentDetector();
+    }, 1000);
     
-    // 監聽視窗大小變化
+    // 監聽視窗大小變化 - 增加防抖動時間
     window.addEventListener('resize', debounce(() => {
         if (alignmentDetector) {
-            alignmentDetector.refresh();
+            // 清除之前的檢測
+            if (detectionTimeout) {
+                clearTimeout(detectionTimeout);
+            }
+            // 延遲檢測，避免頻繁觸發
+            detectionTimeout = setTimeout(() => {
+                alignmentDetector.refresh();
+            }, 500);
         }
-    }, 300));
+    }, 1000));
     
-    // 監聽內容變化
+    // 監聽內容變化 - 減少檢測頻率
     const mutationObserver = new MutationObserver((mutations) => {
+        let shouldRefresh = false;
+        
         mutations.forEach((mutation) => {
-            if (mutation.type === 'childList') {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                 // 為新元素添加檢測標記
                 mutation.addedNodes.forEach(node => {
                     if (node.nodeType === 1) { // Element node
@@ -1592,17 +1610,25 @@ function initAlignmentDetection() {
                         elements.forEach(el => {
                             el.setAttribute('data-align-check', 'true');
                         });
+                        if (elements.length > 0) {
+                            shouldRefresh = true;
+                        }
                     }
                 });
-                
-                // 重新檢測
-                setTimeout(() => {
-                    if (alignmentDetector) {
-                        alignmentDetector.refresh();
-                    }
-                }, 100);
             }
         });
+        
+        // 只在有實際內容變化時才重新檢測
+        if (shouldRefresh && alignmentDetector) {
+            // 清除之前的檢測
+            if (detectionTimeout) {
+                clearTimeout(detectionTimeout);
+            }
+            // 延遲檢測
+            detectionTimeout = setTimeout(() => {
+                alignmentDetector.refresh();
+            }, 800);
+        }
     });
     
     mutationObserver.observe(document.body, {
