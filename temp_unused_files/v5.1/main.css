@@ -1,0 +1,1240 @@
+/* Main 專用 CSS - 完全獨立 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft JhengHei', 'PingFang TC', Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+body.loaded {
+    opacity: 1;
+}
+
+/* 通知動畫 */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.header h1 {
+    font-size: 3em;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 1;
+    line-height: 1.2;
+}
+
+.header p {
+    font-size: 1.3em;
+    opacity: 0.95;
+    position: relative;
+    z-index: 1;
+}
+
+/* 群組邀請連結樣式 */
+.group-invite {
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.group-link {
+    display: inline-block;
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e, #ffa8a8);
+    color: white;
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.group-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(255, 107, 107, 0.6);
+    background: linear-gradient(45deg, #ff5252, #ff7979, #ff9f9f);
+}
+
+.group-link:active {
+    transform: translateY(-1px);
+}
+
+/* 脈衝動畫 */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 20px rgba(255, 107, 107, 0.8);
+    }
+    100% {
+        box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+    }
+}
+
+/* 圖片跑碼燈樣式 */
+.image-marquee-container {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px 0;
+    margin: 0;
+    overflow: hidden;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.marquee-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.marquee-track {
+    display: flex;
+    animation: marquee 30s linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.marquee-track img {
+    height: 60px;
+    margin-right: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.week-selector {
+    background: #f8f9fa;
+    padding: 20px 30px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.week-tabs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.week-tab {
+    padding: 14px 20px;
+    background: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: #6c757d;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.week-tab:hover {
+    border-color: #667eea;
+    color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+}
+
+.week-tab.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+    transform: translateY(-1px);
+}
+
+.week-tab small {
+    display: block;
+    font-size: 0.75em;
+    opacity: 0.8;
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+.content {
+    padding: 40px 30px;
+}
+
+.week-content {
+    display: none;
+}
+
+.week-content.active {
+    display: block;
+}
+
+.week-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.week-title {
+    font-size: 2.4em;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-weight: 700;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 25px;
+    border: 1px solid #e1e8ed;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: inline-block;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.day-header {
+    text-align: center;
+    padding: 12px 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.day-card {
+    background: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 16px;
+    padding: 16px;
+    min-height: 140px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.day-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
+    transform: translateY(-2px);
+}
+
+.day-card.has-trucks {
+    border-color: #ff6b6b;
+    background: linear-gradient(135deg, #fff8f8, #ffffff);
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.1);
+}
+
+.day-card.has-trucks::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+    border-radius: 16px 16px 0 0;
+}
+
+.day-number {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    line-height: 1;
+    display: inline;
+}
+
+.day-name {
+    font-size: 0.8em;
+    color: #7f8c8d;
+    margin-bottom: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: inline;
+    margin-left: 8px;
+}
+
+.truck-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.truck-item {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    color: #495057;
+    border-left: 3px solid #ff6b6b;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.truck-item:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.truck-item:last-child {
+    margin-bottom: 0;
+}
+
+.truck-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-size: 0.85em;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.truck-name:hover {
+    color: #667eea;
+    transform: translateX(2px);
+}
+
+.truck-name::after {
+    content: '📍';
+    margin-left: 6px;
+    font-size: 0.8em;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+}
+
+.truck-name:hover::after {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.truck-name::before {
+    content: attr(data-address);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75em;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    pointer-events: none;
+    margin-bottom: 8px;
+}
+
+.truck-name::before::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.8);
+}
+
+.truck-name:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+.truck-location {
+    display: none;
+}
+
+.location-icon {
+    display: none;
+}
+
+.no-trucks {
+    text-align: center;
+    color: #bdc3c7;
+    font-style: italic;
+    padding: 20px 10px;
+    font-size: 0.85em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+}
+
+/* 廣告區域樣式 */
+.ad-section {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    padding: 40px 30px;
+    border-top: 1px solid #e1e8ed;
+}
+
+.ad-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.ad-title {
+    text-align: center;
+    font-size: 1.8em;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.ad-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.ad-item {
+    background: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 10px;
+    padding: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 120px;
+}
+
+.ad-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
+    transform: translateY(-2px);
+}
+
+.ad-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
+    flex: 1;
+}
+
+.ad-icon {
+    font-size: 1.6em;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.ad-text {
+    text-align: left;
+    flex: 1;
+}
+
+.ad-name {
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 3px;
+}
+
+.ad-desc {
+    font-size: 0.75em;
+    color: #6c757d;
+    line-height: 1.4;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.ad-link {
+    text-align: center;
+    margin-top: auto;
+}
+
+.ad-link a {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.ad-link a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+/* 彈窗樣式 */
+.sponsor-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.sponsor-modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sponsor-modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 0;
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+    position: relative;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 1px solid #e9ecef;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-header h3 {
+    font-size: 1.2em;
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 600;
+}
+
+.close-btn {
+    font-size: 1.8em;
+    color: #6c757d;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #2c3e50;
+}
+
+.modal-body {
+    padding: 20px;
+    background: white;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.modal-body .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.modal-body .contact-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+}
+
+.contact-icon {
+    font-size: 2.5em;
+    width: 60px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.modal-body .contact-info {
+    flex: 1;
+}
+
+.contact-name {
+    font-size: 1.1em;
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.contact-phone {
+    font-size: 1.1em;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 8px;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.contact-phone:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.contact-line {
+    font-size: 1em;
+    color: #00c300;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #00c300, #00a300);
+    color: white;
+    border-radius: 8px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 195, 0, 0.3);
+}
+
+.contact-line:hover {
+    background: linear-gradient(135deg, #00a300, #008500);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 195, 0, 0.4);
+}
+
+.footer {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px 30px;
+    text-align: center;
+    border-top: 1px solid #e1e8ed;
+}
+
+.footer-content p {
+    color: #6c757d;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+}
+
+.keyboard-hint {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.keyboard-hint small {
+    color: #667eea;
+    font-size: 0.8em;
+}
+
+/* 醫療資訊彈窗樣式 */
+.medical-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.medical-category {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.medical-category h4 {
+    color: #2c3e50;
+    font-size: 1em;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #667eea;
+}
+
+.medical-item {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    border: 1px solid #e1e8ed;
+    transition: all 0.3s ease;
+}
+
+.medical-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.medical-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95em;
+    margin-bottom: 6px;
+}
+
+.medical-info {
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+.medical-address,
+.medical-phone,
+.medical-hours {
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    font-size: 0.85em;
+}
+
+.medical-note {
+    background: #e3f2fd;
+    border-radius: 8px;
+    padding: 15px;
+    border-left: 4px solid #2196f3;
+}
+
+.medical-note p {
+    margin-bottom: 10px;
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.medical-note ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.medical-note li {
+    margin-bottom: 5px;
+    color: #424242;
+    font-size: 0.9em;
+}
+
+/* 醫療資訊導航連結樣式 */
+.medical-navigation {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.nav-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-size: 0.8em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.nav-link:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.nav-link:active {
+    transform: translateY(0);
+}
+
+/* 電話連結樣式 */
+.phone-link {
+    color: #28a745;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.phone-link:hover {
+    color: #218838;
+    text-decoration: underline;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        border-radius: 15px;
+    }
+    
+    .image-marquee-container {
+        padding: 15px 0;
+    }
+    
+    .marquee-track img {
+        height: 50px;
+        margin-right: 15px;
+    }
+    
+    .group-link {
+        font-size: 1.1em;
+        padding: 12px 25px;
+    }
+    
+    .calendar-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        max-width: 100%;
+    }
+    
+    .ad-section {
+        padding: 30px 15px;
+    }
+    
+    .ad-title {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+    
+    .ad-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+    
+    .ad-item {
+        padding: 16px;
+    }
+    
+    .ad-content {
+        margin-bottom: 12px;
+        gap: 8px;
+    }
+    
+    .ad-icon {
+        font-size: 1.6em;
+        flex-shrink: 0;
+    }
+    
+    .ad-name {
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+    
+    .ad-desc {
+        font-size: 0.85em;
+        line-height: 1.3;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        word-wrap: break-word;
+    }
+    
+    .ad-link a {
+        padding: 6px 12px;
+        font-size: 0.9em;
+    }
+    
+    .sponsor-modal {
+        padding: 15px;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+    
+    .sponsor-modal-content {
+        width: 95%;
+        max-width: 400px;
+        max-height: 85vh;
+        overflow-y: auto;
+        margin: 0 auto;
+        margin-top: 20px;
+    }
+    
+    .contact-grid {
+        gap: 15px;
+    }
+    
+    .medical-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .medical-category {
+        padding: 10px;
+    }
+    
+    .medical-item {
+        padding: 8px;
+        margin-bottom: 6px;
+    }
+    
+    .modal-body .contact-item {
+        padding: 15px;
+        gap: 12px;
+    }
+    
+    .contact-icon {
+        font-size: 2em;
+        width: 50px;
+    }
+    
+    .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .modal-header h3 {
+        font-size: 1em;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .contact-icon {
+        font-size: 1.8em;
+        width: 45px;
+    }
+    
+    .contact-name {
+        font-size: 0.95em;
+    }
+    
+    .contact-phone {
+        font-size: 0.95em;
+    }
+    
+    .contact-line {
+        font-size: 0.9em;
+    }
+    
+    .day-header {
+        display: none;
+    }
+    
+    .week-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 10px;
+        justify-content: center;
+    }
+    
+    .week-tab {
+        padding: 12px 12px;
+        font-size: 13px;
+        text-align: center;
+        white-space: nowrap;
+        flex: 1;
+        min-width: 0;
+        max-width: calc(33.333% - 6px);
+    }
+    
+    .header h1 {
+        font-size: 1.8em;
+        line-height: 1.3;
+    }
+    
+    .content {
+        padding: 20px 15px;
+    }
+    
+    .day-card {
+        padding: 16px;
+        min-height: 120px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .day-number {
+        font-size: 1.4em;
+        display: inline;
+    }
+    
+    .day-name {
+        font-size: 0.9em;
+        margin-bottom: 10px;
+        display: inline;
+        margin-left: 6px;
+    }
+    
+    .truck-item {
+        padding: 12px 14px;
+        font-size: 1em;
+        margin-bottom: 8px;
+    }
+    
+    .truck-name {
+        margin-bottom: 8px;
+        font-size: 1.05em;
+    }
+    
+    .truck-location {
+        display: block;
+        font-size: 0.85em;
+        margin-top: 3px;
+        padding-top: 3px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .truck-name::after {
+        content: "📍 " attr(data-address);
+        display: block;
+        font-size: 0.8em;
+        color: #6c757d;
+        margin-top: 3px;
+        text-align: right;
+        font-weight: normal;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    
+    .container {
+        border-radius: 12px;
+    }
+    
+    .image-marquee-container {
+        padding: 12px 0;
+    }
+    
+    .marquee-track img {
+        height: 40px;
+        margin-right: 12px;
+    }
+    
+    .sponsor-modal {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 15px;
+    }
+    
+    .sponsor-modal-content {
+        width: 95%;
+        max-width: 350px;
+        max-height: 90vh;
+        overflow-y: auto;
+        margin: 0 auto;
+        margin-top: 15px;
+    }
+    
+    .ad-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .ad-item {
+        padding: 14px;
+    }
+    
+    .ad-content {
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .ad-icon {
+        font-size: 1.5em;
+        flex-shrink: 0;
+    }
+    
+    .ad-name {
+        font-size: 1em;
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+    
+    .ad-desc {
+        font-size: 0.8em;
+        line-height: 1.3;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        word-wrap: break-word;
+    }
+    
+    .ad-link a {
+        padding: 5px 10px;
+        font-size: 0.85em;
+    }
+    
+    .group-link {
+        font-size: 1em;
+        padding: 10px 20px;
+        margin-top: 15px;
+    }
+    
+    .header h1 {
+        font-size: 1.6em;
+        line-height: 1.2;
+    }
+    
+    .week-title {
+        font-size: 1.8em;
+    }
+    
+    .week-date-range {
+        font-size: 0.9em;
+        padding: 8px 16px;
+    }
+    
+    .week-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 0 5px;
+        justify-content: center;
+    }
+    
+    .week-tab {
+        padding: 10px 8px;
+        font-size: 12px;
+        flex: 1;
+        min-width: 0;
+        max-width: calc(50% - 3px);
+    }
+    
+    .day-card {
+        padding: 14px;
+        min-height: 100px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .day-number {
+        font-size: 1.3em;
+        display: inline;
+    }
+    
+    .day-name {
+        font-size: 0.85em;
+        margin-bottom: 8px;
+        display: inline;
+        margin-left: 5px;
+    }
+    
+    .truck-item {
+        padding: 10px 12px;
+        font-size: 0.95em;
+        margin-bottom: 6px;
+    }
+    
+    .truck-name {
+        margin-bottom: 6px;
+        font-size: 1em;
+    }
+    
+    .truck-location {
+        display: block;
+        font-size: 0.8em;
+        margin-top: 2px;
+        padding-top: 2px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .truck-name::after {
+        content: "📍 " attr(data-address);
+        display: block;
+        font-size: 0.75em;
+        color: #6c757d;
+        margin-top: 2px;
+        text-align: right;
+        font-weight: normal;
+    }
+}
