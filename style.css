@@ -1716,15 +1716,16 @@ body.loaded {
     
     .week-tabs {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 8px;
         justify-content: center;
         padding: 0 20px;
     }
     
     .week-tab {
-        padding: 12px 8px;
-        font-size: 13px;
+        padding: 14px 10px;
+        font-size: 14px;
         font-weight: 600;
         text-align: center;
         white-space: nowrap;
@@ -1735,6 +1736,11 @@ body.loaded {
         background: white;
         border: 2px solid #e9ecef;
         box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    
+    /* 讓最後一個按鈕跨兩欄 */
+    .week-tab:nth-child(7) {
+        grid-column: 2 / 4;
     }
     
     .week-tab:hover {
@@ -3016,15 +3022,21 @@ body.loaded {
     
     .week-tabs {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 10px;
         justify-content: center;
         padding: 0 25px;
     }
     
     .week-tab {
-        padding: 14px 10px;
-        font-size: 14px;
+        padding: 16px 12px;
+        font-size: 15px;
+    }
+    
+    /* 讓最後一個按鈕跨兩欄 */
+    .week-tab:nth-child(7) {
+        grid-column: 2 / 4;
     }
 }
 
