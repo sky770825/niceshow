@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>簡單測試</title>
+</head>
+<body>
+    <h1>簡單測試頁面</h1>
+    <p>如果您能看到這個頁面，說明 GitHub Pages 正常運作。</p>
+    <p>現在測試 data.json 載入：</p>
+    <div id="status">載入中...</div>
+    
+    <script>
+        fetch('data.json')
+            .then(response => {
+                document.getElementById('status').innerHTML = 'data.json 載入成功！狀態碼：' + response.status;
+                return response.json();
+            })
+            .then(data => {
+                console.log('資料載入成功：', data);
+                if (data.foodTrucks) {
+                    document.getElementById('status').innerHTML += '<br>foodTrucks 陣列長度：' + data.foodTrucks.length;
+                }
+            })
+            .catch(error => {
+                document.getElementById('status').innerHTML = '載入失敗：' + error.message;
+                console.error('錯誤：', error);
+            });
+    </script>
+</body>
+</html>
