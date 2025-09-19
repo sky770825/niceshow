@@ -1716,7 +1716,7 @@ body.loaded {
     
     .week-tabs {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 12px;
         justify-content: center;
         padding: 0 20px;
@@ -3013,6 +3013,17 @@ body.loaded {
     .truck-name {
         font-size: 1em;
     }
+    
+    .week-tabs {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        padding: 0 25px;
+    }
+    
+    .week-tab {
+        padding: 16px 14px;
+        font-size: 15px;
+    }
 }
 
 @media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
@@ -3031,8 +3042,8 @@ body.loaded {
     }
     
     .week-tabs {
-        grid-template-columns: repeat(7, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
     }
     
     .day-card {
