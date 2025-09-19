@@ -1251,6 +1251,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化重疊檢測
     initOverlapDetection();
+    
+    // 初始化對齊檢測
+    initAlignmentDetection();
 });
 
 // ==================== 重疊檢測功能 ====================
@@ -1343,5 +1346,267 @@ function manualOverlapDetection() {
             element.classList.remove('overlap-warning');
             element.style.zIndex = '';
         }
+    });
+}
+
+// ==================== 對齊檢測功能 ====================
+
+// 自動檢測和修正對齊問題
+class AlignmentDetector {
+    constructor() {
+        this.threshold = 2; // 2px容差
+        this.gridLines = [];
+        this.detectMisalignment();
+    }
+    
+    detectMisalignment() {
+        const elements = document.querySelectorAll('[data-align-check]');
+        this.gridLines = this.calculateGridLines();
+        
+        elements.forEach(element => {
+            const rect = element.getBoundingClientRect();
+            const alignmentScore = this.calculateAlignmentScore(rect, this.gridLines);
+            
+            if (alignmentScore < 0.9) {
+                this.suggestAlignment(element, rect, this.gridLines);
+            }
+        });
+    }
+    
+    calculateGridLines() {
+        const container = document.querySelector('.container');
+        if (!container) return [];
+        
+        const containerRect = container.getBoundingClientRect();
+        const gridLines = {
+            vertical: [],
+            horizontal: []
+        };
+        
+        // 計算垂直網格線
+        const weekTabs = document.querySelectorAll('.week-tab');
+        if (weekTabs.length > 0) {
+            weekTabs.forEach(tab => {
+                const rect = tab.getBoundingClientRect();
+                gridLines.vertical.push({
+                    position: rect.left - containerRect.left,
+                    type: 'left'
+                });
+                gridLines.vertical.push({
+                    position: rect.right - containerRect.left,
+                    type: 'right'
+                });
+            });
+        }
+        
+        // 計算水平網格線
+        const dayCards = document.querySelectorAll('.day-card');
+        if (dayCards.length > 0) {
+            dayCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                gridLines.horizontal.push({
+                    position: rect.top - containerRect.top,
+                    type: 'top'
+                });
+                gridLines.horizontal.push({
+                    position: rect.bottom - containerRect.top,
+                    type: 'bottom'
+                });
+            });
+        }
+        
+        return gridLines;
+    }
+    
+    calculateAlignmentScore(rect, gridLines) {
+        let score = 0;
+        let totalChecks = 0;
+        
+        // 檢查垂直對齊
+        gridLines.vertical.forEach(line => {
+            const distance = Math.abs(rect.left - line.position);
+            if (distance <= this.threshold) {
+                score += 1;
+            }
+            totalChecks++;
+        });
+        
+        // 檢查水平對齊
+        gridLines.horizontal.forEach(line => {
+            const distance = Math.abs(rect.top - line.position);
+            if (distance <= this.threshold) {
+                score += 1;
+            }
+            totalChecks++;
+        });
+        
+        return totalChecks > 0 ? score / totalChecks : 1;
+    }
+    
+    suggestAlignment(element, rect, gridLines) {
+        const suggestion = this.findBestAlignment(rect, gridLines);
+        if (suggestion) {
+            element.style.setProperty('--suggested-margin-left', suggestion.marginLeft + 'px');
+            element.style.setProperty('--suggested-margin-top', suggestion.marginTop + 'px');
+            element.classList.add('alignment-suggestion');
+            
+            // 添加視覺提示
+            this.addAlignmentHint(element, suggestion);
+        }
+    }
+    
+    findBestAlignment(rect, gridLines) {
+        let bestAlignment = null;
+        let bestScore = 0;
+        
+        // 尋找最佳垂直對齊
+        gridLines.vertical.forEach(line => {
+            const marginLeft = line.position - rect.left;
+            const score = 1 - Math.abs(marginLeft) / 100; // 正規化分數
+            
+            if (score > bestScore && Math.abs(marginLeft) <= 20) {
+                bestScore = score;
+                bestAlignment = {
+                    marginLeft: marginLeft,
+                    marginTop: 0,
+                    type: 'vertical',
+                    line: line
+                };
+            }
+        });
+        
+        // 尋找最佳水平對齊
+        gridLines.horizontal.forEach(line => {
+            const marginTop = line.position - rect.top;
+            const score = 1 - Math.abs(marginTop) / 100; // 正規化分數
+            
+            if (score > bestScore && Math.abs(marginTop) <= 20) {
+                bestScore = score;
+                bestAlignment = {
+                    marginLeft: 0,
+                    marginTop: marginTop,
+                    type: 'horizontal',
+                    line: line
+                };
+            }
+        });
+        
+        return bestAlignment;
+    }
+    
+    addAlignmentHint(element, suggestion) {
+        // 移除現有的提示
+        const existingHint = element.querySelector('.alignment-hint');
+        if (existingHint) {
+            existingHint.remove();
+        }
+        
+        // 創建新的提示
+        const hint = document.createElement('div');
+        hint.className = 'alignment-hint';
+        hint.innerHTML = `
+            <div class="hint-arrow"></div>
+            <div class="hint-text">
+                ${suggestion.type === 'vertical' ? '垂直對齊' : '水平對齊'}
+                <br>
+                <small>建議調整: ${Math.round(suggestion.marginLeft || suggestion.marginTop)}px</small>
+            </div>
+        `;
+        
+        element.appendChild(hint);
+        
+        // 3秒後自動移除提示
+        setTimeout(() => {
+            if (hint.parentNode) {
+                hint.remove();
+            }
+        }, 3000);
+    }
+    
+    // 應用對齊建議
+    applyAlignment(element) {
+        const marginLeft = element.style.getPropertyValue('--suggested-margin-left');
+        const marginTop = element.style.getPropertyValue('--suggested-margin-top');
+        
+        if (marginLeft) {
+            element.style.marginLeft = marginLeft;
+        }
+        if (marginTop) {
+            element.style.marginTop = marginTop;
+        }
+        
+        element.classList.remove('alignment-suggestion');
+        element.classList.add('alignment-applied');
+    }
+    
+    // 重新檢測所有元素
+    refresh() {
+        // 清除現有建議
+        document.querySelectorAll('.alignment-suggestion').forEach(el => {
+            el.classList.remove('alignment-suggestion');
+            const hint = el.querySelector('.alignment-hint');
+            if (hint) hint.remove();
+        });
+        
+        // 重新檢測
+        this.detectMisalignment();
+    }
+}
+
+// 初始化對齊檢測器
+let alignmentDetector = null;
+
+function initAlignmentDetection() {
+    // 為需要檢測對齊的元素添加標記
+    const elementsToCheck = [
+        '.day-card',
+        '.truck-item',
+        '.ad-item',
+        '.week-tab'
+    ];
+    
+    elementsToCheck.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+            el.setAttribute('data-align-check', 'true');
+        });
+    });
+    
+    // 創建對齊檢測器
+    alignmentDetector = new AlignmentDetector();
+    
+    // 監聽視窗大小變化
+    window.addEventListener('resize', debounce(() => {
+        if (alignmentDetector) {
+            alignmentDetector.refresh();
+        }
+    }, 300));
+    
+    // 監聽內容變化
+    const mutationObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList') {
+                // 為新元素添加檢測標記
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1) { // Element node
+                        const elements = node.querySelectorAll('.day-card, .truck-item, .ad-item, .week-tab');
+                        elements.forEach(el => {
+                            el.setAttribute('data-align-check', 'true');
+                        });
+                    }
+                });
+                
+                // 重新檢測
+                setTimeout(() => {
+                    if (alignmentDetector) {
+                        alignmentDetector.refresh();
+                    }
+                }, 100);
+            }
+        });
+    });
+    
+    mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true
     });
 }

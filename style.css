@@ -3097,6 +3097,149 @@ body.loaded {
     }
 }
 
+/* 對齊檢測樣式 */
+.alignment-suggestion {
+    position: relative;
+    outline: 2px dashed #4CAF50 !important;
+    outline-offset: 2px;
+    background: linear-gradient(135deg, #f8fff8, #ffffff) !important;
+    transition: all 0.3s ease;
+}
+
+.alignment-suggestion::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.1;
+    animation: alignmentPulse 2s ease-in-out infinite;
+}
+
+@keyframes alignmentPulse {
+    0%, 100% {
+        opacity: 0.1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(1.02);
+    }
+}
+
+.alignment-hint {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    animation: hintFadeIn 0.3s ease-out;
+}
+
+@keyframes hintFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.hint-arrow {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #4CAF50;
+}
+
+.hint-text {
+    text-align: center;
+    line-height: 1.3;
+}
+
+.hint-text small {
+    opacity: 0.8;
+    font-size: 10px;
+}
+
+.alignment-applied {
+    background: linear-gradient(135deg, #e8f5e8, #ffffff) !important;
+    border-color: #4CAF50 !important;
+    transition: all 0.5s ease;
+}
+
+.alignment-applied::after {
+    content: '✓';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #4CAF50;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    animation: checkmarkFade 2s ease-out;
+}
+
+@keyframes checkmarkFade {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+}
+
+/* 平板對齊檢測優化 */
+@media (min-width: 768px) and (max-width: 1366px) {
+    .alignment-suggestion {
+        outline-width: 3px;
+        outline-offset: 3px;
+    }
+    
+    .alignment-hint {
+        font-size: 14px;
+        padding: 10px 16px;
+        top: -50px;
+    }
+    
+    .hint-arrow {
+        border-left-width: 8px;
+        border-right-width: 8px;
+        border-top-width: 8px;
+    }
+}
+
 /* 極小螢幕 (320px - 375px) */
 @media (max-width: 375px) {
     .container {
