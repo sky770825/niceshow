@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料載入測試</title>
+</head>
+<body>
+    <h1>資料載入測試</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testDataLoading() {
+            try {
+                console.log('開始載入資料...');
+                const response = await fetch('data.json');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('載入的資料:', data);
+                
+                if (data.foodTrucks && Array.isArray(data.foodTrucks)) {
+                    console.log('foodTrucks 陣列長度:', data.foodTrucks.length);
+                    console.log('第一個餐車:', data.foodTrucks[0]);
+                    
+                    document.getElementById('result').innerHTML = `
+                        <h2>✅ 資料載入成功</h2>
+                        <p>餐車數量: ${data.foodTrucks.length}</p>
+                        <p>第一個餐車: ${data.foodTrucks[0].title}</p>
+                        <p>圖片網址: ${data.foodTrucks[0].src}</p>
+                        <img src="${data.foodTrucks[0].src}" alt="${data.foodTrucks[0].alt}" style="width: 100px; height: 75px; border: 1px solid #ccc;">
+                    `;
+                } else {
+                    console.error('foodTrucks 不是陣列或不存在');
+                    document.getElementById('result').innerHTML = '<h2>❌ foodTrucks 資料格式錯誤</h2>';
+                }
+            } catch (error) {
+                console.error('載入資料失敗:', error);
+                document.getElementById('result').innerHTML = `<h2>❌ 載入失敗: ${error.message}</h2>`;
+            }
+        }
+        
+        // 頁面載入後執行測試
+        window.addEventListener('load', testDataLoading);
+    </script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+{
+  "weeks": [
+    {
+      "id": "week0",
+      "title": "9月15日 - 9月21日",
+      "tabLabel": "9/15-9/21",
+      "days": [
+        {
+          "date": "9/15",
+          "dayName": "週一",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "QQ炸熱狗餐車",
+              "address": "四維路190號",
+              "mapUrl": "https://maps.app.goo.gl/JzDhpp6KHtuRZFfBA"
+            },
+            {
+              "name": "黃佳香碳烤玉米13號車",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "A happiness手作奶酪",
+              "address": "四維路60號",
+              "mapUrl": "https://maps.app.goo.gl/rxGpsi2UpsTEEV5w5"
+            },
+            {
+              "name": "蒸珍飽",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            }
+          ]
+        },
+        {
+          "date": "9/16",
+          "dayName": "週二",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "養生滷味",
+              "address": "四維路218號",
+              "mapUrl": "https://maps.app.goo.gl/89A6N9QCSgAURCFv9"
+            },
+            {
+              "name": "八品美食",
+              "address": "四維路190號",
+              "mapUrl": "https://maps.app.goo.gl/JzDhpp6KHtuRZFfBA"
+            },
+            {
+              "name": "老沈的行動廚房-肉夾饃",
+              "address": "四維路60號",
+              "mapUrl": "https://maps.app.goo.gl/rxGpsi2UpsTEEV5w5"
+            },
+            {
+              "name": "非常雞凍",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            }
+          ]
+        },
+        {
+          "date": "9/17",
+          "dayName": "週三",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "臧記排骨酥",
+              "address": "四維路60號",
+              "mapUrl": "https://maps.app.goo.gl/rxGpsi2UpsTEEV5w5"
+            },
+            {
+              "name": "山上的孩子",
+              "address": "四維路216號",
+              "mapUrl": "https://maps.app.goo.gl/LFtp8Cg33KXoSE1A7"
+            },
+            {
+              "name": "向陽坡刈包",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            },
+            {
+              "name": "芙玉軒金牛角",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            }
+          ]
+        },
+        {
+          "date": "9/18",
+          "dayName": "週四",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "鄭老爹肉燥乾麵",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            },
+            {
+              "name": "萬兆香萬巒豬腳",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "潮禱芙臭豆腐",
+              "address": "四維路190號",
+              "mapUrl": "https://maps.app.goo.gl/JzDhpp6KHtuRZFfBA"
+            }
+          ]
+        },
+        {
+          "date": "9/19",
+          "dayName": "週五",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "花花牌烤玉米",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            },
+            {
+              "name": "花花牌炒飯",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "花花牌小米甜甜圈",
+              "address": "四維路190號",
+              "mapUrl": "https://maps.app.goo.gl/JzDhpp6KHtuRZFfBA"
+            },
+            {
+              "name": "花花牌餐車",
+              "address": "四維路77號",
+              "mapUrl": "https://maps.app.goo.gl/ejp7GDgoJEyyEKZ56"
+            }
+          ]
+        },
+        {
+          "date": "9/20",
+          "dayName": "週六",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "台東放山豬石板烤肉",
+              "address": "四維路216號",
+              "mapUrl": "https://maps.app.goo.gl/LFtp8Cg33KXoSE1A7"
+            },
+            {
+              "name": "養生滷味",
+              "address": "四維路218號",
+              "mapUrl": "https://maps.app.goo.gl/89A6N9QCSgAURCFv9"
+            },
+            {
+              "name": "蔬孟園",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            }
+          ]
+        },
+        {
+          "date": "9/21",
+          "dayName": "週日",
+          "hasTrucks": false,
+          "trucks": []
+        }
+      ]
+    },
+    {
+      "id": "week1",
+      "title": "9月22日 - 9月28日",
+      "tabLabel": "9/22-9/28",
+      "days": [
+        {
+          "date": "9/22",
+          "dayName": "週一",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "饞了找我",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "宇宙雞蛋糕",
+              "address": "四維路60號",
+              "mapUrl": "https://maps.app.goo.gl/rxGpsi2UpsTEEV5w5"
+            },
+            {
+              "name": "起司馬鈴薯",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            }
+          ]
+        },
+        {
+          "date": "9/23",
+          "dayName": "週二",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "腸新",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            },
+            {
+              "name": "蛋塔村桃園站",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "百姈鳥手作烘焙",
+              "address": "四維路60號",
+              "mapUrl": "https://maps.app.goo.gl/rxGpsi2UpsTEEV5w5"
+            }
+          ]
+        },
+        {
+          "date": "9/24",
+          "dayName": "週三",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "台東放山豬石板烤肉",
+              "address": "四維路216號",
+              "mapUrl": "https://maps.app.goo.gl/LFtp8Cg33KXoSE1A7"
+            },
+            {
+              "name": "👠姐賣開心的~手作涼糕,🍡",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            },
+            {
+              "name": "臧記排骨酥",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "滷拉拉",
+              "address": "四維路60號",
+              "mapUrl": "https://maps.app.goo.gl/rxGpsi2UpsTEEV5w5"
+            }
+          ]
+        },
+        {
+          "date": "9/25",
+          "dayName": "週四",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "艾汭日式生乳酪甜甜圈",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "安德尼斯烘焙坊",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            }
+          ]
+        },
+        {
+          "date": "9/26",
+          "dayName": "週五",
+          "hasTrucks": true,
+          "trucks": [
+            {
+              "name": "自己人窯烤披薩",
+              "address": "四維路70號",
+              "mapUrl": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7"
+            },
+            {
+              "name": "屋下排骨酥",
+              "address": "四維路59號",
+              "mapUrl": "https://maps.app.goo.gl/jaKQjQ6jArFZda898"
+            }
+          ]
+        },
+        {
+          "date": "9/27",
+          "dayName": "週六",
+          "hasTrucks": false,
+          "trucks": []
+        },
+        {
+          "date": "9/28",
+          "dayName": "週日",
+          "hasTrucks": false,
+          "trucks": []
+        }
+      ]
+    }
+  ],
+  "addresses": {
+    "四維路59號": "https://maps.app.goo.gl/jaKQjQ6jArFZda898",
+    "四維路60號": "https://maps.app.goo.gl/rxGpsi2UpsTEEV5w5",
+    "四維路70號": "https://maps.app.goo.gl/k3rPvM6UwQJqwC5k7",
+    "四維路77號": "https://maps.app.goo.gl/ejp7GDgoJEyyEKZ56",
+    "四維路190號": "https://maps.app.goo.gl/JzDhpp6KHtuRZFfBA",
+    "四維路216號": "https://maps.app.goo.gl/LFtp8Cg33KXoSE1A7",
+    "四維路218號": "https://maps.app.goo.gl/89A6N9QCSgAURCFv9"
+  },
+  "sponsors": [
+    {
+      "name": "功夫茶楊梅四維店",
+      "icon": "🧋",
+      "description": "飲料訂購點我",
+      "link": "https://sky770825.github.io/kungfuteahtml/",
+      "linkText": "立即訂購"
+    },
+    {
+      "name": "四維公有停車場",
+      "icon": "🚗",
+      "description": "方便停車，輕鬆前往餐車",
+      "link": "https://maps.app.goo.gl/gQRVJ4c9MJePNSJ48",
+      "linkText": "查看位置"
+    },
+    {
+      "name": "里長聯絡資訊",
+      "icon": "📞",
+      "description": "四維里, 羅文明",
+      "link": "tel:0933965385",
+      "linkText": "0933-965385"
+    },
+    {
+      "name": "四維商圈餐車群",
+      "icon": "🍽️",
+      "description": "超多美食餐車~",
+      "link": "https://line.me/ti/g2/VXIuR9NyhkWFQPuMeWTUp_RHitaW82_0r8MU1Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default",
+      "linkText": "立即加入"
+    }
+  ],
+  "contactInfo": [
+    {
+      "name": "蔡先生",
+      "phone": "0928-776755",
+      "icon": "📞"
+    },
+    {
+      "name": "官方LINE",
+      "line": "https://lin.ee/dmM2ROH",
+      "icon": "💬"
+    }
+  ],
+  "foodTrucks": [
+    {
+      "id": "truck_1",
+      "src": "https://via.placeholder.com/80x60/ff6b6b/ffffff?text=QQ炸熱狗",
+      "alt": "QQ炸熱狗餐車",
+      "title": "QQ炸熱狗",
+      "imgLink": "",
+      "link": [
+        {
+          "url": "https://facebook.com",
+          "text": "FB"
+        },
+        {
+          "url": "https://instagram.com",
+          "text": "IG"
+        }
+      ],
+      "isActive": true,
+      "priority": 1,
+      "category": "main"
+    },
+    {
+      "id": "truck_2",
+      "src": "https://via.placeholder.com/80x60/4ecdc4/ffffff?text=黃佳香",
+      "alt": "黃佳香碳烤玉米",
+      "title": "黃佳香碳烤玉米",
+      "imgLink": "",
+      "link": [
+        {
+          "url": "https://facebook.com",
+          "text": "官網"
+        }
+      ],
+      "isActive": true,
+      "priority": 2,
+      "category": "main"
+    },
+    {
+      "id": "truck_3",
+      "src": "https://via.placeholder.com/80x60/45b7d1/ffffff?text=A+happiness",
+      "alt": "A happiness手作奶酪",
+      "title": "A happiness手作奶酪",
+      "imgLink": "",
+      "link": [
+        {
+          "url": "https://facebook.com",
+          "text": "FB"
+        },
+        {
+          "url": "https://instagram.com",
+          "text": "IG"
+        }
+      ],
+      "isActive": true,
+      "priority": 3,
+      "category": "main"
+    },
+    {
+      "id": "truck_4",
+      "src": "https://via.placeholder.com/80x60/96ceb4/ffffff?text=蒸珍飽",
+      "alt": "蒸珍飽",
+      "title": "蒸珍飽",
+      "imgLink": "",
+      "link": [
+        {
+          "url": "https://facebook.com",
+          "text": "官網"
+        }
+      ],
+      "isActive": true,
+      "priority": 4,
+      "category": "main"
+    },
+    {
+      "id": "truck_5",
+      "src": "https://via.placeholder.com/80x60/feca57/ffffff?text=臧記排骨酥",
+      "alt": "臧記排骨酥",
+      "title": "臧記排骨酥",
+      "imgLink": "",
+      "link": [
+        {
+          "url": "https://facebook.com",
+          "text": "FB"
+        }
+      ],
+      "isActive": true,
+      "priority": 5,
+      "category": "main"
+    },
+    {
+      "id": "truck_6",
+      "src": "https://via.placeholder.com/80x60/ff9ff3/ffffff?text=台東放山豬",
+      "alt": "台東放山豬石板烤肉",
+      "title": "台東放山豬石板烤肉",
+      "imgLink": "",
+      "link": [
+        {
+          "url": "https://facebook.com",
+          "text": "官網"
+        },
+        {
+          "url": "https://instagram.com",
+          "text": "IG"
+        }
+      ],
+      "isActive": true,
+      "priority": 6,
+      "category": "main"
+    }
+  ]
+}
