@@ -1663,8 +1663,8 @@ body.loaded {
 }
 
 /* 平板直向模式 (768px - 1024px 且直向) */
-/* 平板直向模式優化 (768px - 1024px, portrait) */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+/* 平板直向模式優化 (768px - 1366px, portrait) - 包含 iPad Pro */
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait) {
     body {
         padding: 10px;
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -2695,8 +2695,8 @@ body.loaded {
 }
 
 /* 可折疊螢幕支援 */
-/* 平板橫向模式優化 (768px - 1024px, landscape) */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+/* 平板橫向模式優化 (768px - 1366px, landscape) - 包含 iPad Pro */
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
     body {
         padding: 8px;
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -2978,6 +2978,71 @@ body.loaded {
     .ad-link a:hover {
         transform: translateY(-1px);
         box-shadow: 0 3px 12px rgba(102, 126, 234, 0.3);
+    }
+}
+
+/* iPad Pro 專門優化 (834px - 1366px) */
+@media (min-width: 834px) and (max-width: 1366px) and (orientation: portrait) {
+    .container {
+        max-width: 90%;
+        margin: 20px auto;
+    }
+    
+    .header h1 {
+        font-size: 2.4em;
+    }
+    
+    .calendar-grid {
+        gap: 20px;
+    }
+    
+    .day-card {
+        padding: 24px;
+        min-height: 180px;
+    }
+    
+    .day-number {
+        font-size: 1.8em;
+    }
+    
+    .truck-item {
+        padding: 16px 18px;
+        font-size: 1em;
+    }
+    
+    .truck-name {
+        font-size: 1em;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+    .container {
+        max-width: 95%;
+        margin: 15px auto;
+    }
+    
+    .header h1 {
+        font-size: 2em;
+    }
+    
+    .calendar-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+    }
+    
+    .week-tabs {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+    
+    .day-card {
+        padding: 16px;
+        min-height: 140px;
+    }
+    
+    .ad-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
     }
 }
 
