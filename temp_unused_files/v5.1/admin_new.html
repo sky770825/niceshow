@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐車圖片管理後台</title>
+    <link rel="stylesheet" href="admin.css">
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>餐車圖片管理後台</h1>
+            <p>管理餐車圖片和跑碼燈顯示</p>
+        </div>
+        
+        <div class="admin-content">
+            <!-- 統計資訊 -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTrucks">0</div>
+                    <div class="stat-label">總餐車數</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeTrucks">0</div>
+                    <div class="stat-label">啟用中</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="inactiveTrucks">0</div>
+                    <div class="stat-label">已停用</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="marqueeImages">0</div>
+                    <div class="stat-label">跑碼燈圖片</div>
+                </div>
+            </div>
+
+            <!-- 篩選器 -->
+            <div class="filter-container">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="statusFilter">狀態篩選</label>
+                        <select id="statusFilter">
+                            <option value="all">全部</option>
+                            <option value="active">啟用中</option>
+                            <option value="inactive">已停用</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="searchInput">搜尋餐車</label>
+                        <input type="text" id="searchInput" placeholder="輸入餐車名稱...">
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn-primary" onclick="addNewTruck()">新增餐車</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 跑碼燈預覽 -->
+            <div class="marquee-preview">
+                <h3>跑碼燈預覽</h3>
+                <div class="marquee-track-preview" id="marqueePreview">
+                    <!-- 圖片將通過JavaScript動態添加 -->
+                </div>
+            </div>
+
+            <!-- 餐車列表 -->
+            <div class="truck-grid" id="truckGrid">
+                <!-- 餐車卡片將通過JavaScript動態生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知區域 -->
+    <div id="notificationArea"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
