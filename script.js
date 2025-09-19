@@ -19,7 +19,8 @@ const performanceConfig = {
     maxRetries: 3,             // 最大重試次數
     cacheTimeout: 5 * 60 * 1000, // 快取超時時間 (5分鐘)
     imageLoadTimeout: 10000,   // 圖片載入超時時間 (10秒)
-    enableAnimations: false    // 關閉動畫效果，避免閃爍
+    enableAnimations: false,   // 關閉動畫效果，避免閃爍
+    enableAlignmentDetection: false  // 關閉對齊檢測功能
 };
 
 // 快取管理
@@ -1253,8 +1254,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化重疊檢測
     initOverlapDetection();
     
-    // 初始化對齊檢測
-    initAlignmentDetection();
+    // 清除所有對齊檢測標記（避免綠色虛線）
+    clearAlignmentDetection();
+    
+    // 初始化對齊檢測（可選）
+    if (performanceConfig.enableAlignmentDetection) {
+        initAlignmentDetection();
+    }
 });
 
 // ==================== 重疊檢測功能 ====================
@@ -1369,11 +1375,17 @@ class AlignmentDetector {
         const elements = document.querySelectorAll('[data-align-check]');
         this.gridLines = this.calculateGridLines();
         
+        // 如果沒有足夠的網格線參考，跳過檢測
+        if (this.gridLines.vertical.length < 2 && this.gridLines.horizontal.length < 2) {
+            return;
+        }
+        
         elements.forEach(element => {
             const rect = element.getBoundingClientRect();
             const alignmentScore = this.calculateAlignmentScore(rect, this.gridLines);
             
-            if (alignmentScore < 0.9) {
+            // 提高對齊分數閾值，減少誤判
+            if (alignmentScore < 0.7) {
                 this.suggestAlignment(element, rect, this.gridLines);
             }
         });
@@ -1635,4 +1647,29 @@ function initAlignmentDetection() {
         childList: true,
         subtree: true
     });
+}
+
+// 清除所有對齊檢測標記和樣式
+function clearAlignmentDetection() {
+    // 移除所有對齊建議樣式
+    document.querySelectorAll('.alignment-suggestion').forEach(el => {
+        el.classList.remove('alignment-suggestion');
+        el.style.removeProperty('--suggested-margin-left');
+        el.style.removeProperty('--suggested-margin-top');
+    });
+    
+    // 移除所有對齊提示
+    document.querySelectorAll('.alignment-hint').forEach(hint => {
+        hint.remove();
+    });
+    
+    // 移除所有檢測標記
+    document.querySelectorAll('[data-align-check]').forEach(el => {
+        el.removeAttribute('data-align-check');
+    });
+    
+    // 停止對齊檢測器
+    if (alignmentDetector) {
+        alignmentDetector = null;
+    }
 }
