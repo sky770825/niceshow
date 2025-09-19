@@ -3057,6 +3057,46 @@ body.loaded {
     }
 }
 
+/* 重疊檢測樣式 */
+.overlap-warning {
+    position: relative;
+    z-index: 999 !important;
+    box-shadow: 0 0 0 2px #ff6b6b !important;
+    animation: overlapPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes overlapPulse {
+    0% {
+        box-shadow: 0 0 0 2px #ff6b6b;
+    }
+    100% {
+        box-shadow: 0 0 0 4px #ff6b6b, 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+}
+
+/* 平板重疊檢測優化 */
+@media (min-width: 768px) and (max-width: 1366px) {
+    .overlap-warning {
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+    
+    .day-card.overlap-warning {
+        border-color: #ff6b6b;
+        background: linear-gradient(135deg, #fff8f8, #ffffff);
+    }
+    
+    .truck-item.overlap-warning {
+        border-left-color: #ff6b6b;
+        background: linear-gradient(135deg, #fff8f8, #ffffff);
+    }
+    
+    .ad-item.overlap-warning {
+        border-color: #ff6b6b;
+        background: linear-gradient(135deg, #fff8f8, #ffffff);
+    }
+}
+
 /* 極小螢幕 (320px - 375px) */
 @media (max-width: 375px) {
     .container {

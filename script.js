@@ -1248,4 +1248,100 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 處理LINE內建瀏覽器兼容性
     handleLineBrowserCompatibility();
+    
+    // 初始化重疊檢測
+    initOverlapDetection();
 });
+
+// ==================== 重疊檢測功能 ====================
+
+// 使用Intersection Observer API檢測重疊
+function detectOverlaps() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.intersectionRatio < 0.1) {
+                entry.target.style.zIndex = '999';
+                entry.target.classList.add('overlap-warning');
+            } else {
+                entry.target.style.zIndex = '';
+                entry.target.classList.remove('overlap-warning');
+            }
+        });
+    }, { 
+        threshold: 0.1,
+        rootMargin: '10px'
+    });
+    
+    // 監控所有可能重疊的元素
+    const elementsToWatch = [
+        '.day-card',
+        '.truck-item',
+        '.ad-item',
+        '.week-tab',
+        '.image-marquee-item'
+    ];
+    
+    elementsToWatch.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+            observer.observe(el);
+        });
+    });
+}
+
+// 初始化重疊檢測
+function initOverlapDetection() {
+    // 檢查瀏覽器是否支援 Intersection Observer
+    if ('IntersectionObserver' in window) {
+        detectOverlaps();
+        
+        // 當內容動態更新時重新檢測
+        const mutationObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    // 重新檢測新添加的元素
+                    setTimeout(detectOverlaps, 100);
+                }
+            });
+        });
+        
+        // 監控整個文檔的變化
+        mutationObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    } else {
+        console.warn('Intersection Observer API 不支援，跳過重疊檢測');
+    }
+}
+
+// 手動檢測重疊（備用方案）
+function manualOverlapDetection() {
+    const elements = document.querySelectorAll('.day-card, .truck-item, .ad-item');
+    
+    elements.forEach((element, index) => {
+        const rect = element.getBoundingClientRect();
+        let hasOverlap = false;
+        
+        elements.forEach((otherElement, otherIndex) => {
+            if (index !== otherIndex) {
+                const otherRect = otherElement.getBoundingClientRect();
+                
+                // 檢查是否有重疊
+                if (rect.left < otherRect.right && 
+                    rect.right > otherRect.left && 
+                    rect.top < otherRect.bottom && 
+                    rect.bottom > otherRect.top) {
+                    hasOverlap = true;
+                }
+            }
+        });
+        
+        if (hasOverlap) {
+            element.classList.add('overlap-warning');
+            element.style.zIndex = '999';
+        } else {
+            element.classList.remove('overlap-warning');
+            element.style.zIndex = '';
+        }
+    });
+}
