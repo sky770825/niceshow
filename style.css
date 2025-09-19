@@ -1715,14 +1715,17 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
         justify-content: center;
         padding: 0 20px;
     }
     
     .week-tab {
+        flex: 1;
+        min-width: calc(33.333% - 6px);
+        max-width: calc(33.333% - 6px);
         padding: 14px 12px;
         font-size: 14px;
         font-weight: 600;
@@ -3015,12 +3018,17 @@ body.loaded {
     }
     
     .week-tabs {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
         padding: 0 25px;
     }
     
     .week-tab {
+        flex: 1;
+        min-width: calc(33.333% - 7px);
+        max-width: calc(33.333% - 7px);
         padding: 16px 14px;
         font-size: 15px;
     }
