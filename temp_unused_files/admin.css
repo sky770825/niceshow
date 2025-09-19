@@ -1,0 +1,387 @@
+/* Admin 專用 CSS - 完全獨立 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft JhengHei', Arial, sans-serif;
+    background: #f5f7fa;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.admin-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.admin-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.admin-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.admin-header p {
+    opacity: 0.9;
+    font-size: 1.1em;
+}
+
+.admin-content {
+    padding: 30px;
+}
+
+.truck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.truck-card {
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 200px;
+    position: relative;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.truck-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    border-color: #007bff;
+}
+
+.truck-card.active {
+    border-color: #28a745;
+}
+
+.truck-card.inactive {
+    border-color: #dc3545;
+    opacity: 0.7;
+}
+
+.truck-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.truck-info {
+    padding: 20px;
+}
+
+.truck-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.truck-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.truck-status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.truck-status.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.truck-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #1e7e34;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background: #e0a800;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8em;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 1em;
+    opacity: 0.9;
+}
+
+.filter-container {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9em;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+.marquee-preview {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.marquee-track-preview {
+    display: flex;
+    animation: marquee-preview 20s linear infinite;
+}
+
+.marquee-item-preview {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.marquee-item-preview img {
+    height: 60px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+@keyframes marquee-preview {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .admin-container {
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .admin-header {
+        padding: 20px;
+    }
+    
+    .admin-header h1 {
+        font-size: 2em;
+    }
+    
+    .admin-content {
+        padding: 20px;
+    }
+    
+    .truck-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+    }
+    
+    .truck-card {
+        height: 180px;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .truck-actions {
+        justify-content: center;
+    }
+    
+    .btn {
+        flex: 1;
+        min-width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .admin-container {
+        margin: 5px;
+    }
+    
+    .admin-header {
+        padding: 15px;
+    }
+    
+    .admin-header h1 {
+        font-size: 1.8em;
+    }
+    
+    .admin-content {
+        padding: 15px;
+    }
+    
+    .truck-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .truck-card {
+        height: 160px;
+    }
+    
+    .marquee-item-preview img {
+        height: 50px;
+    }
+}
