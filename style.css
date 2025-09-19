@@ -1715,32 +1715,32 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        display: flex;
         gap: 8px;
-        justify-content: center;
         padding: 0 20px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
+    }
+    
+    .week-tabs::-webkit-scrollbar {
+        display: none;
     }
     
     .week-tab {
-        padding: 14px 10px;
+        flex-shrink: 0;
+        min-width: 80px;
+        padding: 14px 12px;
         font-size: 14px;
         font-weight: 600;
         text-align: center;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         border-radius: 12px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         background: white;
         border: 2px solid #e9ecef;
         box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    
-    /* 讓最後一個按鈕跨兩欄 */
-    .week-tab:nth-child(7) {
-        grid-column: 2 / 4;
     }
     
     .week-tab:hover {
@@ -3021,22 +3021,24 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        display: flex;
         gap: 10px;
-        justify-content: center;
         padding: 0 25px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
+    }
+    
+    .week-tabs::-webkit-scrollbar {
+        display: none;
     }
     
     .week-tab {
-        padding: 16px 12px;
+        flex-shrink: 0;
+        min-width: 90px;
+        padding: 16px 14px;
         font-size: 15px;
-    }
-    
-    /* 讓最後一個按鈕跨兩欄 */
-    .week-tab:nth-child(7) {
-        grid-column: 2 / 4;
     }
 }
 
