@@ -1175,6 +1175,7 @@
                         </div>
                     </div>
                     
+
                     <div style="margin-top: 2rem;">
                         <h4 class="form-section-title">🔗 超連結設定</h4>
                         <p class="form-section-description">為餐車添加最多 3 個社群媒體或官網連結</p>
@@ -1284,19 +1285,22 @@
 
                     <!-- 資料管理區塊 -->
                     <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
-                        <h4 class="form-section-title">💾 資料管理</h4>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
-                            <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
-                            <button type="button" class="btn btn-primary" onclick="saveFoodTruckData()">📥 匯出資料</button>
-                            <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                            <div>
+                                <h4 class="form-section-title" style="margin-bottom: 0;">💾 資料管理</h4>
+                            </div>
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <button type="submit" class="btn btn-primary">➕ 新增餐車</button>
+                                <button type="button" class="btn btn-secondary" onclick="openPostimageUpload()">🖼️ 開啟 Postimage</button>
+                                <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
+                                <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
+                                <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
+                            </div>
                         </div>
+                        
                         <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
                             <strong>💡 提示：</strong>編輯完成後，請點擊「儲存並同步」按鈕來更新前端顯示
                         </div>
-                    </div>
-                    
-                    <div style="margin-top: 1.5rem;">
-                        <button type="submit" class="btn btn-primary">新增餐車</button>
                     </div>
                 </form>
             </div>
@@ -1904,6 +1908,12 @@
                 }
             }
         }
+
+        function openPostimageUpload() {
+            window.open('https://postimages.org/', '_blank');
+            showAlert('已開啟 Postimage 上傳頁面', 'success');
+        }
+
 
         document.getElementById('addTruckForm').addEventListener('submit', function(e) {
             e.preventDefault();
