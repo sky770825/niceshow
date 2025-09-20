@@ -1295,6 +1295,7 @@
                                 <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
                                 <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
                                 <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
+                                <button type="button" class="btn btn-info" onclick="openTokenSetup()">🔧 開啟 Token 設定頁</button>
                                 <button type="button" class="btn btn-secondary" onclick="debugDataStatus()">🔍 檢查狀態</button>
                                 <button type="button" class="btn btn-warning" onclick="forceReloadData()">🔄 強制重新載入</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
@@ -2459,9 +2460,38 @@
 
         // 設定 GitHub Token
         function setupGitHubToken() {
-            if (githubSync.showTokenDialog()) {
-                showAlert('GitHub Token 已設定', 'success');
+            // 直接設定提供的 Token
+            const token = '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';
+            projectConfig.setGitHubToken(token);
+            showAlert('✅ GitHub Token 已設定！同步功能已啟用', 'success');
+            
+            // 測試 Token 是否有效
+            testGitHubToken();
+        }
+        
+        // 測試 GitHub Token
+        async function testGitHubToken() {
+            try {
+                showSyncStatus('🔄 正在測試 GitHub Token...');
+                
+                const validation = await githubSync.validateToken();
+                
+                if (validation.valid) {
+                    showSyncStatus('✅ GitHub Token 驗證成功！');
+                    console.log('✅ GitHub Token 有效，使用者:', validation.user?.login);
+                } else {
+                    showSyncStatus('❌ GitHub Token 驗證失敗');
+                    console.error('❌ GitHub Token 無效:', validation.message);
+                }
+            } catch (error) {
+                console.error('❌ Token 測試失敗:', error);
+                showSyncStatus('❌ Token 測試失敗');
             }
+        }
+        
+        // 開啟 Token 設定頁面
+        function openTokenSetup() {
+            window.open('setup-github-token.html', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
         }
 
         // 檢查遠端更新
@@ -2658,6 +2688,11 @@
                 // 1. 初始化專案設定
                 projectConfig.initialize();
                 console.log('✅ 專案設定已初始化');
+                
+                // 1.5. 自動設定 GitHub Token
+                const token = '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';
+                projectConfig.setGitHubToken(token);
+                console.log('✅ GitHub Token 已自動設定');
                 
                 // 2. 載入餐車資料
                 const loadResult = await loadFoodTruckData();
