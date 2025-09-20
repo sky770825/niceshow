@@ -13,7 +13,7 @@ echo.
 echo 請選擇要切換到的專案：
 echo.
 echo 1. 🍽️  餐開月行程表 (sky770825)
-echo 2. 🍽️  餐開月行程表 (liny14705)
+echo 2. 🏠  濬聯配件專用 (liny14705)
 echo 3. ➕ 添加新專案
 echo 4. 🔧 修復當前認證
 echo 5. ❌ 退出
@@ -80,7 +80,7 @@ goto main
 
 :switch_niceshow_liny
 echo.
-echo 🔄 正在切換到餐開月行程表專案 (liny14705)...
+echo 🔄 正在切換到濬聯配件專用專案 (liny14705)...
 echo.
 
 REM 清除現有認證
@@ -88,7 +88,7 @@ echo 清除現有認證...
 cmdkey /delete:git:https://github.com >nul 2>&1
 git config --global --unset credential.helper >nul 2>&1
 
-REM 設定餐開月行程表專案 (liny14705)
+REM 設定濬聯配件專用專案 (liny14705)
 echo 設定專案認證...
 git config --global user.name "liny14705"
 git config --global user.email "liny14705@gmail.com"
@@ -96,15 +96,15 @@ git config --global user.email "liny14705@gmail.com"
 REM 設定遠端倉庫
 echo 設定遠端倉庫...
 git remote remove origin >nul 2>&1
-git remote add origin https://github.com/liny14705/niceshow.git
+git remote add origin https://github.com/liny14705/nicehouse.git
 
 echo.
-echo ✅ 已切換到餐開月行程表專案 (liny14705)
+echo ✅ 已切換到濬聯配件專用專案 (liny14705)
 echo 📋 專案資訊：
 echo    用戶名: liny14705
 echo    電子郵件: liny14705@gmail.com
-echo    倉庫: https://github.com/liny14705/niceshow.git
-echo    網站: https://liny14705.github.io/niceshow
+echo    倉庫: https://github.com/liny14705/nicehouse.git
+echo    網站: https://liny14705.github.io/nicehouse
 echo.
 
 echo 是否要立即推送變更？ (y/n)
@@ -113,7 +113,7 @@ if /i "%push_choice%"=="y" (
     echo.
     echo 🚀 正在推送變更...
     git add . >nul 2>&1
-    git commit -m "切換到餐開月行程表專案 (liny14705) - %date% %time%" >nul 2>&1
+    git commit -m "切換到濬聯配件專用專案 (liny14705) - %date% %time%" >nul 2>&1
     git push origin main
     if errorlevel 1 (
         echo ❌ 推送失敗，可能需要 Personal Access Token
