@@ -1334,7 +1334,127 @@
     <script src="github-sync.js"></script>
     
     <script>
-        let foodTruckDatabase = [];
+        // 預設餐車資料庫（備用資料，主要資料來源為 data.json）
+        let foodTruckDatabase = [
+            {
+                id: 'truck_1758002427365',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png',
+                alt: '聯絡我',
+                title: '版主：蔡濬瑒',
+                link: [
+                    {
+                        url: 'https://realtor.houseprice.tw/agent/buy/0925666597/',
+                        text: '精選物件'
+                    },
+                    {
+                        url: 'https://www.tiktok.com/@aihouse168?is_from_webapp=1&sender_device=pc',
+                        text: 'Tiktok'
+                    }
+                ],
+                isActive: true,
+                priority: 1,
+                category: 'main'
+            },
+            {
+                id: 'truck_001',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg',
+                alt: '餐車品牌1',
+                title: '露露姐',
+                isActive: true,
+                priority: 2,
+                category: 'main'
+            },
+            {
+                id: 'truck_002',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg',
+                alt: '餐車品牌2',
+                title: '花生捲冰淇淋',
+                isActive: true,
+                priority: 3,
+                category: 'main'
+            },
+            {
+                id: 'truck_003',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg',
+                alt: '餐車品牌3',
+                title: '鄭老爹乾麵',
+                isActive: true,
+                priority: 4,
+                category: 'main'
+            },
+            {
+                id: 'truck_004',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg',
+                alt: '餐車品牌4',
+                title: '蔬孟園',
+                isActive: true,
+                priority: 5,
+                category: 'main'
+            },
+            {
+                id: 'truck_005',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg',
+                alt: '餐車品牌5',
+                title: '台東放山豬',
+                isActive: true,
+                priority: 6,
+                category: 'main'
+            },
+            {
+                id: 'truck_006',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg',
+                alt: '餐車品牌6',
+                title: '安德尼斯烘培坊',
+                isActive: true,
+                priority: 7,
+                category: 'main'
+            },
+            {
+                id: 'truck_007',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg',
+                alt: '餐車品牌7',
+                title: '韓式飯捲',
+                isActive: true,
+                priority: 8,
+                category: 'main'
+            },
+            {
+                id: 'truck_008',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg',
+                alt: '餐車品牌8',
+                title: '炸蛋𣄃魚黑輪',
+                isActive: true,
+                priority: 9,
+                category: 'main'
+            },
+            {
+                id: 'truck_009',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg',
+                alt: '餐車品牌9',
+                title: '向陽坡刈包',
+                isActive: true,
+                priority: 10,
+                category: 'main'
+            },
+            {
+                id: 'truck_010',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg',
+                alt: '餐車品牌10',
+                title: '滷拉拉',
+                isActive: true,
+                priority: 11,
+                category: 'main'
+            },
+            {
+                id: 'truck_011',
+                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg',
+                alt: '餐車品牌11',
+                title: '餓食鬼美味販賣所',
+                isActive: true,
+                priority: 12,
+                category: 'main'
+            }
+        ];
         let filteredTrucks = [];
         let selectedTrucks = new Set();
 
@@ -1344,7 +1464,6 @@
                 if (localData) {
                     const data = JSON.parse(localData);
                     foodTruckDatabase = data.foodTrucks;
-                    filteredTrucks = [...foodTruckDatabase];
                     console.log('📱 從本地儲存載入資料');
                     return;
                 }
@@ -1352,13 +1471,16 @@
                 const response = await fetch('data.json');
                 const data = await response.json();
                 foodTruckDatabase = data.foodTrucks;
-                filteredTrucks = [...foodTruckDatabase];
                 
+                // 儲存到本地
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
                 autoSaveData();
                 console.log('🌐 從 data.json 載入資料並儲存到本地');
             } catch (error) {
                 console.error('無法載入餐車資料:', error);
-                showAlert('無法載入餐車資料，請檢查data.json檔案', 'danger');
+                console.log('⚠️ 使用預設資料');
+                // 使用預設資料，不顯示錯誤
+                showAlert('使用預設餐車資料', 'warning');
             }
         }
 
@@ -2104,6 +2226,10 @@
             projectConfig.initialize();
             
             await loadFoodTruckData();
+            
+            // 確保 filteredTrucks 被正確初始化
+            filteredTrucks = [...foodTruckDatabase];
+            
             updateStats();
             applyFilters();
             renderPreview();
