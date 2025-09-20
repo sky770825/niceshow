@@ -1464,10 +1464,20 @@
             try {
                 const localData = localStorage.getItem('foodTruckData');
                 if (localData) {
-                    const data = JSON.parse(localData);
-                    foodTruckDatabase = data.foodTrucks;
-                    console.log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
-                    return;
+                    try {
+                        const data = JSON.parse(localData);
+                        if (data && data.foodTrucks && Array.isArray(data.foodTrucks)) {
+                            foodTruckDatabase = data.foodTrucks;
+                            console.log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
+                            // 確保 filteredTrucks 被更新
+                            filteredTrucks = [...foodTruckDatabase];
+                            return;
+                        } else {
+                            console.log('⚠️ localStorage 資料格式不正確，重新載入');
+                        }
+                    } catch (parseError) {
+                        console.log('⚠️ localStorage 資料解析失敗，重新載入');
+                    }
                 }
                 
                 const response = await fetch('data.json');
@@ -1478,11 +1488,15 @@
                 localStorage.setItem('foodTruckData', JSON.stringify(data));
                 autoSaveData();
                 console.log(`🌐 從 data.json 載入資料並儲存到本地: ${foodTruckDatabase.length} 個餐車`);
+                // 確保 filteredTrucks 被更新
+                filteredTrucks = [...foodTruckDatabase];
             } catch (error) {
                 console.error('無法載入餐車資料:', error);
                 console.log('⚠️ 使用預設資料');
                 // 使用預設資料，不顯示錯誤
                 showAlert('使用預設餐車資料', 'warning');
+                // 確保 filteredTrucks 被更新
+                filteredTrucks = [...foodTruckDatabase];
             }
         }
 
@@ -2320,14 +2334,17 @@
             
             await loadFoodTruckData();
             
-            // 確保 filteredTrucks 被正確初始化
+            // 檢查資料載入結果
             if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
                 console.log('⚠️ foodTruckDatabase 為空，使用預設資料');
                 // 如果載入失敗，使用預設資料
                 filteredTrucks = [...foodTruckDatabase];
             } else {
                 console.log(`✅ 成功載入 ${foodTruckDatabase.length} 個餐車`);
-                filteredTrucks = [...foodTruckDatabase];
+                // 確保 filteredTrucks 與 foodTruckDatabase 同步
+                if (!filteredTrucks || filteredTrucks.length === 0) {
+                    filteredTrucks = [...foodTruckDatabase];
+                }
             }
             
             // 強制重新渲染
