@@ -1295,6 +1295,7 @@
                                 <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
                                 <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
                                 <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
+                                <button type="button" class="btn btn-secondary" onclick="debugDataStatus()">🔍 檢查狀態</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
                                 <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
                             </div>
@@ -1668,6 +1669,15 @@
             const statusFilter = document.getElementById('statusFilter').value;
             const sortBy = document.getElementById('sortBy').value;
 
+            // 確保 foodTruckDatabase 有資料
+            if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                console.log('⚠️ foodTruckDatabase 為空，無法篩選');
+                filteredTrucks = [];
+                renderTruckCards();
+                updateStats();
+                return;
+            }
+
             filteredTrucks = foodTruckDatabase.filter(truck => {
                 const matchesSearch = truck.title.toLowerCase().includes(searchTerm) || 
                                     truck.alt.toLowerCase().includes(searchTerm);
@@ -1689,6 +1699,7 @@
                 }
             });
 
+            console.log(`🔍 篩選結果: ${filteredTrucks.length} 個餐車`);
             renderTruckCards();
             updateStats();
         }
@@ -1697,7 +1708,16 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('statusFilter').value = 'all';
             document.getElementById('sortBy').value = 'priority';
-            filteredTrucks = [...foodTruckDatabase];
+            
+            // 確保 foodTruckDatabase 有資料
+            if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                console.log('⚠️ foodTruckDatabase 為空，無法清除篩選');
+                filteredTrucks = [];
+            } else {
+                filteredTrucks = [...foodTruckDatabase];
+            }
+            
+            console.log(`🔄 清除篩選: ${filteredTrucks.length} 個餐車`);
             renderTruckCards();
             updateStats();
         }
@@ -1824,7 +1844,27 @@
 
         function renderTruckCards() {
             const grid = document.getElementById('truckGrid');
+            if (!grid) {
+                console.error('❌ 找不到 truckGrid 元素');
+                return;
+            }
+            
             grid.innerHTML = '';
+            
+            // 確保 foodTruckDatabase 有資料
+            if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                console.log('⚠️ foodTruckDatabase 為空，顯示空狀態');
+                grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748b;">暫無餐車資料</div>';
+                return;
+            }
+            
+            // 確保 filteredTrucks 有資料
+            if (!filteredTrucks || filteredTrucks.length === 0) {
+                console.log('⚠️ filteredTrucks 為空，重新初始化');
+                filteredTrucks = [...foodTruckDatabase];
+            }
+            
+            console.log(`🖼️ 渲染 ${filteredTrucks.length} 個餐車卡片 (總共 ${foodTruckDatabase.length} 個)`);
             
             filteredTrucks.forEach(truck => {
                 const isSelected = selectedTrucks.has(truck.id);
@@ -2175,6 +2215,25 @@
                 console.error('拉取遠端資料失敗:', error);
                 showAlert(`拉取遠端資料失敗：${error.message}`, 'danger');
             }
+        }
+
+        // 調試函數：檢查資料狀態
+        function debugDataStatus() {
+            console.log('🔍 資料狀態檢查:');
+            console.log(`  foodTruckDatabase: ${foodTruckDatabase ? foodTruckDatabase.length : 'undefined'} 個餐車`);
+            console.log(`  filteredTrucks: ${filteredTrucks ? filteredTrucks.length : 'undefined'} 個餐車`);
+            console.log(`  selectedTrucks: ${selectedTrucks ? selectedTrucks.size : 'undefined'} 個選中`);
+            
+            if (foodTruckDatabase && foodTruckDatabase.length > 0) {
+                console.log('  餐車列表:');
+                foodTruckDatabase.forEach((truck, index) => {
+                    console.log(`    ${index + 1}. ${truck.title} (${truck.isActive ? '已上架' : '已下架'})`);
+                });
+            }
+            
+            // 顯示在頁面上
+            const status = `資料狀態: 總共 ${foodTruckDatabase ? foodTruckDatabase.length : 0} 個餐車, 篩選後 ${filteredTrucks ? filteredTrucks.length : 0} 個餐車`;
+            showAlert(status, 'info');
         }
 
 
