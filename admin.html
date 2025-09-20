@@ -1302,8 +1302,8 @@
                             </div>
                         </div>
                         
-                        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-                            <strong>💡 提示：</strong>編輯完成後，請點擊「儲存並同步」按鈕來更新前端顯示
+                        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <strong>✅ 自動儲存：</strong>所有編輯操作都會自動儲存並同步到遠端（如果已設定 Token）
                         </div>
                     </div>
                 </form>
@@ -1334,6 +1334,8 @@
     <!-- 載入專案設定和 GitHub 同步模組 -->
     <script src="project-config.js"></script>
     <script src="github-sync.js"></script>
+    <script src="auto-setup-token.js"></script>
+    <script src="update-checker.js"></script>
     
     <script>
         // 預設餐車資料庫（備用資料，主要資料來源為 data.json）
@@ -1785,7 +1787,7 @@
             }
         }
 
-        function batchToggle(isActive) {
+        async function batchToggle(isActive) {
             if (selectedTrucks.size === 0) return;
             
             let count = 0;
@@ -1797,9 +1799,28 @@
                 }
             });
             
+            // 即時更新本地儲存
+            const data = {
+                foodTrucks: foodTruckDatabase,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+            
             showAlert(`已${isActive ? '上架' : '下架'} ${count} 個餐車`, 'success');
             clearSelection();
             applyFilters();
+            
+            // 自動同步到遠端（如果已設定 Token）
+            try {
+                const status = githubSync.getProjectStatus();
+                if (status.hasToken) {
+                    console.log('🔄 自動同步批量狀態變更到遠端...');
+                    await manualSaveData();
+                }
+            } catch (error) {
+                console.log('⚠️ 自動同步失敗，但本地已儲存');
+            }
         }
 
         function clearSelection() {
@@ -1808,7 +1829,7 @@
             renderTruckCards();
         }
 
-        function batchDelete() {
+        async function batchDelete() {
             if (selectedTrucks.size === 0) return;
             
             const confirmDelete = confirm(`確定要刪除選中的 ${selectedTrucks.size} 個餐車嗎？\n\n此操作無法復原！`);
@@ -1828,14 +1849,33 @@
                     t.priority = idx + 1;
                 });
                 
+                // 即時更新本地儲存
+                const data = {
+                    foodTrucks: foodTruckDatabase,
+                    lastUpdated: new Date().toISOString()
+                };
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                
                 showAlert(`已刪除 ${count} 個餐車`, 'success');
                 clearSelection();
                 applyFilters();
                 renderPreview();
+                
+                // 自動同步到遠端（如果已設定 Token）
+                try {
+                    const status = githubSync.getProjectStatus();
+                    if (status.hasToken) {
+                        console.log('🔄 自動同步批量刪除到遠端...');
+                        await manualSaveData();
+                    }
+                } catch (error) {
+                    console.log('⚠️ 自動同步失敗，但本地已儲存');
+                }
             }
         }
 
-        function deleteTruck(truckId) {
+        async function deleteTruck(truckId) {
             const truck = foodTruckDatabase.find(t => t.id === truckId);
             if (truck) {
                 const confirmDelete = confirm(`確定要刪除餐車 "${truck.title}" 嗎？\n\n此操作無法復原！`);
@@ -1848,10 +1888,29 @@
                             t.priority = idx + 1;
                         });
                         
+                        // 即時更新本地儲存
+                        const data = {
+                            foodTrucks: foodTruckDatabase,
+                            lastUpdated: new Date().toISOString()
+                        };
+                        localStorage.setItem('foodTruckData', JSON.stringify(data));
+                        sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                        
                         showAlert(`餐車 "${truck.title}" 已刪除`, 'success');
                         updateStats();
                         applyFilters();
                         renderPreview();
+                        
+                        // 自動同步到遠端（如果已設定 Token）
+                        try {
+                            const status = githubSync.getProjectStatus();
+                            if (status.hasToken) {
+                                console.log('🔄 自動同步刪除到遠端...');
+                                await manualSaveData();
+                            }
+                        } catch (error) {
+                            console.log('⚠️ 自動同步失敗，但本地已儲存');
+                        }
                     }
                 }
             }
@@ -1992,7 +2051,7 @@
         }
 
         // 儲存編輯
-        function saveTruckEdit(truckId) {
+        async function saveTruckEdit(truckId) {
             const truck = foodTruckDatabase.find(t => t.id === truckId);
             if (!truck) return;
 
@@ -2028,9 +2087,28 @@
             truck.link = linkData.length > 0 ? linkData : '';
             truck.isEditing = false;
 
-            showAlert(`餐車 "${truck.title}" 已更新`, 'success');
+            // 即時更新本地儲存
+            const data = {
+                foodTrucks: foodTruckDatabase,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+
+            showAlert(`餐車 "${truck.title}" 已更新並儲存`, 'success');
             renderTruckCards();
             renderPreview();
+            
+            // 自動同步到遠端（如果已設定 Token）
+            try {
+                const status = githubSync.getProjectStatus();
+                if (status.hasToken) {
+                    console.log('🔄 自動同步編輯變更到遠端...');
+                    await manualSaveData();
+                }
+            } catch (error) {
+                console.log('⚠️ 自動同步失敗，但本地已儲存');
+            }
         }
 
         // 取消編輯
@@ -2068,26 +2146,66 @@
             console.log(`🖼️ 預覽已更新，顯示 ${activeTrucks.length} 個餐車`);
         }
 
-        function toggleTruck(truckId) {
+        async function toggleTruck(truckId) {
             const truck = foodTruckDatabase.find(t => t.id === truckId);
             if (truck) {
                 truck.isActive = !truck.isActive;
+                
+                // 即時更新本地儲存
+                const data = {
+                    foodTrucks: foodTruckDatabase,
+                    lastUpdated: new Date().toISOString()
+                };
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                
                 showAlert(`餐車 "${truck.title}" 已${truck.isActive ? '上架' : '下架'}`, 'success');
                 updateStats();
                 applyFilters();
                 renderPreview();
+                
+                // 自動同步到遠端（如果已設定 Token）
+                try {
+                    const status = githubSync.getProjectStatus();
+                    if (status.hasToken) {
+                        console.log('🔄 自動同步狀態變更到遠端...');
+                        await manualSaveData();
+                    }
+                } catch (error) {
+                    console.log('⚠️ 自動同步失敗，但本地已儲存');
+                }
             }
         }
 
-        function editTitle(truckId) {
+        async function editTitle(truckId) {
             const truck = foodTruckDatabase.find(t => t.id === truckId);
             if (!truck) return;
             
             const newTitle = prompt('請輸入餐車名稱:', truck.title || '');
             if (newTitle !== null && newTitle.trim() !== '') {
                 truck.title = newTitle.trim();
-                showAlert('餐車名稱已更新', 'success');
+                
+                // 即時更新本地儲存
+                const data = {
+                    foodTrucks: foodTruckDatabase,
+                    lastUpdated: new Date().toISOString()
+                };
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                
+                showAlert('餐車名稱已更新並儲存', 'success');
                 applyFilters();
+                
+                // 自動同步到遠端（如果已設定 Token）
+                try {
+                    const status = githubSync.getProjectStatus();
+                    if (status.hasToken) {
+                        console.log('🔄 自動同步標題變更到遠端...');
+                        await manualSaveData();
+                    }
+                } catch (error) {
+                    console.log('⚠️ 自動同步失敗，但本地已儲存');
+                }
             }
         }
 
@@ -2115,7 +2233,7 @@
             }
         }
 
-        function moveTruck(truckId, direction) {
+        async function moveTruck(truckId, direction) {
             const truck = foodTruckDatabase.find(t => t.id === truckId);
             if (truck) {
                 const currentIndex = foodTruckDatabase.findIndex(t => t.id === truckId);
@@ -2129,9 +2247,28 @@
                         t.priority = index + 1;
                     });
                     
+                    // 即時更新本地儲存
+                    const data = {
+                        foodTrucks: foodTruckDatabase,
+                        lastUpdated: new Date().toISOString()
+                    };
+                    localStorage.setItem('foodTruckData', JSON.stringify(data));
+                    sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                    
                     showAlert(`餐車 "${truck.title}" 已${direction === 'up' ? '上移' : '下移'}`, 'success');
                     applyFilters();
                     renderPreview();
+                    
+                    // 自動同步到遠端（如果已設定 Token）
+                    try {
+                        const status = githubSync.getProjectStatus();
+                        if (status.hasToken) {
+                            console.log('🔄 自動同步排序變更到遠端...');
+                            await manualSaveData();
+                        }
+                    } catch (error) {
+                        console.log('⚠️ 自動同步失敗，但本地已儲存');
+                    }
                 }
             }
         }
@@ -2285,7 +2422,7 @@
         }
 
 
-        document.getElementById('addTruckForm').addEventListener('submit', function(e) {
+        document.getElementById('addTruckForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('newTruckTitle').value;
@@ -2319,13 +2456,33 @@
             };
             
             foodTruckDatabase.push(newTruck);
-            showAlert(`餐車 "${title}" 已新增`, 'success');
+            
+            // 即時更新本地儲存
+            const data = {
+                foodTrucks: foodTruckDatabase,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+            
+            showAlert(`餐車 "${title}" 已新增並儲存`, 'success');
             
             document.getElementById('addTruckForm').reset();
             
             updateStats();
             applyFilters();
             renderPreview();
+            
+            // 自動同步到遠端（如果已設定 Token）
+            try {
+                const status = githubSync.getProjectStatus();
+                if (status.hasToken) {
+                    console.log('🔄 自動同步新增餐車到遠端...');
+                    await manualSaveData();
+                }
+            } catch (error) {
+                console.log('⚠️ 自動同步失敗，但本地已儲存');
+            }
         });
 
         document.addEventListener('DOMContentLoaded', async function() {
