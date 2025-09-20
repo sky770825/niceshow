@@ -486,6 +486,7 @@
             font-size: inherit;
             background: var(--surface);
             margin-bottom: 0.25rem;
+            user-select: text;
         }
 
         .truck-card.editing .truck-title-input {
@@ -1220,8 +1221,8 @@
                                         <span class="label-icon">🏷️</span>
                                         按鈕文字
                                     </label>
-                                    <input type="text" id="newTruckText1" class="form-input" placeholder="官網" maxlength="4">
-                                    <div class="input-hint">最多 4 個字</div>
+                                    <input type="text" id="newTruckText1" class="form-input" placeholder="官網" maxlength="10">
+                                    <div class="input-hint">最多 10 個字</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="newTruckLink1" class="form-label">
@@ -1243,8 +1244,8 @@
                                         <span class="label-icon">🏷️</span>
                                         按鈕文字
                                     </label>
-                                    <input type="text" id="newTruckText2" class="form-input" placeholder="FB" maxlength="4">
-                                    <div class="input-hint">最多 4 個字</div>
+                                    <input type="text" id="newTruckText2" class="form-input" placeholder="FB" maxlength="10">
+                                    <div class="input-hint">最多 10 個字</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="newTruckLink2" class="form-label">
@@ -1266,8 +1267,8 @@
                                         <span class="label-icon">🏷️</span>
                                         按鈕文字
                                     </label>
-                                    <input type="text" id="newTruckText3" class="form-input" placeholder="IG" maxlength="4">
-                                    <div class="input-hint">最多 4 個字</div>
+                                    <input type="text" id="newTruckText3" class="form-input" placeholder="IG" maxlength="10">
+                                    <div class="input-hint">最多 10 個字</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="newTruckLink3" class="form-label">
@@ -1649,7 +1650,7 @@
                                             <input type="text" class="truck-link-input" 
                                                    id="edit-text-${truck.id}-${i}" 
                                                    value="${link.text || ''}" 
-                                                   placeholder="文字" maxlength="4">
+                                                   placeholder="文字" maxlength="10">
                                         </div>
                                         <div>
                                             <div class="edit-link-label">網址${i}</div>
@@ -1967,6 +1968,15 @@
             });
             
             document.addEventListener('keydown', function(e) {
+                // 如果焦點在編輯模式的輸入框內，優先處理輸入框的 Ctrl+A
+                if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                        e.preventDefault();
+                        e.target.select();
+                        return;
+                    }
+                }
+                
                 if (e.ctrlKey || e.metaKey) {
                     switch(e.key) {
                         case 'a':
