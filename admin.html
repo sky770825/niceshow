@@ -1293,6 +1293,8 @@
                                 <button type="submit" class="btn btn-primary">➕ 新增餐車</button>
                                 <button type="button" class="btn btn-secondary" onclick="openPostimageUpload()">🖼️ 開啟 Postimage</button>
                                 <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
+                                <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
+                                <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
                                 <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
                             </div>
@@ -1327,6 +1329,10 @@
         </div>
     </div>
 
+    <!-- 載入專案設定和 GitHub 同步模組 -->
+    <script src="project-config.js"></script>
+    <script src="github-sync.js"></script>
+    
     <script>
         let foodTruckDatabase = [];
         let filteredTrucks = [];
@@ -1359,7 +1365,7 @@
         let isSaving = false;
         let lastSaveTime = 0;
         
-        function manualSaveData() {
+        async function manualSaveData() {
             const now = Date.now();
             
             if (isSaving || now - lastSaveTime < 300) {
@@ -1375,17 +1381,84 @@
                 lastUpdated: new Date().toISOString()
             };
             
+            // 儲存到本地
             localStorage.setItem('foodTruckData', JSON.stringify(data));
             sessionStorage.setItem('foodTruckData', JSON.stringify(data));
             
-            console.log('💾 資料已手動儲存到本地');
+            console.log('💾 資料已儲存到本地');
             
-            updateDataJsonAndPush(data);
-            showSyncStatus('✅ 資料已儲存並同步到前端');
+            try {
+                // 檢查 GitHub 設定
+                const status = githubSync.getProjectStatus();
+                
+                if (!status.hasToken) {
+                    const setupToken = confirm(
+                        '需要設定 GitHub Token 才能同步到遠端\n\n' +
+                        '是否現在設定？\n\n' +
+                        '點擊「確定」設定 Token\n' +
+                        '點擊「取消」僅儲存到本地'
+                    );
+                    
+                    if (setupToken) {
+                        if (githubSync.showTokenDialog()) {
+                            await validateAndSync(data);
+                        } else {
+                            showSyncStatus('❌ 未設定 Token，僅儲存到本地');
+                        }
+                    } else {
+                        showSyncStatus('💾 已儲存到本地（未同步到遠端）');
+                    }
+                } else {
+                    await validateAndSync(data);
+                }
+            } catch (error) {
+                console.error('同步失敗:', error);
+                showSyncStatus('❌ 同步失敗，但已儲存到本地');
+                // 備用方案：下載檔案
+                updateDataJsonAndPush(data);
+            }
             
             setTimeout(() => {
                 isSaving = false;
             }, 300);
+        }
+
+        async function validateAndSync(data) {
+            try {
+                // 驗證 Token
+                const validation = await githubSync.validateToken();
+                
+                if (!validation.valid) {
+                    throw new Error(validation.message);
+                }
+                
+                showSyncStatus('🔄 正在同步到 GitHub...');
+                
+                // 同步到 GitHub
+                const result = await githubSync.syncData(data);
+                
+                showSyncStatus('✅ 資料已同步到 GitHub！');
+                
+                // 顯示成功訊息
+                setTimeout(() => {
+                    const message = `同步成功！\n\n` +
+                        `📝 提交訊息：自動同步餐車資料\n` +
+                        `🔗 查看提交：${result.commitUrl}\n` +
+                        `🌐 網站：${githubSync.currentProject.website}\n\n` +
+                        `是否要開啟網站查看更新？`;
+                    
+                    if (confirm(message)) {
+                        window.open(githubSync.currentProject.website, '_blank');
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                console.error('同步失敗:', error);
+                showSyncStatus(`❌ 同步失敗：${error.message}`);
+                
+                // 備用方案：下載檔案
+                updateDataJsonAndPush(data);
+            }
         }
         
         function autoSaveData() {
@@ -1914,6 +1987,74 @@
             showAlert('已開啟 Postimage 上傳頁面', 'success');
         }
 
+        // 設定 GitHub Token
+        function setupGitHubToken() {
+            if (githubSync.showTokenDialog()) {
+                showAlert('GitHub Token 已設定', 'success');
+            }
+        }
+
+        // 檢查遠端更新
+        async function checkForUpdates() {
+            try {
+                showSyncStatus('🔄 正在檢查遠端更新...');
+                
+                const status = githubSync.getProjectStatus();
+                if (!status.hasToken) {
+                    showAlert('請先設定 GitHub Token', 'danger');
+                    return;
+                }
+
+                const updateInfo = await githubSync.checkForUpdates('data.json');
+                
+                if (updateInfo.hasUpdate) {
+                    const shouldUpdate = confirm(
+                        `發現遠端更新！\n\n` +
+                        `遠端 SHA: ${updateInfo.remoteSha.substring(0, 8)}...\n` +
+                        `本地 SHA: ${updateInfo.localSha ? updateInfo.localSha.substring(0, 8) + '...' : '無'}\n` +
+                        `更新時間: ${new Date(updateInfo.lastModified).toLocaleString('zh-TW')}\n\n` +
+                        `是否要下載遠端更新？`
+                    );
+                    
+                    if (shouldUpdate) {
+                        await pullRemoteData();
+                    }
+                } else {
+                    showSyncStatus('✅ 已是最新版本');
+                }
+            } catch (error) {
+                console.error('檢查更新失敗:', error);
+                showAlert(`檢查更新失敗：${error.message}`, 'danger');
+            }
+        }
+
+        // 從遠端拉取資料
+        async function pullRemoteData() {
+            try {
+                showSyncStatus('🔄 正在下載遠端資料...');
+                
+                const result = await githubSync.pullData('data.json');
+                const data = JSON.parse(result.content);
+                
+                // 更新本地資料
+                foodTruckDatabase = data.foodTrucks;
+                filteredTrucks = [...foodTruckDatabase];
+                
+                // 儲存到本地
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                
+                showAlert('已從遠端更新資料', 'success');
+                applyFilters();
+                renderPreview();
+                showSyncStatus('✅ 遠端資料已同步');
+                
+            } catch (error) {
+                console.error('拉取遠端資料失敗:', error);
+                showAlert(`拉取遠端資料失敗：${error.message}`, 'danger');
+            }
+        }
+
 
         document.getElementById('addTruckForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1959,6 +2100,9 @@
         });
 
         document.addEventListener('DOMContentLoaded', async function() {
+            // 初始化專案設定
+            projectConfig.initialize();
+            
             await loadFoodTruckData();
             updateStats();
             applyFilters();
