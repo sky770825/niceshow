@@ -1296,6 +1296,7 @@
                                 <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
                                 <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
                                 <button type="button" class="btn btn-secondary" onclick="debugDataStatus()">🔍 檢查狀態</button>
+                                <button type="button" class="btn btn-warning" onclick="forceReloadData()">🔄 強制重新載入</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
                                 <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
                             </div>
@@ -1465,7 +1466,7 @@
                 if (localData) {
                     const data = JSON.parse(localData);
                     foodTruckDatabase = data.foodTrucks;
-                    console.log('📱 從本地儲存載入資料');
+                    console.log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
                     return;
                 }
                 
@@ -1476,7 +1477,7 @@
                 // 儲存到本地
                 localStorage.setItem('foodTruckData', JSON.stringify(data));
                 autoSaveData();
-                console.log('🌐 從 data.json 載入資料並儲存到本地');
+                console.log(`🌐 從 data.json 載入資料並儲存到本地: ${foodTruckDatabase.length} 個餐車`);
             } catch (error) {
                 console.error('無法載入餐車資料:', error);
                 console.log('⚠️ 使用預設資料');
@@ -2236,6 +2237,39 @@
             showAlert(status, 'info');
         }
 
+        // 強制重新載入資料
+        async function forceReloadData() {
+            console.log('🔄 強制重新載入資料...');
+            
+            try {
+                // 清除快取
+                localStorage.removeItem('foodTruckData');
+                sessionStorage.removeItem('foodTruckData');
+                
+                // 重新載入資料
+                await loadFoodTruckData();
+                
+                // 重新初始化
+                if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                    console.log('⚠️ 載入失敗，使用預設資料');
+                    filteredTrucks = [...foodTruckDatabase];
+                } else {
+                    console.log(`✅ 重新載入成功: ${foodTruckDatabase.length} 個餐車`);
+                    filteredTrucks = [...foodTruckDatabase];
+                }
+                
+                // 強制重新渲染
+                updateStats();
+                applyFilters();
+                renderPreview();
+                
+                showAlert('資料已重新載入', 'success');
+            } catch (error) {
+                console.error('重新載入失敗:', error);
+                showAlert('重新載入失敗: ' + error.message, 'danger');
+            }
+        }
+
 
         document.getElementById('addTruckForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -2287,8 +2321,17 @@
             await loadFoodTruckData();
             
             // 確保 filteredTrucks 被正確初始化
-            filteredTrucks = [...foodTruckDatabase];
+            if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                console.log('⚠️ foodTruckDatabase 為空，使用預設資料');
+                // 如果載入失敗，使用預設資料
+                filteredTrucks = [...foodTruckDatabase];
+            } else {
+                console.log(`✅ 成功載入 ${foodTruckDatabase.length} 個餐車`);
+                filteredTrucks = [...foodTruckDatabase];
+            }
             
+            // 強制重新渲染
+            console.log(`🔄 初始化完成，準備渲染 ${filteredTrucks.length} 個餐車`);
             updateStats();
             applyFilters();
             renderPreview();
