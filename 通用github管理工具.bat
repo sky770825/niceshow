@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
@@ -8,7 +8,7 @@ echo 🤖 AI指令大全網站 - 完整管理工具
 echo ================================
 echo.
 
-echo 請選擇操作：
+echo 請選擇操作:
 echo 1. 一鍵修復推送問題
 echo 2. 檢查檔案上傳問題
 echo 3. 部署指定版本 (上架)
@@ -673,7 +673,7 @@ echo 🚀 初始化 Git 倉庫
 echo ================================
 echo.
 
-echo 請輸入您的 GitHub 倉庫連結：
+echo 請輸入您的 GitHub 倉庫連結
 echo 範例 - https://github.com/username/repository-name
 echo 或 - https://github.com/username/repository-name.git
 echo.

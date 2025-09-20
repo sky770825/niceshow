@@ -7,17 +7,15 @@ echo ================================
 echo 測試選項7
 echo ================================
 echo.
-echo 請選擇操作：
+echo 請選擇操作:
 echo 1. 測試選項1
-echo 2. 測試選項2
 echo 7. 初始化 Git 倉庫
 echo 13. 退出
 echo.
 
-set /p choice=請輸入選項 (1,2,7,13): 
+set /p choice=請輸入選項 (1,7,13): 
 
 if "%choice%"=="1" goto test1
-if "%choice%"=="2" goto test2
 if "%choice%"=="7" goto auto_init_git
 if "%choice%"=="13" goto exit
 echo 無效選項
@@ -29,11 +27,6 @@ echo 選項1測試成功
 pause
 goto start
 
-:test2
-echo 選項2測試成功
-pause
-goto start
-
 :auto_init_git
 echo.
 echo ================================
@@ -41,7 +34,7 @@ echo 🚀 初始化 Git 倉庫
 echo ================================
 echo.
 
-echo 請輸入您的 GitHub 倉庫連結：
+echo 請輸入您的 GitHub 倉庫連結
 echo 範例 - https://github.com/username/repository-name
 echo 或 - https://github.com/username/repository-name.git
 echo.
