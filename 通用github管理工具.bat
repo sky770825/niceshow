@@ -2,17 +2,6 @@
 chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
-REM ========================================
-REM AI指令大全網站 - 完整管理工具 v2.0
-REM ========================================
-REM 功能改進：
-REM - 修復了未定義變數問題
-REM - 添加了缺少的三個功能
-REM - 改善了錯誤處理和URL解析
-REM - 添加了Personal Access Token支援
-REM - 優化了認證管理流程
-REM ========================================
-
 :start
 echo ================================
 echo 🤖 AI指令大全網站 - 完整管理工具
@@ -35,11 +24,10 @@ echo 12. 檢查認證狀態 (推薦在操作 3,4 前使用)
 echo 13. 🔄 重置所有認證 (清除並重新設定)
 echo 14. 🔐 強制重新綁定 GitHub 帳號
 echo 15. 🔗 解除綁定 (保留 .git 資料夾)
-echo 16. 🔑 設定 Personal Access Token
-echo 17. 退出
+echo 16. 退出
 echo.
 
-set /p choice=請輸入選項 (1-17): 
+set /p choice=請輸入選項 (1-16): 
 
 if "%choice%"=="1" goto fix_push
 if "%choice%"=="2" goto check_upload
@@ -56,8 +44,7 @@ if "%choice%"=="12" goto check_auth_status
 if "%choice%"=="13" goto reset_all_auth
 if "%choice%"=="14" goto force_rebind_auth
 if "%choice%"=="15" goto unbind_only
-if "%choice%"=="16" goto setup_pat
-if "%choice%"=="17" goto exit
+if "%choice%"=="16" goto exit
 echo 無效選項
 pause
 goto start
@@ -80,17 +67,12 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
     set current_user=%%i
     set current_repo=%%j
 )
-if defined current_user (
-    set current_repo=%current_repo:.git=%
-    echo 當前專案：%current_user%/%current_repo%
-) else (
-    echo ❌ 無法解析遠端倉庫 URL
-    echo 請檢查遠端倉庫設定是否正確
-)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
 echo.
 
 echo 正在修復推送問題...
@@ -135,7 +117,7 @@ echo ✅ 檔案已添加
 echo.
 echo 步驟4: 提交檔案...
 set commit_msg=修復推送問題 - %date% %time%
-git commit -m "!commit_msg!"
+git commit -m "%commit_msg%"
 if errorlevel 1 (
     echo ❌ 提交失敗
     pause
@@ -251,7 +233,7 @@ echo.
 
 echo 步驟3: 提交檔案...
 set commit_msg=添加所有網站檔案 - %date% %time%
-git commit -m "!commit_msg!"
+git commit -m "%commit_msg%"
 if errorlevel 1 (
     echo ❌ 提交失敗
     pause
@@ -410,7 +392,7 @@ echo  版本檔案已添加到Git
 echo.
 echo  步驟6: 提交變更...
 set commit_msg=部署版本 %version% - %date% %time%
-git commit -m "!commit_msg!"
+git commit -m "%commit_msg%"
 if errorlevel 1 (
     echo  ❌ 提交失敗
     pause
@@ -1083,7 +1065,6 @@ if exist ".git" (
 echo.
 echo 正在處理遠端 URL...
 set modified_url=%repo_url%
-REM 注意：這裡不需要修改URL，直接使用原始URL即可
 
 echo.
 echo 正在添加遠端倉庫...
@@ -1360,17 +1341,12 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
     set current_user=%%i
     set current_repo=%%j
 )
-if defined current_user (
-    set current_repo=%current_repo:.git=%
-    echo 當前專案：%current_user%/%current_repo%
-) else (
-    echo ❌ 無法解析遠端倉庫 URL
-    echo 請檢查遠端倉庫設定是否正確
-)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
 echo.
 
 echo 正在快速上傳所有檔案到 GitHub...
@@ -1396,7 +1372,7 @@ echo.
 
 echo 步驟4: 提交變更...
 set commit_msg=快速上傳 - %date% %time%
-git commit -m "!commit_msg!"
+git commit -m "%commit_msg%"
 if errorlevel 1 (
     echo ❌ 提交失敗
     pause
@@ -1849,17 +1825,12 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
     set current_user=%%i
     set current_repo=%%j
 )
-if defined current_user (
-    set current_repo=%current_repo:.git=%
-    echo 當前專案：%current_user%/%current_repo%
-) else (
-    echo ❌ 無法解析遠端倉庫 URL
-    echo 請檢查遠端倉庫設定是否正確
-)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
 echo.
 
 echo 正在檢查 Git 認證狀態...
@@ -1907,14 +1878,9 @@ if errorlevel 1 (
     echo ❌ 無法連接到 GitHub
     echo.
     echo 可能的原因：
-    echo 1. 需要 Personal Access Token (PAT)
+    echo 1. 需要 Personal Access Token
     echo 2. 網路連接問題
     echo 3. 倉庫權限問題
-    echo.
-    echo 💡 Personal Access Token 設定方法：
-    echo 1. 前往 GitHub → Settings → Developer settings → Personal access tokens
-    echo 2. 生成新的 token，權限選擇：repo, workflow, write:packages
-    echo 3. 複製 token 並在下次推送時使用
     echo.
     echo 建議操作：
     echo 1. 使用「修正 GitHub 認證權限」功能
@@ -1996,15 +1962,15 @@ echo.
 
 echo 警告：這將清除所有 Git 認證設定！
 echo.
-echo 重置後的效果：
-echo - 清除所有 Git 用戶資訊
-echo - 清除所有認證快取
-echo - 清除 Windows 認證管理器中的 GitHub 認證
-echo - 需要重新設定認證才能推送檔案
+echo 清除的內容包括：
+echo - 全域 Git 用戶資訊
+echo - 本地 Git 用戶資訊
+echo - Windows 認證管理器中的 GitHub 認證
+echo - Git 認證檔案
+echo - 認證快取設定
 echo.
 
 set /p confirm=確定要重置所有認證嗎？(y/n): 
-
 if /i not "%confirm%"=="y" (
     echo 操作已取消
     pause
@@ -2012,7 +1978,7 @@ if /i not "%confirm%"=="y" (
 )
 
 echo.
-echo 正在重置所有認證設定...
+echo 正在清除所有認證設定...
 echo.
 
 echo 步驟1: 清除 Git 用戶資訊...
@@ -2023,9 +1989,9 @@ git config --local --unset user.email 2>nul
 echo ✅ Git 用戶資訊已清除
 
 echo.
-echo 步驟2: 清除認證快取...
+echo 步驟2: 清除認證快取設定...
 git config --global --unset credential.helper 2>nul
-echo ✅ 認證快取已清除
+echo ✅ 認證快取設定已清除
 
 echo.
 echo 步驟3: 清除 Windows 認證管理器中的 GitHub 認證...
@@ -2060,10 +2026,11 @@ echo ================================
 echo 🎉 所有認證已重置！
 echo ================================
 echo.
-echo 現在需要重新設定認證才能推送檔案
-echo 建議使用「修正 GitHub 認證權限」功能重新設定
-
+echo 現在需要重新設定 GitHub 認證：
+echo 1. 使用「修正 GitHub 認證權限」功能
+echo 2. 或使用「強制重新綁定 GitHub 帳號」功能
 echo.
+
 pause
 goto start
 
@@ -2074,8 +2041,8 @@ echo 🔐 強制重新綁定 GitHub 帳號
 echo ================================
 echo.
 
-echo 這個功能會強制清除所有認證並重新綁定 GitHub 帳號
-echo 適用於切換到完全不同的 GitHub 帳號
+echo 這個功能會強制重新綁定 GitHub 帳號
+echo 適用於切換到不同 GitHub 帳號的情況
 echo.
 
 echo 正在檢查當前專案資訊...
@@ -2089,17 +2056,12 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
     set current_user=%%i
     set current_repo=%%j
 )
-if defined current_user (
-    set current_repo=%current_repo:.git=%
-    echo 當前專案：%current_user%/%current_repo%
-) else (
-    echo ❌ 無法解析遠端倉庫 URL
-    echo 請檢查遠端倉庫設定是否正確
-)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
 echo.
 
 echo 請輸入新的 GitHub 帳號資訊：
@@ -2120,7 +2082,7 @@ if "%new_email%"=="" (
 )
 
 echo.
-echo 正在強制重新綁定 GitHub 帳號...
+echo 正在強制重新綁定帳號...
 echo.
 
 echo 步驟1: 清除所有現有認證...
@@ -2129,7 +2091,7 @@ git config --global --unset user.email 2>nul
 git config --local --unset user.name 2>nul
 git config --local --unset user.email 2>nul
 git config --global --unset credential.helper 2>nul
-echo ✅ 所有現有認證已清除
+echo ✅ 現有認證已清除
 
 echo.
 echo 步驟2: 清除 Windows 認證管理器中的舊認證...
@@ -2140,7 +2102,7 @@ if not errorlevel 1 (
         echo 正在刪除認證：%%a %%b
         cmdkey /delete:"%%a %%b" >nul 2>&1
     )
-    echo ✅ 舊的 GitHub 認證已清除
+    echo ✅ 舊認證已清除
 ) else (
     echo ✅ 沒有發現需要清除的舊認證
 )
@@ -2170,7 +2132,7 @@ echo ✅ 認證助手已重新設定
 echo.
 echo 步驟6: 測試新認證...
 echo 正在測試 GitHub 連接...
-git ls-remote origin >nul 2>&1
+git fetch origin
 if errorlevel 1 (
     echo ❌ 認證測試失敗
     echo.
@@ -2214,7 +2176,7 @@ echo ================================
 echo.
 
 echo 這個功能會解除與 GitHub 的綁定，但保留 .git 資料夾
-echo 適用於暫時停止同步或切換到其他倉庫
+echo 適用於需要重新連接不同倉庫的情況
 echo.
 
 echo 正在檢查當前專案資訊...
@@ -2228,28 +2190,22 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
     set current_user=%%i
     set current_repo=%%j
 )
-if defined current_user (
-    set current_repo=%current_repo:.git=%
-    echo 當前專案：%current_user%/%current_repo%
-) else (
-    echo ❌ 無法解析遠端倉庫 URL
-    echo 請檢查遠端倉庫設定是否正確
-)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
 echo.
 
 echo 解除綁定後的效果：
-echo - 保留 .git 資料夾和所有本地 Git 歷史
-echo - 移除遠端倉庫連結
-echo - 停止與 GitHub 的同步
-echo - 可以稍後重新綁定到其他倉庫
+echo - 遠端倉庫連結會被移除
+echo - .git 資料夾會保留
+echo - 本地 Git 歷史會保留
+echo - 可以重新連接其他倉庫
 echo.
 
 set /p confirm=確定要解除綁定嗎？(y/n): 
-
 if /i not "%confirm%"=="y" (
     echo 操作已取消
     pause
@@ -2263,162 +2219,41 @@ echo.
 echo 步驟1: 移除遠端倉庫連結...
 git remote remove origin
 if errorlevel 1 (
-    echo ❌ 移除遠端倉庫連結失敗
+    echo ❌ 移除遠端倉庫失敗
     pause
     goto start
 )
 echo ✅ 遠端倉庫連結已移除
 
 echo.
-echo 步驟2: 檢查本地 Git 狀態...
-git status --short
+echo 步驟2: 檢查 .git 資料夾狀態...
+if exist ".git" (
+    echo ✅ .git 資料夾已保留
+    echo 本地 Git 歷史完整
+) else (
+    echo ❌ .git 資料夾不存在
+    echo 這不應該發生，請檢查專案狀態
+)
+
+echo.
+echo 步驟3: 檢查當前狀態...
+git status
 echo.
 
-echo 步驟3: 顯示本地分支...
-git branch
-echo.
-
-echo.
 echo ================================
 echo 🎉 解除綁定完成！
 echo ================================
 echo.
 echo 解除綁定資訊：
-echo 原專案：%current_user%/%current_repo%
 echo 時間：%date% %time%
+echo 狀態：.git 資料夾已保留
 echo.
-echo 注意事項：
-echo - .git 資料夾已保留，包含所有本地 Git 歷史
-echo - 已移除遠端倉庫連結
-echo - 可以稍後使用「連接新專案 GitHub 倉庫」重新綁定
-echo - 本地檔案和版本歷史都完整保留
-echo.
-
-pause
-goto start
-
-:setup_pat
-echo.
-echo ================================
-echo 🔑 設定 Personal Access Token
-echo ================================
+echo 現在可以：
+echo 1. 使用「初始化 Git 倉庫」連接新倉庫
+echo 2. 使用「連接新專案 GitHub 倉庫」連接其他專案
+echo 3. 重新建立版本控制
 echo.
 
-echo 這個功能會幫您設定 Personal Access Token (PAT)
-echo 適用於需要更高權限或更安全的認證方式
-echo.
-
-echo 正在檢查當前專案資訊...
-git remote get-url origin >nul 2>&1
-if errorlevel 1 (
-    echo ❌ 沒有發現遠端倉庫
-    echo 請先使用「初始化 Git 倉庫」或「連接新專案 GitHub 倉庫」功能
-    echo.
-    pause
-    goto start
-)
-
-REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
-    set current_user=%%i
-    set current_repo=%%j
-)
-if defined current_user (
-    set current_repo=%current_repo:.git=%
-    echo 當前專案：%current_user%/%current_repo%
-) else (
-    echo ❌ 無法解析遠端倉庫 URL
-    echo 請檢查遠端倉庫設定是否正確
-)
-echo.
-
-echo 💡 Personal Access Token 設定步驟：
-echo ================================
-echo 1. 前往 GitHub 網站
-echo 2. 點擊右上角頭像 → Settings
-echo 3. 左側選單 → Developer settings
-echo 4. Personal access tokens → Tokens (classic)
-echo 5. 點擊 "Generate new token (classic)"
-echo 6. 設定權限：repo, workflow, write:packages
-echo 7. 複製生成的 token
-echo ================================
-echo.
-
-echo 請輸入您的 Personal Access Token：
-echo (輸入時不會顯示，請直接輸入後按 Enter)
-set /p pat_token=Personal Access Token: 
-
-if "%pat_token%"=="" (
-    echo ❌ Personal Access Token 不能為空！
-    pause
-    goto start
-)
-
-echo.
-echo 正在設定 Personal Access Token...
-echo.
-
-echo 步驟1: 檢查當前遠端倉庫 URL...
-git remote get-url origin
-echo.
-
-echo 步驟2: 更新遠端倉庫 URL 以包含 PAT...
-for /f "tokens=*" %%i in ('git remote get-url origin') do set current_url=%%i
-set pat_url=%current_url:https://=https://%pat_token%@%
-git remote set-url origin "%pat_url%"
-echo ✅ 遠端倉庫 URL 已更新
-
-echo.
-echo 步驟3: 測試 PAT 認證...
-echo 正在測試 GitHub 連接...
-git ls-remote origin >nul 2>&1
-if errorlevel 1 (
-    echo ❌ PAT 認證測試失敗
-    echo.
-    echo 可能的原因：
-    echo 1. Personal Access Token 無效或過期
-    echo 2. Token 權限不足
-    echo 3. 網路連接問題
-    echo.
-    echo 建議操作：
-    echo 1. 檢查 Token 是否正確複製
-    echo 2. 確認 Token 權限包含 repo 權限
-    echo 3. 檢查 Token 是否過期
-    echo.
-    echo 正在恢復原始 URL...
-    git remote set-url origin "%current_url%"
-    echo ✅ 已恢復原始 URL
-    pause
-    goto start
-) else (
-    echo ✅ PAT 認證測試成功！
-)
-
-echo.
-echo 步驟4: 設定 Git 認證快取...
-git config --global credential.helper store
-echo ✅ 認證快取已設定
-
-echo.
-echo 步驟5: 儲存認證資訊...
-echo 正在將 PAT 儲存到認證檔案...
-echo https://%pat_token%@github.com > "%USERPROFILE%\.git-credentials"
-echo ✅ PAT 已儲存到認證檔案
-
-echo.
-echo ================================
-echo 🎉 Personal Access Token 設定完成！
-echo ================================
-echo.
-echo 設定資訊：
-echo 專案：%current_user%/%current_repo%
-echo 認證方式：Personal Access Token
-echo 時間：%date% %time%
-echo.
-echo 現在可以正常推送檔案了！
-echo 建議使用「快速上傳檔案」功能測試
-
-echo.
 pause
 goto start
 
