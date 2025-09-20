@@ -19,10 +19,12 @@ echo 7. 初始化 Git 倉庫 (需要手動輸入倉庫連結)
 echo 8. 修復 Git 同步問題
 echo 9. 快速上傳檔案
 echo 10. 連接新專案 GitHub 倉庫
-echo 11. 退出
+echo 11. 修正 GitHub 認證權限
+echo 12. 檢查認證狀態 (推薦在操作 3,4 前使用)
+echo 13. 退出
 echo.
 
-set /p choice=請輸入選項 (1-11): 
+set /p choice=請輸入選項 (1-13): 
 
 if "%choice%"=="1" goto fix_push
 if "%choice%"=="2" goto check_upload
@@ -34,7 +36,9 @@ if "%choice%"=="7" goto auto_init_git
 if "%choice%"=="8" goto fix_git_sync
 if "%choice%"=="9" goto quick_upload
 if "%choice%"=="10" goto connect_new_project
-if "%choice%"=="11" goto exit
+if "%choice%"=="11" goto fix_auth
+if "%choice%"=="12" goto check_auth_status
+if "%choice%"=="13" goto exit
 echo 無效選項
 pause
 goto start
@@ -44,6 +48,25 @@ echo.
 echo ================================
 echo 🚀 一鍵修復推送問題
 echo ================================
+echo.
+
+echo 正在檢查當前專案資訊...
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 沒有發現遠端倉庫
+    echo 請先使用「初始化 Git 倉庫」或「連接新專案 GitHub 倉庫」功能
+    echo.
+    pause
+    goto start
+)
+
+REM 顯示當前專案資訊
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
+    set current_user=%%i
+    set current_repo=%%j
+)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
 echo.
 
 echo 正在修復推送問題...
@@ -132,8 +155,13 @@ echo 🎉 修復成功！
 echo ================================
 echo.
 echo 您的網站已成功更新：
-echo GitHub: https://github.com/sky770825/Aibot888
-echo 網站: https://sky770825.github.io/Aibot888/
+for /f "tokens=*" %%i in ('git remote get-url origin 2^>nul') do set current_repo=%%i
+if defined current_repo (
+    echo GitHub: %current_repo%
+    echo 網站: %current_repo:~0,-4%.github.io/%current_repo:~19%
+) else (
+    echo 無法取得倉庫資訊
+)
 echo.
 echo 現在您可以正常使用部署工具了！
 
@@ -249,7 +277,12 @@ echo ================================
 
 echo.
 echo 您的網站地址：
-echo https://sky770825.github.io/Aibot888/
+for /f "tokens=*" %%i in ('git remote get-url origin 2^>nul') do set current_repo=%%i
+if defined current_repo (
+    echo %current_repo:~0,-4%.github.io/%current_repo:~19%
+) else (
+    echo 無法取得倉庫資訊
+)
 echo.
 
 pause
@@ -306,9 +339,10 @@ copy script.js backup_current\ 2>nul
 copy style.css backup_current\ 2>nul
 copy data.json backup_current\ 2>nul
 copy admin.html backup_current\ 2>nul
-copy responsive_guide.md backup_current\ 2>nul
-copy tablet_preview.html backup_current\ 2>nul
-copy "github上下架管理工具.bat" backup_current\ 2>nul
+copy "通用github管理工具.bat" backup_current\ 2>nul
+copy *.md backup_current\ 2>nul
+copy *.txt backup_current\ 2>nul
+copy tablet_*.html backup_current\ 2>nul
 echo  當前檔案已備份
 
 echo.
@@ -323,9 +357,10 @@ copy "%version%\script.js" . 2>nul
 copy "%version%\style.css" . 2>nul
 copy "%version%\data.json" . 2>nul
 copy "%version%\admin.html" . 2>nul
-copy "%version%\responsive_guide.md" . 2>nul
-copy "%version%\tablet_preview.html" . 2>nul
-copy "%version%\github上下架管理工具.bat" . 2>nul
+copy "%version%\通用github管理工具.bat" . 2>nul
+copy "%version%\*.md" . 2>nul
+copy "%version%\*.txt" . 2>nul
+copy "%version%\tablet_*.html" . 2>nul
 echo  版本檔案已複製
 
 echo.
@@ -354,7 +389,18 @@ if errorlevel 1 (
 echo  變更已提交
 
 echo.
-echo  步驟7: 上架到GitHub...
+echo  步驟7: 檢查認證狀態...
+git config --get user.name >nul 2>&1
+if errorlevel 1 (
+    echo  ❌ Git 用戶資訊未設定
+    echo  正在使用預設設定...
+    git config user.name "AI網站管理工具" >nul 2>&1
+    git config user.email "ai@example.com" >nul 2>&1
+)
+
+echo.
+echo  步驟8: 上架到GitHub...
+echo  正在嘗試推送...
 git push origin main
 if errorlevel 1 (
     echo  ❌ 上架失敗，嘗試強制推送...
@@ -367,10 +413,14 @@ if errorlevel 1 (
             echo.
             echo  可能的原因：
             echo  1. 網路連接問題
-            echo  2. GitHub 認證問題
+            echo  2. GitHub 認證問題 (需要 Personal Access Token)
             echo  3. 倉庫權限問題
             echo.
-            echo  建議使用「修復 Git 同步問題」功能
+            echo  建議操作：
+            echo  1. 使用「修正 GitHub 認證權限」功能
+            echo  2. 或使用「修復 Git 同步問題」功能
+            echo  3. 檢查是否需要 Personal Access Token
+            echo.
             pause
             goto start
         ) else (
@@ -392,8 +442,13 @@ echo.
 echo  部署資訊：
 echo   版本：%version%
 echo   時間：%date% %time%
-echo   GitHub：https://github.com/sky770825/Aibot888
-echo   網站：https://sky770825.github.io/Aibot888/
+for /f "tokens=*" %%i in ('git remote get-url origin 2^>nul') do set current_repo=%%i
+if defined current_repo (
+    echo   GitHub：%current_repo%
+    echo   網站：%current_repo:~0,-4%.github.io/%current_repo:~19%
+) else (
+    echo   無法取得倉庫資訊
+)
 echo.
 
 set /p restore=是否恢復到部署前的狀態？(y/n): 
@@ -405,9 +460,10 @@ if /i "%restore%"=="y" (
     copy backup_current\style.css . 2>nul
     copy backup_current\data.json . 2>nul
     copy backup_current\admin.html . 2>nul
-    copy backup_current\responsive_guide.md . 2>nul
-    copy backup_current\tablet_preview.html . 2>nul
-    copy backup_current\github上下架管理工具.bat . 2>nul
+    copy backup_current\通用github管理工具.bat . 2>nul
+    copy backup_current\*.md . 2>nul
+    copy backup_current\*.txt . 2>nul
+    copy backup_current\tablet_*.html . 2>nul
     echo  檔案已恢復到部署前狀態
     echo.
     echo  提示：GitHub上仍然是 %version% 版本
@@ -449,11 +505,10 @@ copy style.css backup_before_cleanup\ 2>nul
 copy script.js backup_before_cleanup\ 2>nul
 copy data.json backup_before_cleanup\ 2>nul
 copy admin.html backup_before_cleanup\ 2>nul
-copy responsive_guide.md backup_before_cleanup\ 2>nul
-copy tablet_preview.html backup_before_cleanup\ 2>nul
-copy "github上下架管理工具.bat" backup_before_cleanup\ 2>nul
+copy "通用github管理工具.bat" backup_before_cleanup\ 2>nul
 copy *.txt backup_before_cleanup\ 2>nul
 copy *.md backup_before_cleanup\ 2>nul
+copy tablet_*.html backup_before_cleanup\ 2>nul
 echo  檔案已備份到 backup_before_cleanup 資料夾
 
 echo.
@@ -467,8 +522,49 @@ git commit -m "下架所有檔案 - %date% %time%"
 echo  下架變更已提交
 
 echo.
-echo  步驟4: 推送到GitHub...
+echo  步驟4: 檢查認證狀態...
+git config --get user.name >nul 2>&1
+if errorlevel 1 (
+    echo  ❌ Git 用戶資訊未設定
+    echo  正在使用預設設定...
+    git config user.name "AI網站管理工具" >nul 2>&1
+    git config user.email "ai@example.com" >nul 2>&1
+)
+
+echo.
+echo  步驟5: 推送到GitHub...
+echo  正在嘗試推送...
 git push origin main
+if errorlevel 1 (
+    echo  ❌ 下架推送失敗，嘗試強制推送...
+    git push -f origin main
+    if errorlevel 1 (
+        echo  ❌ 強制推送到 main 也失敗，嘗試 master...
+        git push -f origin master
+        if errorlevel 1 (
+            echo  ❌ 下架推送失敗
+            echo.
+            echo  可能的原因：
+            echo  1. 網路連接問題
+            echo  2. GitHub 認證問題 (需要 Personal Access Token)
+            echo  3. 倉庫權限問題
+            echo.
+            echo  建議操作：
+            echo  1. 使用「修正 GitHub 認證權限」功能
+            echo  2. 或使用「修復 Git 同步問題」功能
+            echo  3. 檢查是否需要 Personal Access Token
+            echo.
+            pause
+            goto start
+        ) else (
+            echo  ✅ 已強制推送到 master 分支
+        )
+    ) else (
+        echo  ✅ 已強制推送到 main 分支
+    )
+) else (
+    echo  ✅ 已推送到 main 分支
+)
 echo  下架完成，已推送到GitHub
 
 echo.
@@ -478,8 +574,13 @@ echo ================================
 echo.
 echo  下架資訊：
 echo   時間：%date% %time%
-echo   GitHub：https://github.com/sky770825/Aibot888 (現在是空白)
-echo   網站：https://sky770825.github.io/Aibot888/ (無法顯示)
+for /f "tokens=*" %%i in ('git remote get-url origin 2^>nul') do set current_repo=%%i
+if defined current_repo (
+    echo   GitHub：%current_repo% (現在是空白)
+    echo   網站：%current_repo:~0,-4%.github.io/%current_repo:~19% (無法顯示)
+) else (
+    echo   無法取得倉庫資訊
+)
 echo.
 echo  備份位置：backup_before_cleanup 資料夾
 echo.
@@ -513,9 +614,10 @@ copy script.js %version%\ 2>nul
 copy style.css %version%\ 2>nul
 copy data.json %version%\ 2>nul
 copy admin.html %version%\ 2>nul
-copy responsive_guide.md %version%\ 2>nul
-copy tablet_preview.html %version%\ 2>nul
-copy "github上下架管理工具.bat" %version%\ 2>nul
+copy "通用github管理工具.bat" %version%\ 2>nul
+copy *.md %version%\ 2>nul
+copy *.txt %version%\ 2>nul
+copy tablet_*.html %version%\ 2>nul
 
 echo.
 echo 複製完成！
@@ -573,6 +675,7 @@ echo.
 
 echo 請輸入您的 GitHub 倉庫連結：
 echo 範例：https://github.com/username/repository-name
+echo 或：https://github.com/username/repository-name.git
 echo.
 set /p repo_url=請輸入 GitHub 連結: 
 
@@ -592,6 +695,15 @@ if errorlevel 1 (
     goto start
 )
 echo ✅ 連結格式正確
+
+echo.
+echo 正在處理 URL 格式...
+if "%repo_url:~-4%"==".git" (
+    echo ✅ URL 已包含 .git 後綴
+) else (
+    set repo_url=%repo_url%.git
+    echo ✅ 已自動添加 .git 後綴
+)
 
 echo.
 echo 正在檢查 Git 是否已安裝...
@@ -635,8 +747,15 @@ if exist ".git" (
 )
 
 echo.
+echo 正在處理遠端 URL...
+set modified_url=%repo_url%
+if "%modified_url:~8,11%"=="github.com/" (
+    set modified_url=%modified_url:https://=https://%github_username%@%
+)
+
+echo.
 echo 正在添加遠端倉庫...
-git remote add origin %repo_url%
+git remote add origin %modified_url%
 if errorlevel 1 (
     echo ❌ 添加遠端倉庫失敗
     pause
@@ -898,6 +1017,25 @@ echo ⚡ 快速上傳檔案
 echo ================================
 echo.
 
+echo 正在檢查當前專案資訊...
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 沒有發現遠端倉庫
+    echo 請先使用「初始化 Git 倉庫」或「連接新專案 GitHub 倉庫」功能
+    echo.
+    pause
+    goto start
+)
+
+REM 顯示當前專案資訊
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
+    set current_user=%%i
+    set current_repo=%%j
+)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
+echo.
+
 echo 正在快速上傳所有檔案到 GitHub...
 echo.
 
@@ -990,6 +1128,7 @@ echo.
 
 echo 請輸入新專案的 GitHub 倉庫連結：
 echo 範例：https://github.com/username/project-name
+echo 或：https://github.com/username/project-name.git
 echo.
 set /p repo_url=請輸入 GitHub 連結: 
 
@@ -1009,6 +1148,15 @@ if errorlevel 1 (
     goto start
 )
 echo ✅ 連結格式正確
+
+echo.
+echo 正在處理 URL 格式...
+if "%repo_url:~-4%"==".git" (
+    echo ✅ URL 已包含 .git 後綴
+) else (
+    set repo_url=%repo_url%.git
+    echo ✅ 已自動添加 .git 後綴
+)
 
 echo.
 echo 正在檢查 Git 是否已安裝...
@@ -1054,8 +1202,12 @@ echo ✅ 遠端倉庫已添加
 
 echo.
 echo 正在配置 Git 用戶資訊...
-git config user.name "AI網站管理工具" >nul 2>&1
-git config user.email "ai@example.com" >nul 2>&1
+echo 請輸入您的 GitHub 用戶名：
+set /p github_username=GitHub 用戶名: 
+echo 請輸入您的 GitHub 信箱：
+set /p github_email=GitHub 信箱: 
+git config user.name "%github_username%" >nul 2>&1
+git config user.email "%github_email%" >nul 2>&1
 echo ✅ Git 用戶資訊已配置
 
 echo.
@@ -1172,6 +1324,305 @@ echo.
 pause
 goto start
 
+:fix_auth
+echo.
+echo ================================
+echo 🔐 修正 GitHub 認證權限
+echo ================================
+echo.
+
+echo 這個功能會幫您修正 GitHub 認證問題
+echo 適用於切換不同 GitHub 帳號的情況
+echo.
+
+echo 正在自動檢測當前專案資訊...
+echo.
+
+REM 檢查是否有遠端倉庫
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 沒有發現遠端倉庫
+    echo 請先使用「初始化 Git 倉庫」或「連接新專案 GitHub 倉庫」功能
+    echo.
+    pause
+    goto start
+)
+
+REM 從遠端倉庫 URL 提取用戶名
+for /f "tokens=4 delims=/" %%i in ('git remote get-url origin') do set auto_username=%%i
+echo 自動檢測到 GitHub 用戶名：%auto_username%
+
+REM 從遠端倉庫 URL 提取倉庫名稱
+for /f "tokens=5 delims=/" %%i in ('git remote get-url origin') do set auto_repo=%%i
+set auto_repo=%auto_repo:.git=%
+echo 自動檢測到倉庫名稱：%auto_repo%
+
+echo.
+echo 當前遠端倉庫：%auto_username%/%auto_repo%
+echo.
+
+echo 請選擇操作方式：
+echo 1. 使用自動檢測的用戶名：%auto_username%
+echo 2. 手動輸入新的用戶名和信箱
+echo.
+set /p auth_choice=請選擇 (1/2): 
+
+if "%auth_choice%"=="1" (
+    set github_username=%auto_username%
+    echo.
+    echo 請輸入對應的信箱：
+    set /p github_email=GitHub 信箱: 
+) else if "%auth_choice%"=="2" (
+    echo.
+    echo 請輸入您的 GitHub 資訊：
+    set /p github_username=GitHub 用戶名: 
+    set /p github_email=GitHub 信箱: 
+) else (
+    echo 無效選項，使用自動檢測的用戶名
+    set github_username=%auto_username%
+    echo.
+    echo 請輸入對應的信箱：
+    set /p github_email=GitHub 信箱: 
+) 
+
+if "%github_username%"=="" (
+    echo ❌ 用戶名不能為空！
+    pause
+    goto start
+)
+
+if "%github_email%"=="" (
+    echo ❌ 信箱不能為空！
+    pause
+    goto start
+)
+
+echo.
+echo 正在設定 Git 用戶資訊...
+git config user.name "%github_username%"
+git config user.email "%github_email%"
+echo ✅ Git 用戶資訊已設定
+
+echo.
+echo 正在設定全域 Git 用戶資訊...
+git config --global user.name "%github_username%"
+git config --global user.email "%github_email%"
+echo ✅ 全域 Git 用戶資訊已設定
+
+echo.
+echo 正在清除現有的認證快取...
+git config --global --unset credential.helper 2>nul
+echo ✅ Git 認證快取已清除
+
+echo.
+echo 正在清除 Windows 認證管理器中的舊認證...
+echo 正在檢查現有的 GitHub 認證...
+cmdkey /list | findstr github >nul 2>&1
+if not errorlevel 1 (
+    echo 發現舊的 GitHub 認證，正在清除...
+    for /f "tokens=2 delims=:" %%i in ('cmdkey /list ^| findstr "git:https://github.com"') do (
+        echo 正在刪除認證：%%i
+        cmdkey /delete:"%%i" >nul 2>&1
+    )
+    echo ✅ Windows 認證管理器中的舊認證已清除
+) else (
+    echo ✅ 沒有發現需要清除的舊認證
+)
+
+echo.
+echo 正在重新設定認證...
+git config --global credential.helper store
+echo ✅ 認證設定已更新
+
+echo.
+echo 正在檢查當前遠端倉庫...
+git remote -v
+echo.
+
+echo 正在測試認證...
+echo 嘗試獲取遠端內容...
+git fetch origin
+if errorlevel 1 (
+    echo ❌ 認證測試失敗
+    echo.
+    echo 可能的原因：
+    echo 1. 用戶名或信箱錯誤
+    echo 2. 沒有該倉庫的推送權限
+    echo 3. 需要重新輸入密碼或 Personal Access Token
+    echo.
+    echo 建議操作：
+    echo 1. 確認 GitHub 用戶名和信箱正確
+    echo 2. 確認有該倉庫的推送權限
+    echo 3. 如果使用 Personal Access Token，請重新設定
+    echo.
+    pause
+    goto start
+) else (
+    echo ✅ 認證測試成功！
+)
+
+echo.
+echo ================================
+echo 🎉 認證修正完成！
+echo ================================
+echo.
+echo 設定資訊：
+echo 用戶名：%github_username%
+echo 信箱：%github_email%
+echo.
+echo 現在可以正常推送檔案了！
+echo 建議使用「快速上傳檔案」功能測試
+
+echo.
+pause
+goto start
+
+:check_auth_status
+echo.
+echo ================================
+echo 🔍 檢查認證狀態
+echo ================================
+echo.
+
+echo 正在檢查當前專案資訊...
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 沒有發現遠端倉庫
+    echo 請先使用「初始化 Git 倉庫」或「連接新專案 GitHub 倉庫」功能
+    echo.
+    pause
+    goto start
+)
+
+REM 顯示當前專案資訊
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
+    set current_user=%%i
+    set current_repo=%%j
+)
+set current_repo=%current_repo:.git=%
+echo 當前專案：%current_user%/%current_repo%
+echo.
+
+echo 正在檢查 Git 認證狀態...
+echo.
+
+echo 步驟1: 檢查 Git 用戶資訊...
+echo ================================
+echo 用戶名：
+git config --get user.name
+echo 信箱：
+git config --get user.email
+echo ================================
+
+echo.
+echo 步驟2: 檢查遠端倉庫...
+echo ================================
+git remote -v
+echo ================================
+
+echo.
+echo 步驟3: 檢查認證快取...
+echo ================================
+echo Git 認證助手：
+git config --get credential.helper
+echo ================================
+
+echo.
+echo 步驟3.5: 檢查 Windows 認證管理器...
+echo ================================
+echo 正在檢查 Windows 認證管理器中的 GitHub 認證...
+cmdkey /list | findstr github
+if errorlevel 1 (
+    echo 沒有發現 GitHub 相關認證
+) else (
+    echo 發現以上 GitHub 認證
+)
+echo ================================
+
+echo.
+echo 步驟4: 測試遠端連接...
+echo ================================
+echo 正在測試 GitHub 連接...
+git ls-remote origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 無法連接到 GitHub
+    echo.
+    echo 可能的原因：
+    echo 1. 需要 Personal Access Token
+    echo 2. 網路連接問題
+    echo 3. 倉庫權限問題
+    echo.
+    echo 建議操作：
+    echo 1. 使用「修正 GitHub 認證權限」功能
+    echo 2. 檢查是否需要 Personal Access Token
+    echo 3. 確認倉庫權限設定
+) else (
+    echo ✅ GitHub 連接正常
+    echo.
+    echo 認證狀態良好，可以正常推送檔案
+)
+
+echo ================================
+
+echo.
+echo 步驟5: 檢查分支資訊...
+echo ================================
+echo 本地分支：
+git branch
+echo.
+echo 遠端分支：
+git branch -r
+echo ================================
+
+echo.
+echo ================================
+echo 📋 認證狀態總結
+echo ================================
+echo.
+
+git config --get user.name >nul 2>&1
+if errorlevel 1 (
+    echo ❌ Git 用戶資訊：未設定
+    echo 建議：使用「修正 GitHub 認證權限」功能
+) else (
+    echo ✅ Git 用戶資訊：已設定
+)
+
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 遠端倉庫：未設定
+    echo 建議：使用「初始化 Git 倉庫」功能
+) else (
+    echo ✅ 遠端倉庫：已設定
+)
+
+git ls-remote origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ GitHub 連接：失敗
+    echo 建議：檢查認證設定或使用 Personal Access Token
+) else (
+    echo ✅ GitHub 連接：正常
+)
+
+echo.
+cmdkey /list | findstr github >nul 2>&1
+if errorlevel 1 (
+    echo ❌ Windows 認證管理器：沒有 GitHub 認證
+    echo 建議：使用「修正 GitHub 認證權限」功能重新認證
+) else (
+    echo ✅ Windows 認證管理器：有 GitHub 認證
+)
+
+echo.
+echo 💡 使用建議：
+echo - 如果認證狀態有問題，請先使用「修正 GitHub 認證權限」
+echo - 如果所有狀態都正常，可以直接使用「部署指定版本」或「下架所有檔案」
+echo - 遇到推送問題時，可以嘗試「修復 Git 同步問題」
+
+echo.
+pause
+goto start
+
 :exit
 echo.
 echo ================================
@@ -1179,7 +1630,12 @@ echo 👋 感謝使用AI指令大全網站管理工具！
 echo ================================
 echo.
 echo 您的網站地址：
-echo https://sky770825.github.io/Aibot888/
+for /f "tokens=*" %%i in ('git remote get-url origin 2^>nul') do set current_repo=%%i
+if defined current_repo (
+    echo %current_repo:~0,-4%.github.io/%current_repo:~19%
+) else (
+    echo 無法取得倉庫資訊
+)
 echo.
 pause
 exit

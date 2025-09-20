@@ -21,13 +21,10 @@ echo 9. 快速上傳檔案
 echo 10. 連接新專案 GitHub 倉庫
 echo 11. 修正 GitHub 認證權限
 echo 12. 檢查認證狀態 (推薦在操作 3,4 前使用)
-echo 13. 🔄 重置所有認證 (清除並重新設定)
-echo 14. 🔐 強制重新綁定 GitHub 帳號
-echo 15. 🔗 解除綁定 (保留 .git 資料夾)
-echo 16. 退出
+echo 13. 退出
 echo.
 
-set /p choice=請輸入選項 (1-16): 
+set /p choice=請輸入選項 (1-13): 
 
 if "%choice%"=="1" goto fix_push
 if "%choice%"=="2" goto check_upload
@@ -41,10 +38,7 @@ if "%choice%"=="9" goto quick_upload
 if "%choice%"=="10" goto connect_new_project
 if "%choice%"=="11" goto fix_auth
 if "%choice%"=="12" goto check_auth_status
-if "%choice%"=="13" goto reset_all_auth
-if "%choice%"=="14" goto force_rebind_auth
-if "%choice%"=="15" goto unbind_only
-if "%choice%"=="16" goto exit
+if "%choice%"=="13" goto exit
 echo 無效選項
 pause
 goto start
@@ -341,9 +335,6 @@ echo.
 echo  步驟1: 備份當前檔案...
 if not exist "backup_current" mkdir backup_current
 copy index.html backup_current\ 2>nul
-copy index1.html backup_current\ 2>nul
-copy index2.html backup_current\ 2>nul
-copy 8961298.html backup_current\ 2>nul
 copy script.js backup_current\ 2>nul
 copy style.css backup_current\ 2>nul
 copy data.json backup_current\ 2>nul
@@ -362,9 +353,6 @@ echo  GitHub舊檔案已下架
 echo.
 echo  步驟3: 複製版本檔案...
 copy "%version%\index.html" . 2>nul
-copy "%version%\index1.html" . 2>nul
-copy "%version%\index2.html" . 2>nul
-copy "%version%\8961298.html" . 2>nul
 copy "%version%\script.js" . 2>nul
 copy "%version%\style.css" . 2>nul
 copy "%version%\data.json" . 2>nul
@@ -468,9 +456,6 @@ if /i "%restore%"=="y" (
     echo.
     echo 🔄 正在恢復檔案...
     copy backup_current\index.html . 2>nul
-    copy backup_current\index1.html . 2>nul
-    copy backup_current\index2.html . 2>nul
-    copy backup_current\8961298.html . 2>nul
     copy backup_current\script.js . 2>nul
     copy backup_current\style.css . 2>nul
     copy backup_current\data.json . 2>nul
@@ -516,9 +501,6 @@ echo.
 echo  步驟1: 備份當前檔案...
 if not exist "backup_before_cleanup" mkdir backup_before_cleanup
 copy index.html backup_before_cleanup\ 2>nul
-copy index1.html backup_before_cleanup\ 2>nul
-copy index2.html backup_before_cleanup\ 2>nul
-copy 8961298.html backup_before_cleanup\ 2>nul
 copy style.css backup_before_cleanup\ 2>nul
 copy script.js backup_before_cleanup\ 2>nul
 copy data.json backup_before_cleanup\ 2>nul
@@ -615,40 +597,7 @@ echo 💾 建立版本備份
 echo ================================
 echo.
 
-echo 請選擇備份類型：
-echo 1. 建立單一版本備份
-echo 2. 🚀 快速完整備份 (自動生成v數字版本+最新5版本+全部檔案)
-echo.
-set /p backup_type=請選擇 (1-2): 
-
-if "%backup_type%"=="1" goto single_version_backup
-if "%backup_type%"=="2" goto quick_full_backup
-echo 無效選項
-pause
-goto start
-
-:single_version_backup
-echo.
-echo ================================
-echo 💾 建立單一版本備份
-echo ================================
-echo.
-
-echo 請選擇版本號輸入方式：
-echo 1. 直接輸入版本號 (如 v2.3)
-echo 2. 自動生成下一個版本號
-echo.
-set /p version_input_type=請選擇 (1-2): 
-
-if "%version_input_type%"=="1" goto direct_input_version
-if "%version_input_type%"=="2" goto auto_generate_version
-echo 無效選項
-pause
-goto start
-
-:direct_input_version
-echo.
-set /p version=請輸入版本號 (如 v2.3): 
+set /p version=請輸入版本號 (如 v1.5): 
 
 if "%version%"=="" (
     echo 版本號不能為空！
@@ -656,81 +605,11 @@ if "%version%"=="" (
     goto start
 )
 
-echo.
-echo 將建立版本：%version%
-set /p confirm=確認建立此版本嗎？(y/n): 
-if /i not "%confirm%"=="y" (
-    echo 操作已取消
-    pause
-    goto start
-)
-goto create_version_folder
-
-:auto_generate_version
-echo.
-echo 正在分析現有版本...
-echo ================================
-
-set latest_version=
-set latest_major=0
-set latest_minor=0
-
-for /f "tokens=*" %%i in ('dir /b /ad ^| findstr "^v" ^| sort /r') do (
-    set current_version=%%i
-    set current_version=!current_version:v=!
-    
-    for /f "tokens=1,2 delims=." %%a in ("!current_version!") do (
-        set current_major=%%a
-        set current_minor=%%b
-        
-        if !current_major! gtr !latest_major! (
-            set latest_major=!current_major!
-            set latest_minor=!current_minor!
-            set latest_version=%%i
-        ) else if !current_major! equ !latest_major! (
-            if !current_minor! gtr !latest_minor! (
-                set latest_minor=!current_minor!
-                set latest_version=%%i
-            )
-        )
-    )
-)
-
-if "%latest_version%"=="" (
-    echo 沒有找到現有版本，將建立 v1.0
-    set version=v1.0
-) else (
-    echo 找到最新版本：%latest_version%
-    set /a next_minor=!latest_minor!+1
-    if !next_minor! gtr 9 (
-        set /a next_major=!latest_major!+1
-        set version=v!next_major!.0
-        echo 小版本號超過9，自動升級主版本號
-    ) else (
-        set version=v!latest_major!.!next_minor!
-    )
-    echo 自動生成下一個版本：%version%
-)
-
-echo.
-echo 將建立版本：%version%
-set /p confirm=確認建立此版本嗎？(y/n): 
-if /i not "%confirm%"=="y" (
-    echo 操作已取消
-    pause
-    goto start
-)
-
-:create_version_folder
-
 echo 正在建立 %version% 資料夾...
 mkdir %version% 2>nul
 
 echo 正在複製檔案...
 copy index.html %version%\ 2>nul
-copy index1.html %version%\ 2>nul
-copy index2.html %version%\ 2>nul
-copy 8961298.html %version%\ 2>nul
 copy script.js %version%\ 2>nul
 copy style.css %version%\ 2>nul
 copy data.json %version%\ 2>nul
@@ -752,201 +631,6 @@ if /i "%deploy_now%"=="y" (
 )
 
 echo.
-pause
-goto start
-
-:quick_full_backup
-echo.
-echo ================================
-echo 🚀 快速完整備份 (自動生成v數字版本+最新5版本+全部檔案)
-echo ================================
-echo.
-
-echo 正在分析現有版本並生成新版本號...
-echo ================================
-
-set latest_version=
-set latest_major=0
-set latest_minor=0
-
-for /f "tokens=*" %%i in ('dir /b /ad ^| findstr "^v" ^| sort /r') do (
-    set current_version=%%i
-    set current_version=!current_version:v=!
-    
-    for /f "tokens=1,2 delims=." %%a in ("!current_version!") do (
-        set current_major=%%a
-        set current_minor=%%b
-        
-        if !current_major! gtr !latest_major! (
-            set latest_major=!current_major!
-            set latest_minor=!current_minor!
-            set latest_version=%%i
-        ) else if !current_major! equ !latest_major! (
-            if !current_minor! gtr !latest_minor! (
-                set latest_minor=!current_minor!
-                set latest_version=%%i
-            )
-        )
-    )
-)
-
-if "%latest_version%"=="" (
-    echo 沒有找到現有版本，將建立 v1.0
-    set new_version=v1.0
-) else (
-    echo 找到最新版本：%latest_version%
-    set /a next_minor=!latest_minor!+1
-    if !next_minor! gtr 9 (
-        set /a next_major=!latest_major!+1
-        set new_version=v!next_major!.0
-        echo 小版本號超過9，自動升級主版本號
-    ) else (
-        set new_version=v!latest_major!.!next_minor!
-    )
-    echo 自動生成新版本：%new_version%
-)
-
-echo.
-echo 正在建立備份資料夾：%new_version%
-mkdir "%new_version%" 2>nul
-
-echo 正在複製檔案到備份資料夾...
-copy index.html "%new_version%\" >nul 2>&1
-copy index1.html "%new_version%\" >nul 2>&1
-copy index2.html "%new_version%\" >nul 2>&1
-copy 8961298.html "%new_version%\" >nul 2>&1
-copy *.css "%new_version%\" >nul 2>&1
-copy *.js "%new_version%\" >nul 2>&1
-copy *.bat "%new_version%\" >nul 2>&1
-copy *.txt "%new_version%\" >nul 2>&1
-copy *.md "%new_version%\" >nul 2>&1
-
-if exist "images" (
-    xcopy "images" "%new_version%\images\" /e /i /q >nul 2>&1
-)
-
-echo ✅ 新版本 %new_version% 已建立並包含所有檔案
-echo.
-
-echo 正在執行快速完整備份...
-echo 這將自動備份最新的5個版本到同一個資料夾
-echo.
-
-echo.
-echo 步驟1: 備份最新5個版本到 %new_version% 資料夾...
-echo ================================
-set version_count=0
-for /f "tokens=*" %%i in ('dir /b /ad ^| findstr "^v" ^| sort /r') do (
-    if not "%%i"=="%new_version%" (
-        set /a version_count+=1
-        if !version_count! leq 5 (
-            echo 正在備份版本：%%i
-            xcopy "%%i" "%new_version%\versions\%%i\" /e /i /q >nul 2>&1
-            if !errorlevel! equ 0 (
-                echo ✅ %%i 備份成功
-            ) else (
-                echo ❌ %%i 備份失敗
-            )
-        )
-    )
-)
-
-echo.
-echo 步驟2: 備份圖片資料夾到 %new_version% 資料夾...
-echo ================================
-if exist "images" (
-    echo 正在備份 images 資料夾...
-    if exist "%new_version%\images" (
-        echo 正在移除舊的 images 資料夾...
-        rmdir /s /q "%new_version%\images" 2>nul
-    )
-    xcopy "images" "%new_version%\images\" /e /i /q >nul 2>&1
-    if errorlevel 1 (
-        echo ❌ images 資料夾備份失敗
-    ) else (
-        echo ✅ images 資料夾備份成功
-    )
-) else (
-    echo ℹ️  images 資料夾不存在
-)
-
-echo.
-echo 步驟3: 備份其他重要資料夾到 %new_version% 資料夾...
-echo ================================
-for /f "tokens=*" %%i in ('dir /b /ad ^| findstr /v "^v" ^| findstr /v "images" ^| findstr /v "backup"') do (
-    set folder_name=%%i
-    if not "!folder_name:~0,1!"=="." (
-        echo 正在備份資料夾：%%i
-        xcopy "%%i" "%new_version%\%%i\" /e /i /q >nul 2>&1
-        if errorlevel 1 (
-            echo ❌ %%i 備份失敗
-        ) else (
-            echo ✅ %%i 備份成功
-        )
-    )
-)
-
-echo.
-echo 步驟4: 建立備份資訊檔案...
-echo ================================
-echo 正在建立備份資訊...
-(
-echo 快速完整備份資訊
-echo ================================
-echo 備份時間：%date% %time%
-echo 備份資料夾：%new_version%
-echo.
-echo 包含的版本：
-set info_version_count=0
-for /f "tokens=*" %%i in ('dir /b /ad ^| findstr "^v" ^| sort /r') do (
-    if not "%%i"=="%new_version%" (
-        set /a info_version_count+=1
-        if !info_version_count! leq 5 (
-            echo - %%i
-        )
-    )
-)
-echo.
-echo 包含的檔案類型：
-echo - HTML 檔案 (*.html)
-echo - CSS 檔案 (*.css)
-echo - JavaScript 檔案 (*.js)
-echo - 批次檔 (*.bat)
-echo - 文字檔案 (*.txt)
-echo - Markdown 檔案 (*.md)
-echo - 圖片資料夾 (images)
-echo - 其他資料夾
-echo.
-echo 備份完成時間：%date% %time%
-) > "%new_version%\備份資訊.txt"
-
-echo ✅ 備份資訊檔案已建立
-
-echo.
-echo ================================
-echo 🎉 快速完整備份完成！
-echo ================================
-echo.
-echo 備份資訊：
-echo 資料夾：%new_version%
-echo 時間：%date% %time%
-echo 包含：最新5個版本 + 所有檔案
-echo.
-echo 備份內容：
-echo - 版本資料夾：%new_version%\versions\
-echo - 主要檔案：%new_version%\*.html, *.css, *.js, *.bat, *.txt, *.md
-echo - 圖片資料夾：%new_version%\images\
-echo - 其他資料夾：%new_version%\其他資料夾\
-echo - 備份資訊：%new_version%\備份資訊.txt
-echo.
-
-set /p open_folder=是否開啟備份資料夾？(y/n): 
-if /i "%open_folder%"=="y" (
-    explorer "%new_version%"
-)
-
-echo.
-echo 備份完成，按任意鍵返回主選單...
 pause
 goto start
 
@@ -1139,7 +823,7 @@ if errorlevel 1 (
                 echo 1. 網路連接問題
                 echo 2. GitHub 認證問題
                 echo 3. 倉庫權限問題
-                echo 4. 遠端倉庫為空或分支設定錯誤
+                echo 4. 遠端倉庫為空或沒有正確的分支
                 echo.
                 echo 建議操作：
                 echo 1. 檢查 GitHub 倉庫是否為空
@@ -1599,7 +1283,7 @@ if errorlevel 1 (
                 echo 2. GitHub 認證問題
                 echo 3. 倉庫權限問題
                 echo 4. 分支名稱不匹配
-                echo 5. 遠端倉庫為空或分支設定錯誤
+                echo 5. 遠端倉庫為空或沒有正確的分支
                 echo.
                 echo 建議操作：
                 echo 1. 檢查 GitHub 倉庫是否為空
@@ -1731,35 +1415,18 @@ git config --global --unset credential.helper 2>nul
 echo ✅ Git 認證快取已清除
 
 echo.
-echo 正在清除所有 Git 認證設定...
-git config --global --unset user.name 2>nul
-git config --global --unset user.email 2>nul
-git config --local --unset user.name 2>nul
-git config --local --unset user.email 2>nul
-echo ✅ Git 用戶資訊已清除
-
-echo.
 echo 正在清除 Windows 認證管理器中的舊認證...
 echo 正在檢查現有的 GitHub 認證...
 cmdkey /list | findstr github >nul 2>&1
 if not errorlevel 1 (
     echo 發現舊的 GitHub 認證，正在清除...
-    for /f "tokens=1*" %%a in ('cmdkey /list ^| findstr "git:https://github.com"') do (
-        echo 正在刪除認證：%%a %%b
-        cmdkey /delete:"%%a %%b" >nul 2>&1
+    for /f "tokens=2 delims=:" %%i in ('cmdkey /list ^| findstr "git:https://github.com"') do (
+        echo 正在刪除認證：%%i
+        cmdkey /delete:"%%i" >nul 2>&1
     )
     echo ✅ Windows 認證管理器中的舊認證已清除
 ) else (
     echo ✅ 沒有發現需要清除的舊認證
-)
-
-echo.
-echo 正在清除 Git 認證檔案...
-if exist "%USERPROFILE%\.git-credentials" (
-    del "%USERPROFILE%\.git-credentials" 2>nul
-    echo ✅ Git 認證檔案已刪除
-) else (
-    echo ✅ 沒有發現 Git 認證檔案
 )
 
 echo.

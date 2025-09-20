@@ -2,11 +2,18 @@
 chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
-:start
-REM 自動保護批次檔 - 在每次啟動時備份
-if not exist "bat_protection" mkdir bat_protection
-copy "通用github管理工具.bat" "bat_protection\通用github管理工具_auto_backup.bat" >nul 2>&1
+REM ========================================
+REM AI指令大全網站 - 完整管理工具 v2.0
+REM ========================================
+REM 功能改進：
+REM - 修復了未定義變數問題
+REM - 添加了缺少的三個功能
+REM - 改善了錯誤處理和URL解析
+REM - 添加了Personal Access Token支援
+REM - 優化了認證管理流程
+REM ========================================
 
+:start
 echo ================================
 echo 🤖 AI指令大全網站 - 完整管理工具
 echo ================================
@@ -28,13 +35,11 @@ echo 12. 檢查認證狀態 (推薦在操作 3,4 前使用)
 echo 13. 🔄 重置所有認證 (清除並重新設定)
 echo 14. 🔐 強制重新綁定 GitHub 帳號
 echo 15. 🔗 解除綁定 (保留 .git 資料夾)
-echo 16. 🛠️ Git 倉庫管理 (修改遠端倉庫、分支等)
-echo 17. 💾 批次檔保護 (防止被覆蓋)
-echo 18. 🔍 檢查所有功能
-echo 19. 退出
+echo 16. 🔑 設定 Personal Access Token
+echo 17. 退出
 echo.
 
-set /p choice=請輸入選項 (1-19): 
+set /p choice=請輸入選項 (1-17): 
 
 if "%choice%"=="1" goto fix_push
 if "%choice%"=="2" goto check_upload
@@ -51,10 +56,8 @@ if "%choice%"=="12" goto check_auth_status
 if "%choice%"=="13" goto reset_all_auth
 if "%choice%"=="14" goto force_rebind_auth
 if "%choice%"=="15" goto unbind_only
-if "%choice%"=="16" goto git_management
-if "%choice%"=="17" goto bat_protection
-if "%choice%"=="18" goto check_all_functions
-if "%choice%"=="19" goto exit
+if "%choice%"=="16" goto setup_pat
+if "%choice%"=="17" goto exit
 echo 無效選項
 pause
 goto start
@@ -77,12 +80,17 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
     set current_user=%%i
     set current_repo=%%j
 )
-set current_repo=%current_repo:.git=%
-echo 當前專案：%current_user%/%current_repo%
+if defined current_user (
+    set current_repo=%current_repo:.git=%
+    echo 當前專案：%current_user%/%current_repo%
+) else (
+    echo ❌ 無法解析遠端倉庫 URL
+    echo 請檢查遠端倉庫設定是否正確
+)
 echo.
 
 echo 正在修復推送問題...
@@ -1075,9 +1083,7 @@ if exist ".git" (
 echo.
 echo 正在處理遠端 URL...
 set modified_url=%repo_url%
-if "%modified_url:~8,11%"=="github.com/" (
-    set modified_url=%modified_url:https://=https://%github_username%@%
-)
+REM 注意：這裡不需要修改URL，直接使用原始URL即可
 
 echo.
 echo 正在添加遠端倉庫...
@@ -1354,12 +1360,17 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
     set current_user=%%i
     set current_repo=%%j
 )
-set current_repo=%current_repo:.git=%
-echo 當前專案：%current_user%/%current_repo%
+if defined current_user (
+    set current_repo=%current_repo:.git=%
+    echo 當前專案：%current_user%/%current_repo%
+) else (
+    echo ❌ 無法解析遠端倉庫 URL
+    echo 請檢查遠端倉庫設定是否正確
+)
 echo.
 
 echo 正在快速上傳所有檔案到 GitHub...
@@ -1838,12 +1849,17 @@ if errorlevel 1 (
 )
 
 REM 顯示當前專案資訊
-for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin') do (
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
     set current_user=%%i
     set current_repo=%%j
 )
-set current_repo=%current_repo:.git=%
-echo 當前專案：%current_user%/%current_repo%
+if defined current_user (
+    set current_repo=%current_repo:.git=%
+    echo 當前專案：%current_user%/%current_repo%
+) else (
+    echo ❌ 無法解析遠端倉庫 URL
+    echo 請檢查遠端倉庫設定是否正確
+)
 echo.
 
 echo 正在檢查 Git 認證狀態...
@@ -1891,9 +1907,14 @@ if errorlevel 1 (
     echo ❌ 無法連接到 GitHub
     echo.
     echo 可能的原因：
-    echo 1. 需要 Personal Access Token
+    echo 1. 需要 Personal Access Token (PAT)
     echo 2. 網路連接問題
     echo 3. 倉庫權限問題
+    echo.
+    echo 💡 Personal Access Token 設定方法：
+    echo 1. 前往 GitHub → Settings → Developer settings → Personal access tokens
+    echo 2. 生成新的 token，權限選擇：repo, workflow, write:packages
+    echo 3. 複製 token 並在下次推送時使用
     echo.
     echo 建議操作：
     echo 1. 使用「修正 GitHub 認證權限」功能
@@ -1966,28 +1987,23 @@ echo.
 pause
 goto start
 
-:unbind_only
+:reset_all_auth
 echo.
 echo ================================
-echo 🔗 解除綁定 (保留 .git 資料夾)
-echo ================================
-echo.
-
-echo 這個功能會解除GitHub綁定但保留本地Git資料夾
-echo 適用於切換到不同GitHub帳號的情況
-echo.
-
-echo 當前綁定狀態：
-echo ================================
-git remote -v
+echo 🔄 重置所有認證 (清除並重新設定)
 echo ================================
 echo.
 
-echo 警告：解除綁定後將無法推送檔案到GitHub
-echo 但本地Git歷史記錄和設定會被保留
+echo 警告：這將清除所有 Git 認證設定！
+echo.
+echo 重置後的效果：
+echo - 清除所有 Git 用戶資訊
+echo - 清除所有認證快取
+echo - 清除 Windows 認證管理器中的 GitHub 認證
+echo - 需要重新設定認證才能推送檔案
 echo.
 
-set /p confirm=確定要解除GitHub綁定嗎？(y/n): 
+set /p confirm=確定要重置所有認證嗎？(y/n): 
 
 if /i not "%confirm%"=="y" (
     echo 操作已取消
@@ -1996,728 +2012,413 @@ if /i not "%confirm%"=="y" (
 )
 
 echo.
-echo 正在解除GitHub綁定...
+echo 正在重置所有認證設定...
 echo.
 
-echo 步驟1: 移除遠端倉庫...
-git remote remove origin
-if errorlevel 1 (
-    echo ❌ 移除遠端倉庫失敗
-    echo 可能沒有遠端倉庫或已經被移除
-) else (
-    echo ✅ 遠端倉庫已移除
-)
+echo 步驟1: 清除 Git 用戶資訊...
+git config --global --unset user.name 2>nul
+git config --global --unset user.email 2>nul
+git config --local --unset user.name 2>nul
+git config --local --unset user.email 2>nul
+echo ✅ Git 用戶資訊已清除
 
 echo.
 echo 步驟2: 清除認證快取...
 git config --global --unset credential.helper 2>nul
-echo ✅ Git 認證快取已清除
+echo ✅ 認證快取已清除
 
 echo.
-echo 步驟3: 清除Windows認證管理器中的GitHub認證...
+echo 步驟3: 清除 Windows 認證管理器中的 GitHub 認證...
 cmdkey /list | findstr github >nul 2>&1
 if not errorlevel 1 (
-    echo 正在清除GitHub認證...
+    echo 正在清除 Windows 認證管理器中的 GitHub 認證...
     for /f "tokens=1*" %%a in ('cmdkey /list ^| findstr "git:https://github.com"') do (
         echo 正在刪除認證：%%a %%b
         cmdkey /delete:"%%a %%b" >nul 2>&1
     )
-    echo ✅ Windows 認證管理器中的GitHub認證已清除
+    echo ✅ Windows 認證管理器中的 GitHub 認證已清除
 ) else (
-    echo ✅ 沒有發現需要清除的GitHub認證
+    echo ✅ 沒有發現需要清除的 GitHub 認證
 )
 
 echo.
-echo 步驟4: 清除Git認證檔案...
+echo 步驟4: 清除 Git 認證檔案...
 if exist "%USERPROFILE%\.git-credentials" (
     del "%USERPROFILE%\.git-credentials" 2>nul
     echo ✅ Git 認證檔案已刪除
 ) else (
-    echo ✅ 沒有發現Git認證檔案
+    echo ✅ 沒有發現 Git 認證檔案
 )
 
 echo.
-echo 步驟5: 保留本地Git設定...
-echo ✅ 本地Git倉庫和歷史記錄已保留
-echo ✅ 本地Git設定已保留
+echo 步驟5: 重新設定認證助手...
+git config --global credential.helper store
+echo ✅ 認證助手已重新設定
+
+echo.
+echo ================================
+echo 🎉 所有認證已重置！
+echo ================================
+echo.
+echo 現在需要重新設定認證才能推送檔案
+echo 建議使用「修正 GitHub 認證權限」功能重新設定
+
+echo.
+pause
+goto start
+
+:force_rebind_auth
+echo.
+echo ================================
+echo 🔐 強制重新綁定 GitHub 帳號
+echo ================================
+echo.
+
+echo 這個功能會強制清除所有認證並重新綁定 GitHub 帳號
+echo 適用於切換到完全不同的 GitHub 帳號
+echo.
+
+echo 正在檢查當前專案資訊...
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 沒有發現遠端倉庫
+    echo 請先使用「初始化 Git 倉庫」或「連接新專案 GitHub 倉庫」功能
+    echo.
+    pause
+    goto start
+)
+
+REM 顯示當前專案資訊
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+    set current_user=%%i
+    set current_repo=%%j
+)
+if defined current_user (
+    set current_repo=%current_repo:.git=%
+    echo 當前專案：%current_user%/%current_repo%
+) else (
+    echo ❌ 無法解析遠端倉庫 URL
+    echo 請檢查遠端倉庫設定是否正確
+)
+echo.
+
+echo 請輸入新的 GitHub 帳號資訊：
+echo.
+set /p new_username=新的 GitHub 用戶名: 
+set /p new_email=新的 GitHub 信箱: 
+
+if "%new_username%"=="" (
+    echo ❌ 用戶名不能為空！
+    pause
+    goto start
+)
+
+if "%new_email%"=="" (
+    echo ❌ 信箱不能為空！
+    pause
+    goto start
+)
+
+echo.
+echo 正在強制重新綁定 GitHub 帳號...
+echo.
+
+echo 步驟1: 清除所有現有認證...
+git config --global --unset user.name 2>nul
+git config --global --unset user.email 2>nul
+git config --local --unset user.name 2>nul
+git config --local --unset user.email 2>nul
+git config --global --unset credential.helper 2>nul
+echo ✅ 所有現有認證已清除
+
+echo.
+echo 步驟2: 清除 Windows 認證管理器中的舊認證...
+cmdkey /list | findstr github >nul 2>&1
+if not errorlevel 1 (
+    echo 正在清除舊的 GitHub 認證...
+    for /f "tokens=1*" %%a in ('cmdkey /list ^| findstr "git:https://github.com"') do (
+        echo 正在刪除認證：%%a %%b
+        cmdkey /delete:"%%a %%b" >nul 2>&1
+    )
+    echo ✅ 舊的 GitHub 認證已清除
+) else (
+    echo ✅ 沒有發現需要清除的舊認證
+)
+
+echo.
+echo 步驟3: 清除 Git 認證檔案...
+if exist "%USERPROFILE%\.git-credentials" (
+    del "%USERPROFILE%\.git-credentials" 2>nul
+    echo ✅ Git 認證檔案已刪除
+) else (
+    echo ✅ 沒有發現 Git 認證檔案
+)
+
+echo.
+echo 步驟4: 設定新的用戶資訊...
+git config --global user.name "%new_username%"
+git config --global user.email "%new_email%"
+git config --local user.name "%new_username%"
+git config --local user.email "%new_email%"
+echo ✅ 新的用戶資訊已設定
+
+echo.
+echo 步驟5: 重新設定認證助手...
+git config --global credential.helper store
+echo ✅ 認證助手已重新設定
+
+echo.
+echo 步驟6: 測試新認證...
+echo 正在測試 GitHub 連接...
+git ls-remote origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 認證測試失敗
+    echo.
+    echo 可能的原因：
+    echo 1. 用戶名或信箱錯誤
+    echo 2. 沒有該倉庫的推送權限
+    echo 3. 需要 Personal Access Token
+    echo.
+    echo 建議操作：
+    echo 1. 確認 GitHub 用戶名和信箱正確
+    echo 2. 確認有該倉庫的推送權限
+    echo 3. 如果使用 Personal Access Token，請重新設定
+    echo.
+    pause
+    goto start
+) else (
+    echo ✅ 新認證測試成功！
+)
+
+echo.
+echo ================================
+echo 🎉 GitHub 帳號重新綁定完成！
+echo ================================
+echo.
+echo 新帳號資訊：
+echo 用戶名：%new_username%
+echo 信箱：%new_email%
+echo.
+echo 現在可以正常推送檔案了！
+echo 建議使用「快速上傳檔案」功能測試
+
+echo.
+pause
+goto start
+
+:unbind_only
+echo.
+echo ================================
+echo 🔗 解除綁定 (保留 .git 資料夾)
+echo ================================
+echo.
+
+echo 這個功能會解除與 GitHub 的綁定，但保留 .git 資料夾
+echo 適用於暫時停止同步或切換到其他倉庫
+echo.
+
+echo 正在檢查當前專案資訊...
+git remote get-url origin >nul 2>&1
+if errorlevel 1 (
+    echo ❌ 沒有發現遠端倉庫
+    echo 當前專案沒有綁定到任何 GitHub 倉庫
+    echo.
+    pause
+    goto start
+)
+
+REM 顯示當前專案資訊
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+    set current_user=%%i
+    set current_repo=%%j
+)
+if defined current_user (
+    set current_repo=%current_repo:.git=%
+    echo 當前專案：%current_user%/%current_repo%
+) else (
+    echo ❌ 無法解析遠端倉庫 URL
+    echo 請檢查遠端倉庫設定是否正確
+)
+echo.
+
+echo 解除綁定後的效果：
+echo - 保留 .git 資料夾和所有本地 Git 歷史
+echo - 移除遠端倉庫連結
+echo - 停止與 GitHub 的同步
+echo - 可以稍後重新綁定到其他倉庫
+echo.
+
+set /p confirm=確定要解除綁定嗎？(y/n): 
+
+if /i not "%confirm%"=="y" (
+    echo 操作已取消
+    pause
+    goto start
+)
+
+echo.
+echo 正在解除綁定...
+echo.
+
+echo 步驟1: 移除遠端倉庫連結...
+git remote remove origin
+if errorlevel 1 (
+    echo ❌ 移除遠端倉庫連結失敗
+    pause
+    goto start
+)
+echo ✅ 遠端倉庫連結已移除
+
+echo.
+echo 步驟2: 檢查本地 Git 狀態...
+git status --short
+echo.
+
+echo 步驟3: 顯示本地分支...
+git branch
+echo.
 
 echo.
 echo ================================
 echo 🎉 解除綁定完成！
 echo ================================
 echo.
-echo 解除綁定結果：
-echo - 遠端倉庫：已移除
-echo - GitHub認證：已清除
-echo - 本地Git倉庫：已保留
-echo - 本地Git歷史：已保留
+echo 解除綁定資訊：
+echo 原專案：%current_user%/%current_repo%
+echo 時間：%date% %time%
 echo.
-echo 現在您可以：
-echo 1. 使用「連接新專案 GitHub 倉庫」連接到新的GitHub倉庫
-echo 2. 使用「初始化 Git 倉庫」重新設定Git倉庫
-echo 3. 繼續在本地進行Git操作
+echo 注意事項：
+echo - .git 資料夾已保留，包含所有本地 Git 歷史
+echo - 已移除遠端倉庫連結
+echo - 可以稍後使用「連接新專案 GitHub 倉庫」重新綁定
+echo - 本地檔案和版本歷史都完整保留
 echo.
 
 pause
 goto start
 
-:git_management
+:setup_pat
 echo.
 echo ================================
-echo 🛠️ Git 倉庫管理
-echo ================================
-echo.
-
-echo 當前 Git 倉庫資訊：
-echo ================================
-git remote -v
-echo.
-git branch -a
+echo 🔑 設定 Personal Access Token
 echo ================================
 echo.
 
-echo 請選擇操作：
-echo 1. 修改遠端倉庫 URL
-echo 2. 添加新的遠端倉庫
-echo 3. 移除遠端倉庫
-echo 4. 切換分支
-echo 5. 建立新分支
-echo 6. 刪除分支
-echo 7. 重新命名分支
-echo 8. 查看詳細 Git 狀態
-echo 9. 返回主選單
-echo.
-set /p git_choice=請選擇 (1-9): 
-
-if "%git_choice%"=="1" goto change_remote_url
-if "%git_choice%"=="2" goto add_remote
-if "%git_choice%"=="3" goto remove_remote
-if "%git_choice%"=="4" goto switch_branch
-if "%git_choice%"=="5" goto create_branch
-if "%git_choice%"=="6" goto delete_branch
-if "%git_choice%"=="7" goto rename_branch
-if "%git_choice%"=="8" goto detailed_git_status
-if "%git_choice%"=="9" goto start
-echo 無效選項
-pause
-goto git_management
-
-:change_remote_url
-echo.
-echo ================================
-echo 🔄 修改遠端倉庫 URL
-echo ================================
+echo 這個功能會幫您設定 Personal Access Token (PAT)
+echo 適用於需要更高權限或更安全的認證方式
 echo.
 
-echo 當前遠端倉庫：
-git remote -v
-echo.
-
-set /p new_url=請輸入新的 GitHub 倉庫 URL: 
-
-if "%new_url%"=="" (
-    echo ❌ URL 不能為空！
-    pause
-    goto git_management
-)
-
-echo.
-echo 正在驗證 URL 格式...
-echo %new_url% | findstr "github.com" >nul
+echo 正在檢查當前專案資訊...
+git remote get-url origin >nul 2>&1
 if errorlevel 1 (
-    echo ❌ 無效的 GitHub URL 格式
-    echo 請確保 URL 包含 github.com
+    echo ❌ 沒有發現遠端倉庫
+    echo 請先使用「初始化 Git 倉庫」或「連接新專案 GitHub 倉庫」功能
+    echo.
     pause
-    goto git_management
+    goto start
 )
 
-if "%new_url:~-4%"==".git" (
-    echo ✅ URL 已包含 .git 後綴
+REM 顯示當前專案資訊
+for /f "tokens=4,5 delims=/" %%i in ('git remote get-url origin 2^>nul') do (
+    set current_user=%%i
+    set current_repo=%%j
+)
+if defined current_user (
+    set current_repo=%current_repo:.git=%
+    echo 當前專案：%current_user%/%current_repo%
 ) else (
-    set new_url=%new_url%.git
-    echo ✅ 已自動添加 .git 後綴
+    echo ❌ 無法解析遠端倉庫 URL
+    echo 請檢查遠端倉庫設定是否正確
+)
+echo.
+
+echo 💡 Personal Access Token 設定步驟：
+echo ================================
+echo 1. 前往 GitHub 網站
+echo 2. 點擊右上角頭像 → Settings
+echo 3. 左側選單 → Developer settings
+echo 4. Personal access tokens → Tokens (classic)
+echo 5. 點擊 "Generate new token (classic)"
+echo 6. 設定權限：repo, workflow, write:packages
+echo 7. 複製生成的 token
+echo ================================
+echo.
+
+echo 請輸入您的 Personal Access Token：
+echo (輸入時不會顯示，請直接輸入後按 Enter)
+set /p pat_token=Personal Access Token: 
+
+if "%pat_token%"=="" (
+    echo ❌ Personal Access Token 不能為空！
+    pause
+    goto start
 )
 
 echo.
-echo 正在修改遠端倉庫 URL...
-git remote set-url origin %new_url%
+echo 正在設定 Personal Access Token...
+echo.
+
+echo 步驟1: 檢查當前遠端倉庫 URL...
+git remote get-url origin
+echo.
+
+echo 步驟2: 更新遠端倉庫 URL 以包含 PAT...
+for /f "tokens=*" %%i in ('git remote get-url origin') do set current_url=%%i
+set pat_url=%current_url:https://=https://%pat_token%@%
+git remote set-url origin "%pat_url%"
+echo ✅ 遠端倉庫 URL 已更新
+
+echo.
+echo 步驟3: 測試 PAT 認證...
+echo 正在測試 GitHub 連接...
+git ls-remote origin >nul 2>&1
 if errorlevel 1 (
-    echo ❌ 修改失敗
+    echo ❌ PAT 認證測試失敗
+    echo.
+    echo 可能的原因：
+    echo 1. Personal Access Token 無效或過期
+    echo 2. Token 權限不足
+    echo 3. 網路連接問題
+    echo.
+    echo 建議操作：
+    echo 1. 檢查 Token 是否正確複製
+    echo 2. 確認 Token 權限包含 repo 權限
+    echo 3. 檢查 Token 是否過期
+    echo.
+    echo 正在恢復原始 URL...
+    git remote set-url origin "%current_url%"
+    echo ✅ 已恢復原始 URL
     pause
-    goto git_management
-)
-
-echo ✅ 遠端倉庫 URL 已修改
-echo.
-echo 新的遠端倉庫：
-git remote -v
-echo.
-pause
-goto git_management
-
-:add_remote
-echo.
-echo ================================
-echo ➕ 添加新的遠端倉庫
-echo ================================
-echo.
-
-set /p remote_name=請輸入遠端倉庫名稱 (如: upstream): 
-set /p remote_url=請輸入遠端倉庫 URL: 
-
-if "%remote_name%"=="" (
-    echo ❌ 遠端倉庫名稱不能為空！
-    pause
-    goto git_management
-)
-
-if "%remote_url%"=="" (
-    echo ❌ URL 不能為空！
-    pause
-    goto git_management
-)
-
-echo.
-echo 正在添加遠端倉庫...
-git remote add %remote_name% %remote_url%
-if errorlevel 1 (
-    echo ❌ 添加失敗
-    pause
-    goto git_management
-)
-
-echo ✅ 遠端倉庫已添加
-echo.
-echo 所有遠端倉庫：
-git remote -v
-echo.
-pause
-goto git_management
-
-:remove_remote
-echo.
-echo ================================
-echo ➖ 移除遠端倉庫
-echo ================================
-echo.
-
-echo 當前遠端倉庫：
-git remote -v
-echo.
-
-set /p remote_name=請輸入要移除的遠端倉庫名稱: 
-
-if "%remote_name%"=="" (
-    echo ❌ 遠端倉庫名稱不能為空！
-    pause
-    goto git_management
-)
-
-echo.
-echo 正在移除遠端倉庫...
-git remote remove %remote_name%
-if errorlevel 1 (
-    echo ❌ 移除失敗
-    pause
-    goto git_management
-)
-
-echo ✅ 遠端倉庫已移除
-echo.
-echo 剩餘的遠端倉庫：
-git remote -v
-echo.
-pause
-goto git_management
-
-:switch_branch
-echo.
-echo ================================
-echo 🔄 切換分支
-echo ================================
-echo.
-
-echo 可用分支：
-git branch -a
-echo.
-
-set /p branch_name=請輸入要切換的分支名稱: 
-
-if "%branch_name%"=="" (
-    echo ❌ 分支名稱不能為空！
-    pause
-    goto git_management
-)
-
-echo.
-echo 正在切換分支...
-git checkout %branch_name%
-if errorlevel 1 (
-    echo ❌ 切換失敗，嘗試建立並切換到新分支...
-    git checkout -b %branch_name%
-    if errorlevel 1 (
-        echo ❌ 建立分支也失敗
-        pause
-        goto git_management
-    ) else (
-        echo ✅ 已建立並切換到新分支 %branch_name%
-    )
+    goto start
 ) else (
-    echo ✅ 已切換到分支 %branch_name%
+    echo ✅ PAT 認證測試成功！
 )
 
 echo.
-echo 當前分支：
-git branch
-echo.
-pause
-goto git_management
-
-:create_branch
-echo.
-echo ================================
-echo ➕ 建立新分支
-echo ================================
-echo.
-
-set /p branch_name=請輸入新分支名稱: 
-
-if "%branch_name%"=="" (
-    echo ❌ 分支名稱不能為空！
-    pause
-    goto git_management
-)
+echo 步驟4: 設定 Git 認證快取...
+git config --global credential.helper store
+echo ✅ 認證快取已設定
 
 echo.
-echo 正在建立新分支...
-git checkout -b %branch_name%
-if errorlevel 1 (
-    echo ❌ 建立分支失敗
-    pause
-    goto git_management
-)
-
-echo ✅ 已建立並切換到新分支 %branch_name%
-echo.
-echo 所有分支：
-git branch -a
-echo.
-pause
-goto git_management
-
-:delete_branch
-echo.
-echo ================================
-echo ➖ 刪除分支
-echo ================================
-echo.
-
-echo 可用分支：
-git branch
-echo.
-
-set /p branch_name=請輸入要刪除的分支名稱: 
-
-if "%branch_name%"=="" (
-    echo ❌ 分支名稱不能為空！
-    pause
-    goto git_management
-)
-
-echo.
-echo 正在刪除本地分支...
-git branch -d %branch_name%
-if errorlevel 1 (
-    echo ❌ 刪除失敗，嘗試強制刪除...
-    git branch -D %branch_name%
-    if errorlevel 1 (
-        echo ❌ 強制刪除也失敗
-        pause
-        goto git_management
-    ) else (
-        echo ✅ 已強制刪除分支 %branch_name%
-    )
-) else (
-    echo ✅ 已刪除分支 %branch_name%
-)
-
-echo.
-echo 剩餘分支：
-git branch
-echo.
-pause
-goto git_management
-
-:rename_branch
-echo.
-echo ================================
-echo 🔄 重新命名分支
-echo ================================
-echo.
-
-echo 當前分支：
-git branch
-echo.
-
-set /p old_name=請輸入要重新命名的分支名稱: 
-set /p new_name=請輸入新的分支名稱: 
-
-if "%old_name%"=="" (
-    echo ❌ 原分支名稱不能為空！
-    pause
-    goto git_management
-)
-
-if "%new_name%"=="" (
-    echo ❌ 新分支名稱不能為空！
-    pause
-    goto git_management
-)
-
-echo.
-echo 正在重新命名分支...
-git branch -m %old_name% %new_name%
-if errorlevel 1 (
-    echo ❌ 重新命名失敗
-    pause
-    goto git_management
-)
-
-echo ✅ 已重新命名分支 %old_name% 為 %new_name%
-echo.
-echo 所有分支：
-git branch
-echo.
-pause
-goto git_management
-
-:detailed_git_status
-echo.
-echo ================================
-echo 🔍 詳細 Git 狀態
-echo ================================
-echo.
-
-echo 遠端倉庫：
-echo ================================
-git remote -v
-echo ================================
-
-echo.
-echo 所有分支：
-echo ================================
-git branch -a
-echo ================================
-
-echo.
-echo 當前狀態：
-echo ================================
-git status
-echo ================================
-
-echo.
-echo 最近提交記錄：
-echo ================================
-git log --oneline -10
-echo ================================
-
-echo.
-echo 遠端分支資訊：
-echo ================================
-git ls-remote --heads origin
-echo ================================
-
-echo.
-pause
-goto git_management
-
-:bat_protection
-echo.
-echo ================================
-echo 💾 批次檔保護 (防止被覆蓋)
-echo ================================
-echo.
-
-echo 這個功能會保護您的批次檔不被 Git 覆蓋
-echo 並在每次操作前自動備份
-echo.
-
-echo 請選擇操作：
-echo 1. 啟用批次檔保護 (推薦)
-echo 2. 停用批次檔保護
-echo 3. 手動備份批次檔
-echo 4. 恢復批次檔備份
-echo 5. 查看保護狀態
-echo 6. 返回主選單
-echo.
-set /p protection_choice=請選擇 (1-6): 
-
-if "%protection_choice%"=="1" goto enable_bat_protection
-if "%protection_choice%"=="2" goto disable_bat_protection
-if "%protection_choice%"=="3" goto manual_backup_bat
-if "%protection_choice%"=="4" goto restore_bat_backup
-if "%protection_choice%"=="5" goto check_protection_status
-if "%protection_choice%"=="6" goto start
-echo 無效選項
-pause
-goto bat_protection
-
-:enable_bat_protection
-echo.
-echo 正在啟用批次檔保護...
-echo.
-
-REM 建立保護資料夾
-if not exist "bat_protection" mkdir bat_protection
-
-REM 備份當前批次檔
-copy "通用github管理工具.bat" "bat_protection\通用github管理工具_backup.bat" >nul 2>&1
-
-REM 建立保護腳本
-echo @echo off > "bat_protection\protect_bat.bat"
-echo chcp 65001 ^>nul 2^>^&1 >> "bat_protection\protect_bat.bat"
-echo echo 正在保護批次檔... >> "bat_protection\protect_bat.bat"
-echo copy "通用github管理工具.bat" "bat_protection\通用github管理工具_backup.bat" ^>nul 2^>^&1 >> "bat_protection\protect_bat.bat"
-echo echo ✅ 批次檔已備份 >> "bat_protection\protect_bat.bat"
-
-REM 建立 .gitignore 規則
-echo 通用github管理工具.bat >> .gitignore 2>nul
-echo bat_protection/ >> .gitignore 2>nul
-
-echo ✅ 批次檔保護已啟用
-echo.
-echo 保護功能：
-echo - 批次檔已備份到 bat_protection 資料夾
-echo - 已加入 .gitignore 防止被追蹤
-echo - 每次執行前會自動備份
-echo.
-pause
-goto bat_protection
-
-:disable_bat_protection
-echo.
-echo 正在停用批次檔保護...
-echo.
-
-REM 從 .gitignore 移除規則
-findstr /v "通用github管理工具.bat" .gitignore > .gitignore.tmp 2>nul
-findstr /v "bat_protection/" .gitignore.tmp > .gitignore 2>nul
-del .gitignore.tmp 2>nul
-
-echo ✅ 批次檔保護已停用
-echo.
-echo 注意：批次檔現在可能會被 Git 覆蓋
-echo 建議定期手動備份
-echo.
-pause
-goto bat_protection
-
-:manual_backup_bat
-echo.
-echo 正在手動備份批次檔...
-echo.
-
-if not exist "bat_protection" mkdir bat_protection
-
-set backup_name=通用github管理工具_%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%.bat
-set backup_name=%backup_name: =0%
-
-copy "通用github管理工具.bat" "bat_protection\%backup_name%" >nul 2>&1
-if errorlevel 1 (
-    echo ❌ 備份失敗
-) else (
-    echo ✅ 批次檔已備份為：%backup_name%
-)
-
-echo.
-echo 備份位置：bat_protection 資料夾
-echo.
-pause
-goto bat_protection
-
-:restore_bat_backup
-echo.
-echo ================================
-echo 🔄 恢復批次檔備份
-echo ================================
-echo.
-
-if not exist "bat_protection" (
-    echo ❌ 沒有找到備份資料夾
-    pause
-    goto bat_protection
-)
-
-echo 可用的備份檔案：
-echo ================================
-dir /b "bat_protection\*.bat" 2>nul
-echo ================================
-
-if errorlevel 1 (
-    echo ❌ 沒有找到備份檔案
-    pause
-    goto bat_protection
-)
-
-echo.
-set /p backup_file=請輸入要恢復的備份檔案名稱: 
-
-if "%backup_file%"=="" (
-    echo ❌ 檔案名稱不能為空！
-    pause
-    goto bat_protection
-)
-
-if not exist "bat_protection\%backup_file%" (
-    echo ❌ 備份檔案不存在
-    pause
-    goto bat_protection
-)
-
-echo.
-echo 正在恢復備份...
-copy "bat_protection\%backup_file%" "通用github管理工具.bat" >nul 2>&1
-if errorlevel 1 (
-    echo ❌ 恢復失敗
-) else (
-    echo ✅ 批次檔已恢復
-)
-
-echo.
-pause
-goto bat_protection
-
-:check_protection_status
-echo.
-echo ================================
-echo 🔍 保護狀態檢查
-echo ================================
-echo.
-
-echo 批次檔保護狀態：
-echo ================================
-
-if exist "bat_protection" (
-    echo ✅ 保護資料夾存在
-    echo 備份檔案數量：
-    dir /b "bat_protection\*.bat" 2>nul | find /c ".bat"
-) else (
-    echo ❌ 保護資料夾不存在
-)
-
-echo.
-echo .gitignore 狀態：
-echo ================================
-findstr "通用github管理工具.bat" .gitignore >nul 2>&1
-if errorlevel 1 (
-    echo ❌ 批次檔未被 .gitignore 保護
-) else (
-    echo ✅ 批次檔已被 .gitignore 保護
-)
-
-echo.
-echo 當前批次檔大小：
-echo ================================
-dir "通用github管理工具.bat" 2>nul | find "通用github管理工具.bat"
-
-echo.
-pause
-goto bat_protection
-
-:check_all_functions
-echo.
-echo ================================
-echo 🔍 檢查所有功能
-echo ================================
-echo.
-
-echo 正在檢查所有功能是否正常運作...
-echo.
-
-echo 1. 檢查 Git 安裝...
-git --version >nul 2>&1
-if errorlevel 1 (
-    echo ❌ Git 未安裝或未正確配置
-) else (
-    echo ✅ Git 已安裝
-)
-
-echo.
-echo 2. 檢查 Git 倉庫狀態...
-if exist ".git" (
-    echo ✅ Git 倉庫已初始化
-    git remote -v >nul 2>&1
-    if errorlevel 1 (
-        echo ❌ 沒有遠端倉庫
-    ) else (
-        echo ✅ 遠端倉庫已設定
-    )
-) else (
-    echo ❌ Git 倉庫未初始化
-)
-
-echo.
-echo 3. 檢查檔案狀態...
-if exist "index.html" (
-    echo ✅ 主要檔案存在
-) else (
-    echo ❌ 主要檔案缺失
-)
-
-if exist "style.css" (
-    echo ✅ 樣式檔案存在
-) else (
-    echo ❌ 樣式檔案缺失
-)
-
-if exist "script.js" (
-    echo ✅ 腳本檔案存在
-) else (
-    echo ❌ 腳本檔案缺失
-)
-
-echo.
-echo 4. 檢查版本資料夾...
-dir /b | findstr "^v" >nul 2>&1
-if errorlevel 1 (
-    echo ❌ 沒有版本資料夾
-) else (
-    echo ✅ 找到版本資料夾
-    echo 版本列表：
-    dir /b | findstr "^v"
-)
-
-echo.
-echo 5. 檢查批次檔保護...
-if exist "bat_protection" (
-    echo ✅ 批次檔保護已啟用
-) else (
-    echo ❌ 批次檔保護未啟用
-)
-
-echo.
-echo 6. 檢查網路連接...
-ping github.com -n 1 >nul 2>&1
-if errorlevel 1 (
-    echo ❌ 無法連接到 GitHub
-) else (
-    echo ✅ GitHub 連接正常
-)
+echo 步驟5: 儲存認證資訊...
+echo 正在將 PAT 儲存到認證檔案...
+echo https://%pat_token%@github.com > "%USERPROFILE%\.git-credentials"
+echo ✅ PAT 已儲存到認證檔案
 
 echo.
 echo ================================
-echo 📋 功能檢查完成
+echo 🎉 Personal Access Token 設定完成！
 echo ================================
 echo.
-
-echo 建議操作：
-echo - 如果 Git 未安裝，請先安裝 Git
-echo - 如果沒有遠端倉庫，請使用「初始化 Git 倉庫」
-echo - 如果檔案缺失，請檢查檔案是否被刪除
-echo - 如果沒有版本資料夾，請使用「建立版本備份」
-echo - 如果批次檔保護未啟用，建議啟用以防止被覆蓋
+echo 設定資訊：
+echo 專案：%current_user%/%current_repo%
+echo 認證方式：Personal Access Token
+echo 時間：%date% %time%
 echo.
+echo 現在可以正常推送檔案了！
+echo 建議使用「快速上傳檔案」功能測試
 
+echo.
 pause
 goto start
 

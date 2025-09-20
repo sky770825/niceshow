@@ -343,10 +343,13 @@ copy "通用github管理工具.bat" backup_current\ 2>nul
 copy *.md backup_current\ 2>nul
 copy *.txt backup_current\ 2>nul
 copy tablet_*.html backup_current\ 2>nul
+<<<<<<<< HEAD:v9.9/通用github管理工具.bat
 copy *.css backup_current\ 2>nul
 copy *.js backup_current\ 2>nul
 copy *.html backup_current\ 2>nul
 copy *.json backup_current\ 2>nul
+========
+>>>>>>>> b8113e48f725c42ffdf0e50dd0e3a7586f1ad340:v8.8/通用github管理工具.bat
 echo  當前檔案已備份
 
 echo.
@@ -468,10 +471,13 @@ if /i "%restore%"=="y" (
     copy backup_current\*.md . 2>nul
     copy backup_current\*.txt . 2>nul
     copy backup_current\tablet_*.html . 2>nul
+<<<<<<<< HEAD:v9.9/通用github管理工具.bat
     copy backup_current\*.css . 2>nul
     copy backup_current\*.js . 2>nul
     copy backup_current\*.html . 2>nul
     copy backup_current\*.json . 2>nul
+========
+>>>>>>>> b8113e48f725c42ffdf0e50dd0e3a7586f1ad340:v8.8/通用github管理工具.bat
     echo  檔案已恢復到部署前狀態
     echo.
     echo  提示：GitHub上仍然是 %version% 版本
@@ -517,10 +523,13 @@ copy "通用github管理工具.bat" backup_before_cleanup\ 2>nul
 copy *.txt backup_before_cleanup\ 2>nul
 copy *.md backup_before_cleanup\ 2>nul
 copy tablet_*.html backup_before_cleanup\ 2>nul
+<<<<<<<< HEAD:v9.9/通用github管理工具.bat
 copy *.css backup_before_cleanup\ 2>nul
 copy *.js backup_before_cleanup\ 2>nul
 copy *.html backup_before_cleanup\ 2>nul
 copy *.json backup_before_cleanup\ 2>nul
+========
+>>>>>>>> b8113e48f725c42ffdf0e50dd0e3a7586f1ad340:v8.8/通用github管理工具.bat
 echo  檔案已備份到 backup_before_cleanup 資料夾
 
 echo.
@@ -620,6 +629,7 @@ if "%version%"=="" (
 echo 正在建立 %version% 資料夾...
 mkdir %version% 2>nul
 
+<<<<<<<< HEAD:v9.9/通用github管理工具.bat
 echo.
 echo 請選擇備份範圍：
 echo 1. 完整備份 (包含所有檔案和資料夾)
@@ -735,6 +745,9 @@ echo ================================
 echo.
 
 echo 正在複製主要網站檔案...
+========
+echo 正在複製檔案...
+>>>>>>>> b8113e48f725c42ffdf0e50dd0e3a7586f1ad340:v8.8/通用github管理工具.bat
 copy index.html %version%\ 2>nul
 copy script.js %version%\ 2>nul
 copy style.css %version%\ 2>nul
@@ -746,6 +759,7 @@ copy *.txt %version%\ 2>nul
 copy tablet_*.html %version%\ 2>nul
 
 echo.
+<<<<<<<< HEAD:v9.9/通用github管理工具.bat
 echo ================================
 echo 🎉 基本備份完成！
 echo ================================
@@ -823,6 +837,10 @@ echo.
 
 echo 正在檢查備份內容...
 dir "%version%" /b
+========
+echo 複製完成！
+echo 版本資料夾：%version%
+>>>>>>>> b8113e48f725c42ffdf0e50dd0e3a7586f1ad340:v8.8/通用github管理工具.bat
 echo.
 
 set /p deploy_now=是否立即部署此版本？(y/n): 
