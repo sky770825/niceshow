@@ -13,6 +13,55 @@
           "website": "https://sky770825.github.io/niceshow",
           "description": "餐車行程管理系統",
           "isActive": true
+        },
+        {
+          "name": "功夫茶點餐系統",
+          "repository": "https://github.com/sky770825/kungfuteahtml.git",
+          "website": "https://sky770825.github.io/kungfuteahtml",
+          "description": "功夫茶楊梅四維店線上點餐系統",
+          "isActive": false
+        },
+        {
+          "name": "AI指令大全",
+          "repository": "https://github.com/sky770825/Aibot888.git",
+          "website": "https://sky770825.github.io/Aibot888",
+          "description": "AI指令大全集合",
+          "isActive": false
+        },
+        {
+          "name": "美業共享工作室",
+          "repository": "https://github.com/sky770825/lady8888.git",
+          "website": "https://sky770825.github.io/lady8888",
+          "description": "美業共享工作室相關專案",
+          "isActive": false
+        },
+        {
+          "name": "Picehouse",
+          "repository": "https://github.com/sky770825/picehouse.git",
+          "website": "https://sky770825.github.io/picehouse",
+          "description": "Picehouse 專案",
+          "isActive": false
+        },
+        {
+          "name": "華房地產",
+          "repository": "https://github.com/sky770825/Hua-Real-Estate.git",
+          "website": "https://sky770825.github.io/Hua-Real-Estate",
+          "description": "華房地產相關專案",
+          "isActive": false
+        },
+        {
+          "name": "房屋投票系統",
+          "repository": "https://github.com/sky770825/housepolltex.git",
+          "website": "https://sky770825.github.io/housepolltex",
+          "description": "房屋投票系統",
+          "isActive": false
+        },
+        {
+          "name": "餐車系統",
+          "repository": "https://github.com/sky770825/foodcar.git",
+          "website": "https://sky770825.github.io/foodcar",
+          "description": "餐車相關系統",
+          "isActive": false
         }
       ]
     },
@@ -28,6 +77,22 @@
           "repository": "https://github.com/liny14705/nicehouse.git",
           "website": "https://liny14705.github.io/nicehouse",
           "description": "濬聯配件專用系統",
+          "isActive": false
+        }
+      ]
+    },
+    {
+      "name": "chu20170103 帳戶",
+      "username": "chu20170103",
+      "email": "chu20170103@gmail.com",
+      "description": "第三個開發帳戶",
+      "isDefault": false,
+      "projects": [
+        {
+          "name": "餐開月行程表備用",
+          "repository": "https://github.com/chu20170103/meal-schedule.git",
+          "website": "https://chu20170103.github.io/meal-schedule",
+          "description": "餐開月行程表備用版本",
           "isActive": false
         }
       ]

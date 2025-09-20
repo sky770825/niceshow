@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料載入測試</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .log {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 資料載入測試</h1>
+        <p>測試 admin.html 的資料載入邏輯</p>
+        
+        <div>
+            <button class="btn" onclick="testLoadData()">測試載入資料</button>
+            <button class="btn" onclick="testSaveData()">測試儲存資料</button>
+            <button class="btn" onclick="clearData()">清除資料</button>
+        </div>
+        
+        <div>
+            <h3>📝 測試日誌</h3>
+            <div id="log" class="log">等待測試開始...\n</div>
+        </div>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        // 模擬 admin.html 的資料載入邏輯
+        let foodTruckDatabase = [];
+        let filteredTrucks = [];
+        
+        async function loadFoodTruckData() {
+            try {
+                const localData = localStorage.getItem('foodTruckData');
+                if (localData) {
+                    const data = JSON.parse(localData);
+                    foodTruckDatabase = data.foodTrucks;
+                    log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
+                    // 確保 filteredTrucks 被更新
+                    filteredTrucks = [...foodTruckDatabase];
+                    return;
+                }
+                
+                const response = await fetch('data.json');
+                const data = await response.json();
+                foodTruckDatabase = data.foodTrucks;
+                
+                // 儲存到本地
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                log(`🌐 從 data.json 載入資料並儲存到本地: ${foodTruckDatabase.length} 個餐車`);
+                // 確保 filteredTrucks 被更新
+                filteredTrucks = [...foodTruckDatabase];
+            } catch (error) {
+                log(`❌ 無法載入餐車資料: ${error.message}`);
+                // 使用預設資料
+                filteredTrucks = [...foodTruckDatabase];
+            }
+        }
+        
+        function testLoadData() {
+            log('🧪 開始測試資料載入...');
+            
+            // 重置變數
+            foodTruckDatabase = [];
+            filteredTrucks = [];
+            
+            loadFoodTruckData().then(() => {
+                log(`✅ 載入完成: foodTruckDatabase=${foodTruckDatabase.length}, filteredTrucks=${filteredTrucks.length}`);
+                
+                if (foodTruckDatabase.length > 0) {
+                    log('📋 餐車列表:');
+                    foodTruckDatabase.forEach((truck, index) => {
+                        log(`  ${index + 1}. ${truck.title}`);
+                    });
+                } else {
+                    log('⚠️ 沒有載入到餐車資料');
+                }
+            });
+        }
+        
+        function testSaveData() {
+            log('💾 開始測試資料儲存...');
+            
+            const testData = {
+                foodTrucks: [
+                    {
+                        id: 'test_1',
+                        title: '測試餐車1',
+                        isActive: true,
+                        priority: 1
+                    },
+                    {
+                        id: 'test_2',
+                        title: '測試餐車2',
+                        isActive: true,
+                        priority: 2
+                    }
+                ],
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('foodTruckData', JSON.stringify(testData));
+            log('✅ 測試資料已儲存到 localStorage');
+        }
+        
+        function clearData() {
+            log('🧹 清除資料...');
+            localStorage.removeItem('foodTruckData');
+            foodTruckDatabase = [];
+            filteredTrucks = [];
+            log('✅ 資料已清除');
+        }
+        
+        // 頁面載入時自動測試
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 資料載入測試頁面已載入');
+            testLoadData();
+        });
+    </script>
+</body>
+</html>

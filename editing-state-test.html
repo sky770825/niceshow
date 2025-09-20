@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯狀態測試</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .truck-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: #f8fafc;
+        }
+        .truck-card.editing {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+        .log {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 編輯狀態測試</h1>
+        <p>測試編輯狀態是否能在 F5 重新載入後保持</p>
+        
+        <div>
+            <button class="btn" onclick="testEditingState()">✏️ 測試編輯狀態</button>
+            <button class="btn" onclick="simulateF5Reload()">🔄 模擬 F5 重新載入</button>
+            <button class="btn" onclick="clearAllData()">🗑️ 清除所有資料</button>
+        </div>
+        
+        <div id="truckCards">
+            <!-- 餐車卡片將在這裡顯示 -->
+        </div>
+        
+        <div>
+            <h3>📝 測試日誌</h3>
+            <div id="log" class="log">等待測試開始...\n</div>
+        </div>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        // 模擬餐車資料
+        let foodTruckDatabase = [
+            {
+                id: 'truck_001',
+                title: '測試餐車1',
+                src: 'https://example.com/image1.jpg',
+                isActive: true,
+                priority: 1,
+                isEditing: false
+            },
+            {
+                id: 'truck_002',
+                title: '測試餐車2',
+                src: 'https://example.com/image2.jpg',
+                isActive: true,
+                priority: 2,
+                isEditing: false
+            }
+        ];
+        
+        // 編輯狀態管理函數
+        function saveEditingState() {
+            log('💾 保存編輯狀態...');
+            
+            const data = {
+                foodTrucks: foodTruckDatabase,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+            
+            log('✅ 編輯狀態已保存');
+        }
+        
+        // 載入編輯狀態
+        function loadEditingState() {
+            log('📱 載入編輯狀態...');
+            
+            try {
+                const localData = localStorage.getItem('foodTruckData');
+                if (localData) {
+                    const data = JSON.parse(localData);
+                    if (data && data.foodTrucks && Array.isArray(data.foodTrucks)) {
+                        foodTruckDatabase = data.foodTrucks;
+                        log(`✅ 編輯狀態載入成功: ${foodTruckDatabase.length} 個餐車`);
+                        
+                        // 檢查編輯狀態
+                        const editingTrucks = foodTruckDatabase.filter(truck => truck.isEditing);
+                        log(`✏️ 正在編輯的餐車: ${editingTrucks.length} 個`);
+                        editingTrucks.forEach(truck => {
+                            log(`  - ${truck.title} (${truck.id})`);
+                        });
+                        
+                        return true;
+                    }
+                }
+            } catch (error) {
+                log(`❌ 載入編輯狀態失敗: ${error.message}`);
+            }
+            
+            return false;
+        }
+        
+        // 開始編輯
+        function startEdit(truckId) {
+            const truck = foodTruckDatabase.find(t => t.id === truckId);
+            if (truck) {
+                truck.isEditing = true;
+                saveEditingState();
+                renderTruckCards();
+                log(`✏️ 開始編輯: ${truck.title}`);
+            }
+        }
+        
+        // 取消編輯
+        function cancelEdit(truckId) {
+            const truck = foodTruckDatabase.find(t => t.id === truckId);
+            if (truck) {
+                truck.isEditing = false;
+                saveEditingState();
+                renderTruckCards();
+                log(`❌ 取消編輯: ${truck.title}`);
+            }
+        }
+        
+        // 渲染餐車卡片
+        function renderTruckCards() {
+            const container = document.getElementById('truckCards');
+            container.innerHTML = '';
+            
+            foodTruckDatabase.forEach(truck => {
+                const card = document.createElement('div');
+                card.className = `truck-card ${truck.isEditing ? 'editing' : ''}`;
+                
+                if (truck.isEditing) {
+                    card.innerHTML = `
+                        <h3>${truck.title} (編輯中)</h3>
+                        <p>ID: ${truck.id}</p>
+                        <p>狀態: ${truck.isActive ? '已上架' : '已下架'}</p>
+                        <button class="btn" onclick="cancelEdit('${truck.id}')">❌ 取消編輯</button>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <h3>${truck.title}</h3>
+                        <p>ID: ${truck.id}</p>
+                        <p>狀態: ${truck.isActive ? '已上架' : '已下架'}</p>
+                        <button class="btn" onclick="startEdit('${truck.id}')">✏️ 開始編輯</button>
+                    `;
+                }
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // 測試編輯狀態
+        function testEditingState() {
+            log('🧪 開始測試編輯狀態...');
+            
+            // 載入現有狀態
+            loadEditingState();
+            
+            // 渲染卡片
+            renderTruckCards();
+            
+            log('✅ 測試完成，請嘗試編輯餐車，然後模擬 F5 重新載入');
+        }
+        
+        // 模擬 F5 重新載入
+        function simulateF5Reload() {
+            log('🔄 模擬 F5 重新載入...');
+            
+            // 重新載入編輯狀態
+            const loaded = loadEditingState();
+            
+            if (loaded) {
+                renderTruckCards();
+                log('✅ F5 重新載入完成，編輯狀態已保持');
+            } else {
+                log('❌ F5 重新載入失敗，編輯狀態丟失');
+            }
+        }
+        
+        // 清除所有資料
+        function clearAllData() {
+            log('🗑️ 清除所有資料...');
+            localStorage.removeItem('foodTruckData');
+            sessionStorage.removeItem('foodTruckData');
+            
+            // 重置編輯狀態
+            foodTruckDatabase.forEach(truck => {
+                truck.isEditing = false;
+            });
+            
+            renderTruckCards();
+            log('✅ 所有資料已清除');
+        }
+        
+        // 頁面載入時自動測試
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 編輯狀態測試頁面已載入');
+            testEditingState();
+        });
+    </script>
+</body>
+</html>

@@ -3,10 +3,82 @@
     {
       "name": "餐開月行程表",
       "username": "sky770825",
-      "email": "sky770825@users.noreply.github.com",
+      "email": "sky19880825@gmail.com",
       "repository": "https://github.com/sky770825/niceshow.git",
       "website": "https://sky770825.github.io/niceshow",
       "isDefault": true
+    },
+    {
+      "name": "功夫茶點餐系統",
+      "username": "sky770825",
+      "email": "sky19880825@gmail.com",
+      "repository": "https://github.com/sky770825/kungfuteahtml.git",
+      "website": "https://sky770825.github.io/kungfuteahtml",
+      "isDefault": false
+    },
+    {
+      "name": "AI指令大全",
+      "username": "sky770825",
+      "email": "sky19880825@gmail.com",
+      "repository": "https://github.com/sky770825/Aibot888.git",
+      "website": "https://sky770825.github.io/Aibot888",
+      "isDefault": false
+    },
+    {
+      "name": "美業共享工作室",
+      "username": "sky770825",
+      "email": "sky19880825@gmail.com",
+      "repository": "https://github.com/sky770825/lady8888.git",
+      "website": "https://sky770825.github.io/lady8888",
+      "isDefault": false
+    },
+    {
+      "name": "Picehouse",
+      "username": "sky770825",
+      "email": "sky19880825@gmail.com",
+      "repository": "https://github.com/sky770825/picehouse.git",
+      "website": "https://sky770825.github.io/picehouse",
+      "isDefault": false
+    },
+    {
+      "name": "華房地產",
+      "username": "sky770825",
+      "email": "sky19880825@gmail.com",
+      "repository": "https://github.com/sky770825/Hua-Real-Estate.git",
+      "website": "https://sky770825.github.io/Hua-Real-Estate",
+      "isDefault": false
+    },
+    {
+      "name": "房屋投票系統",
+      "username": "sky770825",
+      "email": "sky19880825@gmail.com",
+      "repository": "https://github.com/sky770825/housepolltex.git",
+      "website": "https://sky770825.github.io/housepolltex",
+      "isDefault": false
+    },
+    {
+      "name": "餐車系統",
+      "username": "sky770825",
+      "email": "sky19880825@gmail.com",
+      "repository": "https://github.com/sky770825/foodcar.git",
+      "website": "https://sky770825.github.io/foodcar",
+      "isDefault": false
+    },
+    {
+      "name": "濬聯配件專用",
+      "username": "liny14705",
+      "email": "liny14705@gmail.com",
+      "repository": "https://github.com/liny14705/nicehouse.git",
+      "website": "https://liny14705.github.io/nicehouse",
+      "isDefault": false
+    },
+    {
+      "name": "餐開月行程表備用",
+      "username": "chu20170103",
+      "email": "chu20170103@gmail.com",
+      "repository": "https://github.com/chu20170103/meal-schedule.git",
+      "website": "https://chu20170103.github.io/meal-schedule",
+      "isDefault": false
     }
   ]
 }

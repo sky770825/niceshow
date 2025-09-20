@@ -63,9 +63,30 @@
    - 電子郵件：`sky19880825@gmail.com`
    - 描述：主要開發帳戶
    - 專案：
-     - 餐開月行程表 (餐車行程管理系統)
+     - 餐開月行程表 (餐車行程管理系統) ⭐ 預設專案
        - 倉庫：https://github.com/sky770825/niceshow.git
        - 網站：https://sky770825.github.io/niceshow
+     - 功夫茶點餐系統 (功夫茶楊梅四維店線上點餐系統)
+       - 倉庫：https://github.com/sky770825/kungfuteahtml.git
+       - 網站：https://sky770825.github.io/kungfuteahtml
+     - AI指令大全 (AI指令大全集合)
+       - 倉庫：https://github.com/sky770825/Aibot888.git
+       - 網站：https://sky770825.github.io/Aibot888
+     - 美業共享工作室 (美業共享工作室相關專案)
+       - 倉庫：https://github.com/sky770825/lady8888.git
+       - 網站：https://sky770825.github.io/lady8888
+     - Picehouse (Picehouse 專案)
+       - 倉庫：https://github.com/sky770825/picehouse.git
+       - 網站：https://sky770825.github.io/picehouse
+     - 華房地產 (華房地產相關專案)
+       - 倉庫：https://github.com/sky770825/Hua-Real-Estate.git
+       - 網站：https://sky770825.github.io/Hua-Real-Estate
+     - 房屋投票系統 (房屋投票系統)
+       - 倉庫：https://github.com/sky770825/housepolltex.git
+       - 網站：https://sky770825.github.io/housepolltex
+     - 餐車系統 (餐車相關系統)
+       - 倉庫：https://github.com/sky770825/foodcar.git
+       - 網站：https://sky770825.github.io/foodcar
 
 2. **liny14705 帳戶**
    - 用戶名：`liny14705`
@@ -75,6 +96,15 @@
      - 濬聯配件專用 (濬聯配件專用系統)
        - 倉庫：https://github.com/liny14705/nicehouse.git
        - 網站：https://liny14705.github.io/nicehouse
+
+3. **chu20170103 帳戶**
+   - 用戶名：`chu20170103`
+   - 電子郵件：`chu20170103@gmail.com`
+   - 描述：第三個開發帳戶
+   - 專案：
+     - 餐開月行程表備用 (餐開月行程表備用版本)
+       - 倉庫：https://github.com/chu20170103/meal-schedule.git
+       - 網站：https://chu20170103.github.io/meal-schedule
 
 ## 使用指南
 
@@ -90,7 +120,8 @@
 1. 雙擊 `quick_github_switch.bat` 開始使用
 2. 選擇 "1" 切換到 sky770825 帳戶
 3. 選擇 "2" 切換到 liny14705 帳戶
-4. 選擇 "y" 立即推送變更
+4. 選擇 "3" 切換到 chu20170103 帳戶
+5. 選擇 "y" 立即推送變更
 
 ### 添加新專案
 
