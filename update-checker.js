@@ -15,22 +15,22 @@ class UpdateChecker {
      * 初始化更新檢查
      */
     initialize() {
-        console.log('🔄 初始化更新檢查器...');
+        console.log('🔄 更新檢查器已停用...');
         
-        // 設定定期檢查
-        this.startPeriodicCheck();
+        // 停用所有更新檢查功能
+        // this.startPeriodicCheck();
         
-        // 頁面可見性變化時檢查
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                this.checkForUpdates();
-            }
-        });
+        // 頁面可見性變化時檢查 - 已停用
+        // document.addEventListener('visibilitychange', () => {
+        //     if (!document.hidden) {
+        //         this.checkForUpdates();
+        //     }
+        // });
 
-        // 頁面焦點時檢查
-        window.addEventListener('focus', () => {
-            this.checkForUpdates();
-        });
+        // 頁面焦點時檢查 - 已停用
+        // window.addEventListener('focus', () => {
+        //     this.checkForUpdates();
+        // });
     }
 
     /**

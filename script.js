@@ -677,10 +677,10 @@ async function initializeImageMarquee() {
                 .sort((a, b) => a.priority - b.priority);
             console.log('📱 從本地儲存載入餐車圖片資料');
             
-            // 檢查遠端更新（背景檢查，不影響主要載入）
-            setTimeout(() => {
-                checkForRemoteUpdates();
-            }, 1000);
+            // 檢查遠端更新（背景檢查，不影響主要載入） - 已停用
+            // setTimeout(() => {
+            //     checkForRemoteUpdates();
+            // }, 1000);
         } else {
             // 如果本地沒有資料，從 data.json 載入
             const response = await fetch('data.json');
@@ -1050,8 +1050,8 @@ function initializeApp() {
     initializePageAnimation();
     initializeImageMarquee();
     
-    // 設定定期檢查資料更新
-    setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
+    // 設定定期檢查資料更新 - 已停用
+    // setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
 }
 
 
