@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin 測試頁面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .status {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .status-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        .log {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Admin 資料載入測試</h1>
+        <p>此頁面用於測試 admin.html 的資料載入是否正常</p>
+        
+        <div id="status" class="status status-info">
+            🔄 準備測試資料載入...
+        </div>
+        
+        <div>
+            <button class="btn" onclick="testDataLoading()">測試資料載入</button>
+            <button class="btn" onclick="testRenderCards()">測試卡片渲染</button>
+            <button class="btn" onclick="clearCache()">清除快取</button>
+            <button class="btn" onclick="openAdmin()">開啟 Admin</button>
+        </div>
+        
+        <div>
+            <h3>📊 資料狀態</h3>
+            <div id="dataInfo">
+                <p>正在檢查資料狀態...</p>
+            </div>
+        </div>
+        
+        <div>
+            <h3>📝 測試日誌</h3>
+            <div id="log" class="log">等待測試開始...\n</div>
+        </div>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log');
+        let statusElement = document.getElementById('status');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        function updateStatus(message, type = 'info') {
+            statusElement.textContent = message;
+            statusElement.className = `status status-${type}`;
+        }
+        
+        function updateDataInfo() {
+            const dataInfo = document.getElementById('dataInfo');
+            const localData = localStorage.getItem('foodTruckData');
+            const sessionData = sessionStorage.getItem('foodTruckData');
+            
+            let info = '<ul>';
+            info += `<li>localStorage: ${localData ? '有資料' : '無資料'}</li>`;
+            info += `<li>sessionStorage: ${sessionData ? '有資料' : '無資料'}</li>`;
+            
+            if (localData) {
+                try {
+                    const data = JSON.parse(localData);
+                    info += `<li>餐車數量: ${data.foodTrucks ? data.foodTrucks.length : 0}</li>`;
+                    info += `<li>最後更新: ${data.lastUpdated || '未知'}</li>`;
+                } catch (e) {
+                    info += `<li>資料格式錯誤</li>`;
+                }
+            }
+            
+            info += '</ul>';
+            dataInfo.innerHTML = info;
+        }
+        
+        function testDataLoading() {
+            log('🧪 開始測試資料載入...');
+            
+            try {
+                const localData = localStorage.getItem('foodTruckData');
+                if (localData) {
+                    const data = JSON.parse(localData);
+                    log(`✅ 本地資料載入成功: ${data.foodTrucks.length} 個餐車`);
+                    
+                    data.foodTrucks.forEach((truck, index) => {
+                        log(`  ${index + 1}. ${truck.title} (${truck.isActive ? '已上架' : '已下架'})`);
+                    });
+                    
+                    updateStatus('✅ 資料載入測試通過', 'success');
+                } else {
+                    log('⚠️ 本地沒有資料，嘗試從 data.json 載入...');
+                    
+                    fetch('data.json')
+                        .then(response => response.json())
+                        .then(data => {
+                            log(`✅ 從 data.json 載入成功: ${data.foodTrucks.length} 個餐車`);
+                            
+                            data.foodTrucks.forEach((truck, index) => {
+                                log(`  ${index + 1}. ${truck.title} (${truck.isActive ? '已上架' : '已下架'})`);
+                            });
+                            
+                            // 儲存到本地
+                            localStorage.setItem('foodTruckData', JSON.stringify(data));
+                            updateStatus('✅ 資料載入測試通過', 'success');
+                            updateDataInfo();
+                        })
+                        .catch(error => {
+                            log(`❌ 從 data.json 載入失敗: ${error.message}`);
+                            updateStatus('❌ 資料載入測試失敗', 'error');
+                        });
+                }
+            } catch (error) {
+                log(`❌ 資料載入測試失敗: ${error.message}`);
+                updateStatus('❌ 資料載入測試失敗', 'error');
+            }
+        }
+        
+        function testRenderCards() {
+            log('🧪 開始測試卡片渲染...');
+            
+            try {
+                const localData = localStorage.getItem('foodTruckData');
+                if (!localData) {
+                    log('❌ 沒有資料可以渲染');
+                    updateStatus('❌ 請先載入資料', 'error');
+                    return;
+                }
+                
+                const data = JSON.parse(localData);
+                const activeTrucks = data.foodTrucks.filter(truck => truck.isActive);
+                
+                log(`📊 總餐車數: ${data.foodTrucks.length}`);
+                log(`📊 已上架: ${activeTrucks.length}`);
+                log(`📊 已下架: ${data.foodTrucks.length - activeTrucks.length}`);
+                
+                if (activeTrucks.length > 0) {
+                    log('✅ 有活躍的餐車可以渲染');
+                    updateStatus('✅ 卡片渲染測試通過', 'success');
+                } else {
+                    log('⚠️ 沒有活躍的餐車');
+                    updateStatus('⚠️ 沒有活躍的餐車', 'warning');
+                }
+            } catch (error) {
+                log(`❌ 卡片渲染測試失敗: ${error.message}`);
+                updateStatus('❌ 卡片渲染測試失敗', 'error');
+            }
+        }
+        
+        function clearCache() {
+            log('🧹 清除快取...');
+            
+            try {
+                localStorage.removeItem('foodTruckData');
+                sessionStorage.removeItem('foodTruckData');
+                localStorage.removeItem('githubToken');
+                localStorage.removeItem('projectConfig');
+                localStorage.removeItem('githubProjects');
+                
+                log('✅ 快取已清除');
+                updateStatus('✅ 快取已清除', 'success');
+                updateDataInfo();
+            } catch (error) {
+                log(`❌ 清除快取失敗: ${error.message}`);
+                updateStatus('❌ 清除快取失敗', 'error');
+            }
+        }
+        
+        function openAdmin() {
+            log('🔗 開啟 Admin 頁面...');
+            window.open('admin.html', '_blank');
+        }
+        
+        // 頁面載入時檢查資料狀態
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Admin 測試頁面已載入');
+            updateDataInfo();
+            updateStatus('✅ 測試頁面已載入', 'success');
+        });
+    </script>
+</body>
+</html>

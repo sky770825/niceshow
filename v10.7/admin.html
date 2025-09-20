@@ -1293,7 +1293,7 @@
                                 <button type="submit" class="btn btn-primary">➕ 新增餐車</button>
                                 <button type="button" class="btn btn-secondary" onclick="openPostimageUpload()">🖼️ 開啟 Postimage</button>
                                 <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
-                                <button type="button" class="btn btn-warning" onclick="showUpdateDisabledMessage()">🔄 檢查更新</button>
+                                <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
                                 <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
                                 <button type="button" class="btn btn-info" onclick="openTokenSetup()">🔧 開啟 Token 設定頁</button>
                                 <button type="button" class="btn btn-secondary" onclick="debugDataStatus()">🔍 檢查狀態</button>
@@ -1336,7 +1336,7 @@
     <script src="project-config.js"></script>
     <script src="github-sync.js"></script>
     <script src="auto-setup-token.js"></script>
-    <!-- <script src="update-checker.js"></script> 已停用自動更新檢查 -->
+    <script src="update-checker.js"></script>
     
     <script>
         // 預設餐車資料庫（備用資料，主要資料來源為 data.json）
@@ -2494,15 +2494,38 @@
             window.open('setup-github-token.html', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
         }
 
-        // 顯示更新檢查已停用的訊息
-        function showUpdateDisabledMessage() {
-            showAlert('🔄 自動更新檢查已停用\n\n如需檢查更新，請使用「強制重新載入」按鈕', 'info');
-        }
-
-        // 檢查遠端更新（已停用）
+        // 檢查遠端更新
         async function checkForUpdates() {
-            console.log('🔄 更新檢查功能已停用');
-            showUpdateDisabledMessage();
+            try {
+                showSyncStatus('🔄 正在檢查遠端更新...');
+                
+                const status = githubSync.getProjectStatus();
+                if (!status.hasToken) {
+                    showAlert('請先設定 GitHub Token', 'danger');
+                    return;
+                }
+
+                const updateInfo = await githubSync.checkForUpdates('data.json');
+                
+                if (updateInfo.hasUpdate) {
+                    const shouldUpdate = confirm(
+                        `發現遠端更新！\n\n` +
+                        `遠端 SHA: ${updateInfo.remoteSha.substring(0, 8)}...\n` +
+                        `本地 SHA: ${updateInfo.localSha ? updateInfo.localSha.substring(0, 8) + '...' : '無'}\n` +
+                        `更新時間: ${new Date(updateInfo.lastModified).toLocaleString('zh-TW')}\n\n` +
+                        `是否要下載遠端更新？`
+                    );
+                    
+                    if (shouldUpdate) {
+                        await pullRemoteData();
+                    }
+                } else {
+                    showSyncStatus('✅ 已是最新版本');
+                }
+            } catch (error) {
+                console.error('檢查更新失敗:', error);
+                showAlert(`檢查更新失敗：${error.message}`, 'danger');
+            }
         }
 
         // 從遠端拉取資料

@@ -677,10 +677,10 @@ async function initializeImageMarquee() {
                 .sort((a, b) => a.priority - b.priority);
             console.log('📱 從本地儲存載入餐車圖片資料');
             
-            // 檢查遠端更新（背景檢查，不影響主要載入） - 已停用
-            // setTimeout(() => {
-            //     checkForRemoteUpdates();
-            // }, 1000);
+            // 檢查遠端更新（背景檢查，不影響主要載入）
+            setTimeout(() => {
+                checkForRemoteUpdates();
+            }, 1000);
         } else {
             // 如果本地沒有資料，從 data.json 載入
             const response = await fetch('data.json');
@@ -1050,8 +1050,8 @@ function initializeApp() {
     initializePageAnimation();
     initializeImageMarquee();
     
-    // 設定定期檢查資料更新 - 已停用
-    // setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
+    // 設定定期檢查資料更新
+    setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
 }
 
 
@@ -1708,15 +1708,10 @@ function clearAlignmentDetection() {
 }
 
 // ==================== 遠端更新檢查功能 ====================
-// 已停用所有更新檢查功能
-
-/*
-// 以下函數已停用，避免跳出更新版本提示
 
 /**
  * 檢查遠端更新（背景執行）
  */
-/*
 async function checkForRemoteUpdates() {
     try {
         // 檢查是否有 GitHub 同步模組
@@ -1751,7 +1746,6 @@ async function checkForRemoteUpdates() {
 /**
  * 顯示更新通知
  */
-/*
 function showUpdateNotification(updateInfo) {
     // 建立更新通知元素
     const notification = document.createElement('div');
@@ -1824,7 +1818,6 @@ function showUpdateNotification(updateInfo) {
 /**
  * 從遠端更新資料
  */
-/*
 async function updateFromRemote() {
     try {
         console.log('🔄 正在從遠端更新資料...');
@@ -1853,7 +1846,6 @@ async function updateFromRemote() {
 /**
  * 隱藏更新通知
  */
-/*
 function dismissUpdateNotification() {
     const notification = document.getElementById('updateNotification');
     if (notification) {
@@ -1863,4 +1855,3 @@ function dismissUpdateNotification() {
         }, 300);
     }
 }
-*/

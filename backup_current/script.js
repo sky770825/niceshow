@@ -507,104 +507,124 @@ function initializePageAnimation() {
  * 3. 要新增：在陣列中新增物件
  * 4. 要修改：直接編輯對應的物件
  */
+// 預設餐車資料庫（備用資料，主要資料來源為 data.json）
 const foodTruckDatabase = [
+    {
+        id: 'truck_1758002427365',
+        src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png',
+        alt: '聯絡我',
+        title: '版主：蔡濬瑒',
+        link: [
+            {
+                url: 'https://realtor.houseprice.tw/agent/buy/0925666597/',
+                text: '精選物件'
+            },
+            {
+                url: 'https://www.tiktok.com/@aihouse168?is_from_webapp=1&sender_device=pc',
+                text: 'Tiktok'
+            }
+        ],
+        isActive: true,
+        priority: 1,
+        category: 'main'
+    },
     {
         id: 'truck_001',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg',
         alt: '餐車品牌1',
-        title: '餐車品牌1',
+        title: '露露姐',
         isActive: true,
-        priority: 1,
+        priority: 2,
         category: 'main'
     },
     {
         id: 'truck_002',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg',
         alt: '餐車品牌2',
-        title: '餐車品牌2',
+        title: '花生捲冰淇淋',
         isActive: true,
-        priority: 2,
+        priority: 3,
         category: 'main'
     },
     {
         id: 'truck_003',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg',
         alt: '餐車品牌3',
-        title: '餐車品牌3',
+        title: '鄭老爹乾麵',
         isActive: true,
-        priority: 3,
+        priority: 4,
         category: 'main'
     },
     {
         id: 'truck_004',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg',
         alt: '餐車品牌4',
-        title: '餐車品牌4',
+        title: '蔬孟園',
         isActive: true,
-        priority: 4,
+        priority: 5,
         category: 'main'
     },
     {
         id: 'truck_005',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg',
         alt: '餐車品牌5',
-        title: '餐車品牌5',
+        title: '台東放山豬',
         isActive: true,
-        priority: 5,
+        priority: 6,
         category: 'main'
     },
     {
         id: 'truck_006',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg',
         alt: '餐車品牌6',
-        title: '餐車品牌6',
+        title: '安德尼斯烘培坊',
         isActive: true,
-        priority: 6,
+        priority: 7,
         category: 'main'
     },
     {
         id: 'truck_007',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg',
         alt: '餐車品牌7',
-        title: '餐車品牌7',
+        title: '韓式飯捲',
         isActive: true,
-        priority: 7,
+        priority: 8,
         category: 'main'
     },
     {
         id: 'truck_008',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg',
         alt: '餐車品牌8',
-        title: '餐車品牌8',
+        title: '炸蛋𣄃魚黑輪',
         isActive: true,
-        priority: 8,
+        priority: 9,
         category: 'main'
     },
     {
         id: 'truck_009',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg',
         alt: '餐車品牌9',
-        title: '餐車品牌9',
+        title: '向陽坡刈包',
         isActive: true,
-        priority: 9,
+        priority: 10,
         category: 'main'
     },
     {
         id: 'truck_010',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg',
         alt: '餐車品牌10',
-        title: '餐車品牌10',
+        title: '滷拉拉',
         isActive: true,
-        priority: 10,
+        priority: 11,
         category: 'main'
     },
     {
         id: 'truck_011',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg',
         alt: '餐車品牌11',
-        title: '餐車品牌11',
+        title: '餓食鬼美味販賣所',
         isActive: true,
-        priority: 11,
+        priority: 12,
         category: 'main'
     }
 ];
@@ -656,6 +676,11 @@ async function initializeImageMarquee() {
                 .filter(truck => truck.isActive)
                 .sort((a, b) => a.priority - b.priority);
             console.log('📱 從本地儲存載入餐車圖片資料');
+            
+            // 檢查遠端更新（背景檢查，不影響主要載入） - 已停用
+            // setTimeout(() => {
+            //     checkForRemoteUpdates();
+            // }, 1000);
         } else {
             // 如果本地沒有資料，從 data.json 載入
             const response = await fetch('data.json');
@@ -664,6 +689,9 @@ async function initializeImageMarquee() {
                 .filter(truck => truck.isActive)
                 .sort((a, b) => a.priority - b.priority);
             console.log('🌐 從 data.json 載入餐車圖片資料');
+            
+            // 儲存到本地
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
         }
     } catch (error) {
         console.error('無法載入餐車資料:', error);
@@ -1009,6 +1037,11 @@ function checkDataUpdate() {
 function initializeApp() {
     console.log('🍽️ 四維商圈餐車月行程表已載入完成！');
     
+    // 初始化專案設定
+    if (typeof projectConfig !== 'undefined') {
+        projectConfig.initialize();
+    }
+    
     // 初始化各種功能
     initializeTruckNames();
     initializeDayCards();
@@ -1017,8 +1050,8 @@ function initializeApp() {
     initializePageAnimation();
     initializeImageMarquee();
     
-    // 設定定期檢查資料更新
-    setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
+    // 設定定期檢查資料更新 - 已停用
+    // setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
 }
 
 
@@ -1673,3 +1706,161 @@ function clearAlignmentDetection() {
         alignmentDetector = null;
     }
 }
+
+// ==================== 遠端更新檢查功能 ====================
+// 已停用所有更新檢查功能
+
+/*
+// 以下函數已停用，避免跳出更新版本提示
+
+/**
+ * 檢查遠端更新（背景執行）
+ */
+/*
+async function checkForRemoteUpdates() {
+    try {
+        // 檢查是否有 GitHub 同步模組
+        if (typeof githubSync === 'undefined') {
+            console.log('⚠️ GitHub 同步模組未載入，跳過遠端更新檢查');
+            return;
+        }
+
+        const status = githubSync.getProjectStatus();
+        if (!status.hasProject) {
+            console.log('⚠️ 未設定專案，跳過遠端更新檢查');
+            return;
+        }
+
+        console.log('🔄 背景檢查遠端更新...');
+        
+        const updateInfo = await githubSync.checkForUpdates('data.json');
+        
+        if (updateInfo.hasUpdate) {
+            console.log('🆕 發現遠端更新，準備更新資料');
+            
+            // 顯示更新通知
+            showUpdateNotification(updateInfo);
+        } else {
+            console.log('✅ 已是最新版本');
+        }
+    } catch (error) {
+        console.log('⚠️ 檢查遠端更新失敗:', error.message);
+    }
+}
+
+/**
+ * 顯示更新通知
+ */
+/*
+function showUpdateNotification(updateInfo) {
+    // 建立更新通知元素
+    const notification = document.createElement('div');
+    notification.id = 'updateNotification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        max-width: 300px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+        animation: slideInRight 0.3s ease;
+    `;
+    
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.2rem;">🆕</span>
+            <strong>發現新更新</strong>
+        </div>
+        <div style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.9;">
+            遠端資料已更新，是否要重新載入？
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button onclick="updateFromRemote()" style="
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            ">立即更新</button>
+            <button onclick="dismissUpdateNotification()" style="
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            ">稍後</button>
+        </div>
+    `;
+    
+    // 添加動畫樣式
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(notification);
+    
+    // 5秒後自動隱藏
+    setTimeout(() => {
+        if (document.getElementById('updateNotification')) {
+            dismissUpdateNotification();
+        }
+    }, 5000);
+}
+
+/**
+ * 從遠端更新資料
+ */
+/*
+async function updateFromRemote() {
+    try {
+        console.log('🔄 正在從遠端更新資料...');
+        
+        const result = await githubSync.pullData('data.json');
+        const data = JSON.parse(result.content);
+        
+        // 更新本地儲存
+        localStorage.setItem('foodTruckData', JSON.stringify(data));
+        sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+        
+        console.log('✅ 遠端資料已更新');
+        
+        // 隱藏通知
+        dismissUpdateNotification();
+        
+        // 重新載入頁面
+        location.reload();
+        
+    } catch (error) {
+        console.error('更新失敗:', error);
+        alert('更新失敗：' + error.message);
+    }
+}
+
+/**
+ * 隱藏更新通知
+ */
+/*
+function dismissUpdateNotification() {
+    const notification = document.getElementById('updateNotification');
+    if (notification) {
+        notification.style.animation = 'slideInRight 0.3s ease reverse';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }
+}
+*/
