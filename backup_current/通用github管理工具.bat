@@ -343,6 +343,10 @@ copy "通用github管理工具.bat" backup_current\ 2>nul
 copy *.md backup_current\ 2>nul
 copy *.txt backup_current\ 2>nul
 copy tablet_*.html backup_current\ 2>nul
+copy *.css backup_current\ 2>nul
+copy *.js backup_current\ 2>nul
+copy *.html backup_current\ 2>nul
+copy *.json backup_current\ 2>nul
 echo  當前檔案已備份
 
 echo.
@@ -464,6 +468,10 @@ if /i "%restore%"=="y" (
     copy backup_current\*.md . 2>nul
     copy backup_current\*.txt . 2>nul
     copy backup_current\tablet_*.html . 2>nul
+    copy backup_current\*.css . 2>nul
+    copy backup_current\*.js . 2>nul
+    copy backup_current\*.html . 2>nul
+    copy backup_current\*.json . 2>nul
     echo  檔案已恢復到部署前狀態
     echo.
     echo  提示：GitHub上仍然是 %version% 版本
@@ -509,6 +517,10 @@ copy "通用github管理工具.bat" backup_before_cleanup\ 2>nul
 copy *.txt backup_before_cleanup\ 2>nul
 copy *.md backup_before_cleanup\ 2>nul
 copy tablet_*.html backup_before_cleanup\ 2>nul
+copy *.css backup_before_cleanup\ 2>nul
+copy *.js backup_before_cleanup\ 2>nul
+copy *.html backup_before_cleanup\ 2>nul
+copy *.json backup_before_cleanup\ 2>nul
 echo  檔案已備份到 backup_before_cleanup 資料夾
 
 echo.
@@ -608,7 +620,121 @@ if "%version%"=="" (
 echo 正在建立 %version% 資料夾...
 mkdir %version% 2>nul
 
-echo 正在複製檔案...
+echo.
+echo 請選擇備份範圍：
+echo 1. 完整備份 (包含所有檔案和資料夾)
+echo 2. 基本備份 (只備份主要網站檔案)
+echo 3. 自定義備份 (手動選擇要備份的內容)
+echo.
+set /p backup_type=請選擇備份類型 (1-3): 
+
+if "%backup_type%"=="1" goto full_backup
+if "%backup_type%"=="2" goto basic_backup
+if "%backup_type%"=="3" goto custom_backup
+echo 無效選項，使用基本備份
+goto basic_backup
+
+:full_backup
+echo.
+echo ================================
+echo 📦 正在進行完整備份...
+echo ================================
+echo.
+
+echo 步驟1: 複製所有主要檔案...
+copy index.html %version%\ 2>nul
+copy script.js %version%\ 2>nul
+copy style.css %version%\ 2>nul
+copy data.json %version%\ 2>nul
+copy admin.html %version%\ 2>nul
+copy "通用github管理工具.bat" %version%\ 2>nul
+copy *.md %version%\ 2>nul
+copy *.txt %version%\ 2>nul
+copy tablet_*.html %version%\ 2>nul
+copy *.css %version%\ 2>nul
+copy *.js %version%\ 2>nul
+copy *.html %version%\ 2>nul
+copy *.json %version%\ 2>nul
+echo ✅ 主要檔案已複製
+
+echo.
+echo 步驟2: 複製所有版本資料夾...
+for /d %%i in (v*) do (
+    if not "%%i"=="%version%" (
+        echo 正在複製版本資料夾：%%i
+        xcopy "%%i" "%version%\%%i\" /E /I /Q >nul 2>&1
+        if not errorlevel 1 (
+            echo ✅ %%i 已複製
+        ) else (
+            echo ❌ %%i 複製失敗
+        )
+    )
+)
+
+echo.
+echo 步驟3: 複製備份資料夾...
+for /d %%i in (backup_*) do (
+    echo 正在複製備份資料夾：%%i
+    xcopy "%%i" "%version%\%%i\" /E /I /Q >nul 2>&1
+    if not errorlevel 1 (
+        echo ✅ %%i 已複製
+    ) else (
+        echo ❌ %%i 複製失敗
+    )
+)
+
+echo.
+echo 步驟4: 複製暫存資料夾...
+if exist "暫存" (
+    echo 正在複製暫存資料夾...
+    xcopy "暫存" "%version%\暫存\" /E /I /Q >nul 2>&1
+    if not errorlevel 1 (
+        echo ✅ 暫存資料夾已複製
+    ) else (
+        echo ❌ 暫存資料夾複製失敗
+    )
+)
+
+echo.
+echo 步驟5: 複製其他重要資料夾...
+for /d %%i in (temp_*) do (
+    echo 正在複製資料夾：%%i
+    xcopy "%%i" "%version%\%%i\" /E /I /Q >nul 2>&1
+    if not errorlevel 1 (
+        echo ✅ %%i 已複製
+    ) else (
+        echo ❌ %%i 複製失敗
+    )
+)
+
+echo.
+echo 步驟6: 複製數字資料夾...
+for /d %%i in ([0-9]*) do (
+    echo 正在複製資料夾：%%i
+    xcopy "%%i" "%version%\%%i\" /E /I /Q >nul 2>&1
+    if not errorlevel 1 (
+        echo ✅ %%i 已複製
+    ) else (
+        echo ❌ %%i 複製失敗
+    )
+)
+
+echo.
+echo ================================
+echo 🎉 完整備份完成！
+echo ================================
+echo 版本資料夾：%version%
+echo 包含內容：所有檔案、版本資料夾、備份資料夾、暫存資料夾等
+goto backup_complete
+
+:basic_backup
+echo.
+echo ================================
+echo 📦 正在進行基本備份...
+echo ================================
+echo.
+
+echo 正在複製主要網站檔案...
 copy index.html %version%\ 2>nul
 copy script.js %version%\ 2>nul
 copy style.css %version%\ 2>nul
@@ -620,8 +746,83 @@ copy *.txt %version%\ 2>nul
 copy tablet_*.html %version%\ 2>nul
 
 echo.
-echo 複製完成！
+echo ================================
+echo 🎉 基本備份完成！
+echo ================================
 echo 版本資料夾：%version%
+echo 包含內容：主要網站檔案
+goto backup_complete
+
+:custom_backup
+echo.
+echo ================================
+echo 📦 自定義備份
+echo ================================
+echo.
+
+echo 可用的檔案和資料夾：
+echo ================================
+dir /b
+echo ================================
+echo.
+
+echo 請輸入要備份的檔案或資料夾名稱 (用空格分隔)：
+echo 範例：index.html script.js v9.0 backup_current
+echo 或輸入 "all" 進行完整備份
+echo.
+set /p custom_files=請輸入要備份的內容: 
+
+if /i "%custom_files%"=="all" (
+    echo 正在進行完整備份...
+    goto full_backup
+)
+
+echo.
+echo 正在複製指定的檔案和資料夾...
+
+for %%f in (%custom_files%) do (
+    if exist "%%f" (
+        if exist "%%f\" (
+            echo 正在複製資料夾：%%f
+            xcopy "%%f" "%version%\%%f\" /E /I /Q >nul 2>&1
+            if not errorlevel 1 (
+                echo ✅ %%f 已複製
+            ) else (
+                echo ❌ %%f 複製失敗
+            )
+        ) else (
+            echo 正在複製檔案：%%f
+            copy "%%f" "%version%\" >nul 2>&1
+            if not errorlevel 1 (
+                echo ✅ %%f 已複製
+            ) else (
+                echo ❌ %%f 複製失敗
+            )
+        )
+    ) else (
+        echo ❌ 找不到：%%f
+    )
+)
+
+echo.
+echo ================================
+echo 🎉 自定義備份完成！
+echo ================================
+echo 版本資料夾：%version%
+echo 包含內容：%custom_files%
+goto backup_complete
+
+:backup_complete
+echo.
+echo 備份統計：
+echo ================================
+echo 版本資料夾：%version%
+echo 備份時間：%date% %time%
+echo 備份位置：%cd%\%version%
+echo.
+
+echo 正在檢查備份內容...
+dir "%version%" /b
 echo.
 
 set /p deploy_now=是否立即部署此版本？(y/n): 
