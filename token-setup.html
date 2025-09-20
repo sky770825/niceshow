@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Token 設定</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .btn-danger {
+            background: #ef4444;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        .instructions {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .log {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 GitHub Token 設定</h1>
+        <p>設定 GitHub Personal Access Token 以啟用自動同步功能</p>
+        
+        <div id="status"></div>
+        
+        <div class="instructions">
+            <h3>📋 設定步驟：</h3>
+            <ol>
+                <li>前往 <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings > Personal Access Tokens</a></li>
+                <li>點擊 "Generate new token (classic)"</li>
+                <li>選擇 "repo" 權限</li>
+                <li>複製生成的 Token 並貼到下方</li>
+            </ol>
+        </div>
+        
+        <div class="form-group">
+            <label for="tokenInput">GitHub Token:</label>
+            <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+        </div>
+        
+        <div>
+            <button class="btn" onclick="setToken()">🔑 設定 Token</button>
+            <button class="btn btn-success" onclick="autoSetup()">⚡ 自動設定</button>
+            <button class="btn btn-danger" onclick="clearToken()">🗑️ 清除 Token</button>
+            <button class="btn" onclick="validateToken()">✅ 驗證 Token</button>
+        </div>
+        
+        <div>
+            <h3>📊 目前狀態</h3>
+            <div id="currentStatus"></div>
+        </div>
+        
+        <div>
+            <h3>📝 操作日誌</h3>
+            <div id="log" class="log">等待操作...\n</div>
+        </div>
+    </div>
+
+    <script src="auto-setup-token.js"></script>
+    <script>
+        let logElement = document.getElementById('log');
+        let statusElement = document.getElementById('status');
+        let currentStatusElement = document.getElementById('currentStatus');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        function showStatus(message, type = 'info') {
+            statusElement.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function updateCurrentStatus() {
+            const status = window.tokenAutoSetup.showTokenStatus();
+            currentStatusElement.innerHTML = `
+                <p><strong>Token 狀態:</strong> ${status.hasToken ? '✅ 已設定' : '❌ 未設定'}</p>
+                <p><strong>Token 長度:</strong> ${status.tokenLength} 字符</p>
+                <p><strong>Token 預覽:</strong> ${status.tokenPreview}</p>
+            `;
+        }
+        
+        async function setToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            
+            if (!token) {
+                showStatus('請輸入 GitHub Token', 'error');
+                log('❌ 未輸入 Token');
+                return;
+            }
+            
+            log('🔑 設定自定義 Token...');
+            const result = window.tokenAutoSetup.setCustomToken(token);
+            
+            if (result.success) {
+                showStatus('✅ Token 設定成功！', 'success');
+                log('✅ Token 設定成功');
+                document.getElementById('tokenInput').value = '';
+            } else {
+                showStatus('❌ ' + result.message, 'error');
+                log('❌ ' + result.message);
+            }
+            
+            updateCurrentStatus();
+        }
+        
+        function autoSetup() {
+            log('⚡ 開始自動設定 Token...');
+            const result = window.tokenAutoSetup.autoSetupToken();
+            
+            if (result.success) {
+                showStatus('✅ ' + result.message, 'success');
+                log('✅ ' + result.message);
+            } else {
+                showStatus('❌ ' + result.message, 'error');
+                log('❌ ' + result.message);
+            }
+            
+            updateCurrentStatus();
+        }
+        
+        function clearToken() {
+            log('🗑️ 清除 Token...');
+            const result = window.tokenAutoSetup.clearToken();
+            
+            if (result.success) {
+                showStatus('✅ ' + result.message, 'success');
+                log('✅ ' + result.message);
+            } else {
+                showStatus('❌ ' + result.message, 'error');
+                log('❌ ' + result.message);
+            }
+            
+            updateCurrentStatus();
+        }
+        
+        async function validateToken() {
+            log('✅ 驗證 Token...');
+            const result = await window.tokenAutoSetup.validateToken();
+            
+            if (result.valid) {
+                showStatus('✅ ' + result.message, 'success');
+                log('✅ ' + result.message);
+            } else {
+                showStatus('❌ ' + result.message, 'error');
+                log('❌ ' + result.message);
+            }
+            
+            updateCurrentStatus();
+        }
+        
+        // 頁面載入時更新狀態
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Token 設定頁面已載入');
+            updateCurrentStatus();
+        });
+    </script>
+</body>
+</html>

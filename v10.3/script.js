@@ -507,124 +507,104 @@ function initializePageAnimation() {
  * 3. 要新增：在陣列中新增物件
  * 4. 要修改：直接編輯對應的物件
  */
-// 預設餐車資料庫（備用資料，主要資料來源為 data.json）
 const foodTruckDatabase = [
-    {
-        id: 'truck_1758002427365',
-        src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png',
-        alt: '聯絡我',
-        title: '版主：蔡濬瑒',
-        link: [
-            {
-                url: 'https://realtor.houseprice.tw/agent/buy/0925666597/',
-                text: '精選物件'
-            },
-            {
-                url: 'https://www.tiktok.com/@aihouse168?is_from_webapp=1&sender_device=pc',
-                text: 'Tiktok'
-            }
-        ],
-        isActive: true,
-        priority: 1,
-        category: 'main'
-    },
     {
         id: 'truck_001',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg',
         alt: '餐車品牌1',
-        title: '露露姐',
+        title: '餐車品牌1',
         isActive: true,
-        priority: 2,
+        priority: 1,
         category: 'main'
     },
     {
         id: 'truck_002',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg',
         alt: '餐車品牌2',
-        title: '花生捲冰淇淋',
+        title: '餐車品牌2',
         isActive: true,
-        priority: 3,
+        priority: 2,
         category: 'main'
     },
     {
         id: 'truck_003',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg',
         alt: '餐車品牌3',
-        title: '鄭老爹乾麵',
+        title: '餐車品牌3',
         isActive: true,
-        priority: 4,
+        priority: 3,
         category: 'main'
     },
     {
         id: 'truck_004',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg',
         alt: '餐車品牌4',
-        title: '蔬孟園',
+        title: '餐車品牌4',
         isActive: true,
-        priority: 5,
+        priority: 4,
         category: 'main'
     },
     {
         id: 'truck_005',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg',
         alt: '餐車品牌5',
-        title: '台東放山豬',
+        title: '餐車品牌5',
         isActive: true,
-        priority: 6,
+        priority: 5,
         category: 'main'
     },
     {
         id: 'truck_006',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg',
         alt: '餐車品牌6',
-        title: '安德尼斯烘培坊',
+        title: '餐車品牌6',
         isActive: true,
-        priority: 7,
+        priority: 6,
         category: 'main'
     },
     {
         id: 'truck_007',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg',
         alt: '餐車品牌7',
-        title: '韓式飯捲',
+        title: '餐車品牌7',
         isActive: true,
-        priority: 8,
+        priority: 7,
         category: 'main'
     },
     {
         id: 'truck_008',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg',
         alt: '餐車品牌8',
-        title: '炸蛋𣄃魚黑輪',
+        title: '餐車品牌8',
         isActive: true,
-        priority: 9,
+        priority: 8,
         category: 'main'
     },
     {
         id: 'truck_009',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg',
         alt: '餐車品牌9',
-        title: '向陽坡刈包',
+        title: '餐車品牌9',
         isActive: true,
-        priority: 10,
+        priority: 9,
         category: 'main'
     },
     {
         id: 'truck_010',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg',
         alt: '餐車品牌10',
-        title: '滷拉拉',
+        title: '餐車品牌10',
         isActive: true,
-        priority: 11,
+        priority: 10,
         category: 'main'
     },
     {
         id: 'truck_011',
         src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg',
         alt: '餐車品牌11',
-        title: '餓食鬼美味販賣所',
+        title: '餐車品牌11',
         isActive: true,
-        priority: 12,
+        priority: 11,
         category: 'main'
     }
 ];
@@ -677,10 +657,8 @@ async function initializeImageMarquee() {
                 .sort((a, b) => a.priority - b.priority);
             console.log('📱 從本地儲存載入餐車圖片資料');
             
-            // 檢查遠端更新（背景檢查，不影響主要載入）
-            setTimeout(() => {
-                checkForRemoteUpdates();
-            }, 1000);
+            // 檢查遠端更新（背景檢查）
+            checkForRemoteUpdates();
         } else {
             // 如果本地沒有資料，從 data.json 載入
             const response = await fetch('data.json');

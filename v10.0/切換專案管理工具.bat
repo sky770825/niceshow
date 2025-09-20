@@ -24,33 +24,37 @@ echo  🚀 部署管理
 echo  ┌─────────────────────────────────────────────────────────────┐
 echo  │ 4. 部署指定版本                                           │
 echo  │ 5. 下架所有檔案                                           │
+echo  │ 6. 切換專案                                               │
 echo  └─────────────────────────────────────────────────────────────┘
 echo.
 echo  ⚙️ 系統設定
 echo  ┌─────────────────────────────────────────────────────────────┐
-echo  │ 6. 初始化/連接 GitHub 倉庫                                │
-echo  │ 7. 修復同步問題                                           │
-echo  │ 8. 檢查認證狀態                                           │
+echo  │ 7. 初始化/連接 GitHub 倉庫                                │
+echo  │ 8. 修復同步問題                                           │
+echo  │ 9. 檢查認證狀態                                           │
+echo  │ 10. 切換 GitHub 帳戶                                      │
 echo  └─────────────────────────────────────────────────────────────┘
 echo.
 echo  📊 資訊查看
 echo  ┌─────────────────────────────────────────────────────────────┐
-echo  │ 9. 查看版本資訊                                           │
+echo  │ 11. 查看版本資訊                                          │
 echo  │ 0. 退出程式                                               │
 echo  └─────────────────────────────────────────────────────────────┘
 echo.
 
-set /p choice=請輸入選項 (0-9): 
+set /p choice=請輸入選項 (0-11): 
 
 if "%choice%"=="1" goto quick_upload
 if "%choice%"=="2" goto check_files
 if "%choice%"=="3" goto create_backup
 if "%choice%"=="4" goto deploy_version
 if "%choice%"=="5" goto cleanup_github
-if "%choice%"=="6" goto init_git
-if "%choice%"=="7" goto fix_sync
-if "%choice%"=="8" goto check_auth
-if "%choice%"=="9" goto show_info
+if "%choice%"=="6" goto switch_project
+if "%choice%"=="7" goto init_git
+if "%choice%"=="8" goto fix_sync
+if "%choice%"=="9" goto check_auth
+if "%choice%"=="10" goto switch_account
+if "%choice%"=="11" goto show_info
 if "%choice%"=="0" goto exit
 echo.
 echo ❌ 無效選項，請重新選擇
@@ -493,6 +497,248 @@ if errorlevel 1 (
     echo ✅ GitHub 連接正常
 )
 
+echo.
+pause
+goto start
+
+:switch_project
+cls
+echo.
+echo ╔══════════════════════════════════════════════════════════════╗
+echo ║                    🔄 切換專案                              ║
+echo ╚══════════════════════════════════════════════════════════════╝
+echo.
+
+echo 可用的專案：
+echo.
+echo 📋 sky770825 帳戶專案：
+echo 1. 餐開月行程表 (niceshow) ⭐ 預設
+echo 2. 功夫茶點餐系統 (kungfuteahtml)
+echo 3. AI指令大全 (Aibot888)
+echo 4. 美業共享工作室 (lady8888)
+echo 5. Picehouse (picehouse)
+echo 6. 華房地產 (Hua-Real-Estate)
+echo 7. 房屋投票系統 (housepolltex)
+echo 8. 餐車系統 (foodcar)
+echo.
+echo 📋 其他帳戶專案：
+echo 9. 濬聯配件專用 (liny14705/nicehouse)
+echo 10. 餐開月行程表獨立專案 (chu20170103/meal-schedule)
+echo 0. 返回主選單
+echo.
+
+set /p project_choice=請選擇要切換的專案 (0-10): 
+
+if "%project_choice%"=="0" goto start
+if "%project_choice%"=="1" goto switch_niceshow
+if "%project_choice%"=="2" goto switch_kungfuteahtml
+if "%project_choice%"=="3" goto switch_aibot888
+if "%project_choice%"=="4" goto switch_lady8888
+if "%project_choice%"=="5" goto switch_picehouse
+if "%project_choice%"=="6" goto switch_hua_real_estate
+if "%project_choice%"=="7" goto switch_housepolltex
+if "%project_choice%"=="8" goto switch_foodcar
+if "%project_choice%"=="9" goto switch_nicehouse
+if "%project_choice%"=="10" goto switch_meal_schedule
+
+echo ❌ 無效選項，請重新選擇
+timeout /t 2 >nul
+goto switch_project
+
+:switch_niceshow
+echo.
+echo 🔄 正在切換到餐開月行程表專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/niceshow.git
+echo ✅ 已切換到餐開月行程表專案
+echo 🌐 網站：https://sky770825.github.io/niceshow
+echo.
+pause
+goto start
+
+:switch_kungfuteahtml
+echo.
+echo 🔄 正在切換到功夫茶點餐系統專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/kungfuteahtml.git
+echo ✅ 已切換到功夫茶點餐系統專案
+echo 🌐 網站：https://sky770825.github.io/kungfuteahtml
+echo.
+pause
+goto start
+
+:switch_aibot888
+echo.
+echo 🔄 正在切換到AI指令大全專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/Aibot888.git
+echo ✅ 已切換到AI指令大全專案
+echo 🌐 網站：https://sky770825.github.io/Aibot888
+echo.
+pause
+goto start
+
+:switch_lady8888
+echo.
+echo 🔄 正在切換到美業共享工作室專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/lady8888.git
+echo ✅ 已切換到美業共享工作室專案
+echo 🌐 網站：https://sky770825.github.io/lady8888
+echo.
+pause
+goto start
+
+:switch_picehouse
+echo.
+echo 🔄 正在切換到Picehouse專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/picehouse.git
+echo ✅ 已切換到Picehouse專案
+echo 🌐 網站：https://sky770825.github.io/picehouse
+echo.
+pause
+goto start
+
+:switch_hua_real_estate
+echo.
+echo 🔄 正在切換到華房地產專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/Hua-Real-Estate.git
+echo ✅ 已切換到華房地產專案
+echo 🌐 網站：https://sky770825.github.io/Hua-Real-Estate
+echo.
+pause
+goto start
+
+:switch_housepolltex
+echo.
+echo 🔄 正在切換到房屋投票系統專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/housepolltex.git
+echo ✅ 已切換到房屋投票系統專案
+echo 🌐 網站：https://sky770825.github.io/housepolltex
+echo.
+pause
+goto start
+
+:switch_foodcar
+echo.
+echo 🔄 正在切換到餐車系統專案...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+git remote set-url origin https://github.com/sky770825/foodcar.git
+echo ✅ 已切換到餐車系統專案
+echo 🌐 網站：https://sky770825.github.io/foodcar
+echo.
+pause
+goto start
+
+:switch_nicehouse
+echo.
+echo 🔄 正在切換到濬聯配件專用專案...
+git config user.name "liny14705"
+git config user.email "liny14705@gmail.com"
+git remote set-url origin https://github.com/liny14705/nicehouse.git
+echo ✅ 已切換到濬聯配件專用專案
+echo 🌐 網站：https://liny14705.github.io/nicehouse
+echo.
+pause
+goto start
+
+:switch_meal_schedule
+echo.
+echo 🔄 正在切換到餐開月行程表獨立專案...
+git config user.name "chu20170103"
+git config user.email "chu20170103@gmail.com"
+git remote set-url origin https://github.com/chu20170103/meal-schedule.git
+echo ✅ 已切換到餐開月行程表獨立專案
+echo 🌐 網站：https://chu20170103.github.io/meal-schedule
+echo.
+pause
+goto start
+
+:switch_account
+cls
+echo.
+echo ╔══════════════════════════════════════════════════════════════╗
+echo ║                    🔄 切換 GitHub 帳戶                      ║
+echo ╚══════════════════════════════════════════════════════════════╝
+echo.
+
+echo 可用的 GitHub 帳戶：
+echo.
+echo 1. sky770825 (sky19880825@gmail.com) - 獨立開發帳戶
+echo 2. liny14705 (liny14705@gmail.com) - 獨立開發帳戶  
+echo 3. chu20170103 (chu20170103@gmail.com) - 獨立開發帳戶
+echo 0. 返回主選單
+echo.
+
+set /p account_choice=請選擇要切換的帳戶 (0-3): 
+
+if "%account_choice%"=="0" goto start
+if "%account_choice%"=="1" goto switch_sky770825
+if "%account_choice%"=="2" goto switch_liny14705
+if "%account_choice%"=="3" goto switch_chu20170103
+
+echo ❌ 無效選項，請重新選擇
+timeout /t 2 >nul
+goto switch_account
+
+:switch_sky770825
+echo.
+echo 🔄 正在切換到 sky770825 帳戶...
+git config user.name "sky770825"
+git config user.email "sky19880825@gmail.com"
+echo ✅ 已切換到 sky770825 帳戶
+echo.
+echo 請輸入 GitHub 倉庫 URL (例如: https://github.com/sky770825/niceshow.git):
+set /p repo_url=倉庫 URL: 
+if not "%repo_url%"=="" (
+    git remote set-url origin %repo_url%
+    echo ✅ 已設定遠端倉庫
+)
+echo.
+pause
+goto start
+
+:switch_liny14705
+echo.
+echo 🔄 正在切換到 liny14705 帳戶...
+git config user.name "liny14705"
+git config user.email "liny14705@gmail.com"
+echo ✅ 已切換到 liny14705 帳戶
+echo.
+echo 請輸入 GitHub 倉庫 URL (例如: https://github.com/liny14705/nicehouse.git):
+set /p repo_url=倉庫 URL: 
+if not "%repo_url%"=="" (
+    git remote set-url origin %repo_url%
+    echo ✅ 已設定遠端倉庫
+)
+echo.
+pause
+goto start
+
+:switch_chu20170103
+echo.
+echo 🔄 正在切換到 chu20170103 帳戶...
+git config user.name "chu20170103"
+git config user.email "chu20170103@gmail.com"
+echo ✅ 已切換到 chu20170103 帳戶
+echo.
+echo 請輸入 GitHub 倉庫 URL (例如: https://github.com/chu20170103/meal-schedule.git):
+set /p repo_url=倉庫 URL: 
+if not "%repo_url%"=="" (
+    git remote set-url origin %repo_url%
+    echo ✅ 已設定遠端倉庫
+)
 echo.
 pause
 goto start
