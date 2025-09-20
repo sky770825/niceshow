@@ -1462,59 +1462,89 @@
         let filteredTrucks = [];
         let selectedTrucks = new Set();
 
-        async function loadFoodTruckData() {
+        async function loadFoodTruckData(forceRemote = false) {
             console.log('🔄 開始載入餐車資料...');
             
             try {
-                // 1. 嘗試從 localStorage 載入
-                const localData = localStorage.getItem('foodTruckData');
-                if (localData) {
+                // 1. 根據參數決定載入策略
+                if (forceRemote) {
+                    console.log('🌐 強制從 data.json 載入最新資料...');
+                    return await loadFromRemote();
+                } else {
+                    // 智能載入：先檢查遠端，再使用本地
+                    console.log('🧠 智能載入：檢查遠端更新...');
+                    
+                    // 先嘗試從遠端載入
                     try {
-                        const data = JSON.parse(localData);
-                        if (data && data.foodTrucks && Array.isArray(data.foodTrucks) && data.foodTrucks.length > 0) {
-                            foodTruckDatabase = data.foodTrucks;
-                            console.log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
-                            return { success: true, source: 'localStorage', count: foodTruckDatabase.length };
-                        } else {
-                            console.log('⚠️ localStorage 資料格式不正確或為空，嘗試從 data.json 載入');
+                        const remoteResult = await loadFromRemote();
+                        if (remoteResult.success) {
+                            return remoteResult;
                         }
-                    } catch (parseError) {
-                        console.log('⚠️ localStorage 資料解析失敗，嘗試從 data.json 載入');
+                    } catch (error) {
+                        console.log('⚠️ 遠端載入失敗，嘗試本地載入');
                     }
+                    
+                    // 如果遠端載入失敗，使用本地載入
+                    return await loadFromLocal();
                 }
-                
-                // 2. 從 data.json 載入
-                console.log('🌐 從 data.json 載入資料...');
-                const response = await fetch('data.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                if (!data || !data.foodTrucks || !Array.isArray(data.foodTrucks)) {
-                    throw new Error('data.json 格式不正確');
-                }
-                
-                foodTruckDatabase = data.foodTrucks;
-                
-                // 3. 儲存到本地
-                localStorage.setItem('foodTruckData', JSON.stringify(data));
-                console.log(`🌐 從 data.json 載入資料並儲存到本地: ${foodTruckDatabase.length} 個餐車`);
-                return { success: true, source: 'data.json', count: foodTruckDatabase.length };
                 
             } catch (error) {
                 console.error('❌ 載入餐車資料失敗:', error);
-                console.log('⚠️ 使用預設資料');
-                
-                // 4. 使用預設資料作為最後備案
-                if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
-                    console.log('🔄 初始化預設餐車資料...');
-                    // foodTruckDatabase 已經在腳本頂部定義了預設值
-                }
-                
-                showAlert('使用預設餐車資料', 'warning');
-                return { success: false, source: 'default', count: foodTruckDatabase.length, error: error.message };
+                return await loadFromDefault();
             }
+        }
+        
+        // 從遠端載入資料
+        async function loadFromRemote() {
+            console.log('🌐 從 data.json 載入資料...');
+            const response = await fetch('data.json?' + Date.now()); // 強制重新載入
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            if (!data || !data.foodTrucks || !Array.isArray(data.foodTrucks)) {
+                throw new Error('data.json 格式不正確');
+            }
+            
+            foodTruckDatabase = data.foodTrucks;
+            
+            // 儲存到本地
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+            
+            console.log(`🌐 從 data.json 載入最新資料: ${foodTruckDatabase.length} 個餐車`);
+            return { success: true, source: 'data.json', count: foodTruckDatabase.length };
+        }
+        
+        // 從本地載入資料
+        async function loadFromLocal() {
+            console.log('📱 從 localStorage 載入資料...');
+            const localData = localStorage.getItem('foodTruckData');
+            if (!localData) {
+                throw new Error('localStorage 中沒有資料');
+            }
+            
+            const data = JSON.parse(localData);
+            if (!data || !data.foodTrucks || !Array.isArray(data.foodTrucks) || data.foodTrucks.length === 0) {
+                throw new Error('localStorage 資料格式不正確或為空');
+            }
+            
+            foodTruckDatabase = data.foodTrucks;
+            console.log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
+            return { success: true, source: 'localStorage', count: foodTruckDatabase.length };
+        }
+        
+        // 使用預設資料
+        async function loadFromDefault() {
+            console.log('⚠️ 使用預設資料');
+            if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                console.log('🔄 初始化預設餐車資料...');
+                // foodTruckDatabase 已經在腳本頂部定義了預設值
+            }
+            
+            showAlert('使用預設餐車資料', 'warning');
+            return { success: false, source: 'default', count: foodTruckDatabase.length, error: '所有載入方式都失敗' };
         }
 
         // 獨立的資料驗證函數
@@ -2524,8 +2554,8 @@
                 sessionStorage.removeItem('foodTruckData');
                 console.log('🗑️ 已清除本地快取');
                 
-                // 2. 重新載入資料
-                const result = await loadFoodTruckData();
+                // 2. 強制從遠端載入資料
+                const result = await loadFoodTruckData(true); // 強制遠端載入
                 console.log(`📊 載入結果:`, result);
                 
                 // 3. 獨立初始化資料
@@ -2712,4 +2742,5 @@
         });
     </script>
 </body>
+</html>
 </html>
