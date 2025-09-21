@@ -977,16 +977,8 @@
             clearSelection();
             applyFilters();
             
-            // 自動同步到遠端（如果已設定 Token）
-            try {
-                const status = SimpleGitHubSync.getProjectStatus();
-                if (status.hasToken) {
-                    console.log('🔄 自動同步批量狀態變更到遠端...');
-                    await manualSaveData();
-                }
-            } catch (error) {
-                console.log('⚠️ 自動同步失敗，但本地已儲存');
-            }
+            // 批量狀態變更只進行本地儲存，不自動同步到遠端
+            console.log('💾 批量狀態變更已儲存到本地，請手動同步到遠端');
         }
 
         function clearSelection() {
@@ -1023,16 +1015,8 @@
                 applyFilters();
                 renderPreview();
                 
-                // 自動同步到遠端（如果已設定 Token）
-                try {
-                    const status = SimpleGitHubSync.getProjectStatus();
-                    if (status.hasToken) {
-                        console.log('🔄 自動同步批量刪除到遠端...');
-                        await manualSaveData();
-                    }
-                } catch (error) {
-                    console.log('⚠️ 自動同步失敗，但本地已儲存');
-                }
+                // 批量刪除只進行本地儲存，不自動同步到遠端
+                console.log('💾 批量刪除已儲存到本地，請手動同步到遠端');
             }
         }
 
@@ -1057,16 +1041,8 @@
                         applyFilters();
                         renderPreview();
                         
-                        // 自動同步到遠端（如果已設定 Token）
-                        try {
-                            const status = SimpleGitHubSync.getProjectStatus();
-                            if (status.hasToken) {
-                                console.log('🔄 自動同步刪除到遠端...');
-                                await manualSaveData();
-                            }
-                        } catch (error) {
-                            console.log('⚠️ 自動同步失敗，但本地已儲存');
-                        }
+                        // 刪除操作只進行本地儲存，不自動同步到遠端
+                        console.log('💾 刪除操作已儲存到本地，請手動同步到遠端');
                     }
                 }
             }
@@ -1221,16 +1197,8 @@
             renderTruckCards();
             renderPreview();
             
-            // 自動同步到遠端（如果已設定 Token）
-            try {
-                const status = SimpleGitHubSync.getProjectStatus();
-                if (status.hasToken) {
-                    console.log('🔄 自動同步編輯變更到遠端...');
-                    await manualSaveData();
-                }
-            } catch (error) {
-                console.log('⚠️ 自動同步失敗，但本地已儲存');
-                }
+            // 編輯完成只進行本地儲存，不自動同步到遠端
+            console.log('💾 編輯變更已儲存到本地，請手動同步到遠端');
             }
         }
 
@@ -1280,16 +1248,8 @@
                 applyFilters();
                 renderPreview();
                 
-                // 自動同步到遠端（如果已設定 Token）
-                try {
-                    const status = SimpleGitHubSync.getProjectStatus();
-                    if (status.hasToken) {
-                        console.log('🔄 自動同步狀態變更到遠端...');
-                        await manualSaveData();
-                    }
-                } catch (error) {
-                    console.log('⚠️ 自動同步失敗，但本地已儲存');
-                }
+                // 狀態變更只進行本地儲存，不自動同步到遠端
+                console.log('💾 狀態變更已儲存到本地，請手動同步到遠端');
             }
         }
 
@@ -1307,16 +1267,8 @@
                 showAlert('餐車名稱已更新並儲存', 'success');
                 applyFilters();
                 
-                // 自動同步到遠端（如果已設定 Token）
-                try {
-                    const status = SimpleGitHubSync.getProjectStatus();
-                    if (status.hasToken) {
-                        console.log('🔄 自動同步標題變更到遠端...');
-                        await manualSaveData();
-                    }
-                } catch (error) {
-                    console.log('⚠️ 自動同步失敗，但本地已儲存');
-                }
+                // 標題變更只進行本地儲存，不自動同步到遠端
+                console.log('💾 標題變更已儲存到本地，請手動同步到遠端');
             }
         }
 
@@ -1337,20 +1289,13 @@
                     // 即時更新本地儲存
                     saveDataToLocal();
                     
-                    showAlert(`餐車 "${truck.title}" 已${direction === 'up' ? '上移' : '下移'}`, 'success');
+                    const swappedTruck = foodTruckDatabase[currentIndex];
+                    showAlert(`餐車已交換: "${truck.title}" ↔ "${swappedTruck.title}"`, 'success');
                     applyFilters();
                     renderPreview();
                     
-                    // 自動同步到遠端（如果已設定 Token）
-                    try {
-                        const status = SimpleGitHubSync.getProjectStatus();
-                        if (status.hasToken) {
-                            console.log('🔄 自動同步排序變更到遠端...');
-                            await manualSaveData();
-                        }
-                    } catch (error) {
-                        console.log('⚠️ 自動同步失敗，但本地已儲存');
-                    }
+                    // 上下移動只進行本地儲存，不自動同步到遠端
+                    console.log('💾 移動排序已儲存到本地，請手動同步到遠端');
                 }
             }
         }
@@ -1999,20 +1944,21 @@
                     return;
                 }
                 
-                console.log(`🔄 移動餐車從位置 ${fromIndex + 1} 到位置 ${toIndex + 1}`);
+                console.log(`🔄 交換餐車位置: ${fromIndex + 1} ↔ ${toIndex + 1}`);
                 
-                // 從陣列中移除拖曳的元素
-                const draggedTruck = foodTruckDatabase.splice(fromIndex, 1)[0];
-                
-                // 插入到新位置
-                foodTruckDatabase.splice(toIndex, 0, draggedTruck);
+                // 交換兩個位置的餐車
+                [foodTruckDatabase[fromIndex], foodTruckDatabase[toIndex]] = 
+                [foodTruckDatabase[toIndex], foodTruckDatabase[fromIndex]];
                 
                 // 更新所有餐車的優先級
                 foodTruckDatabase.forEach((truck, index) => {
                     truck.priority = index + 1;
                 });
                 
-                console.log(`✅ 餐車 "${draggedTruck.title}" 已移動到位置 ${toIndex + 1}`);
+                const fromTruck = foodTruckDatabase[toIndex];
+                const toTruck = foodTruckDatabase[fromIndex];
+                
+                console.log(`✅ 餐車已交換: "${fromTruck.title}" ↔ "${toTruck.title}"`);
                 
                 // 立即更新本地儲存
                 saveDataToLocal();
@@ -2022,18 +1968,10 @@
                 renderPreview();
                 
                 // 顯示成功訊息
-                showAlert(`餐車 "${draggedTruck.title}" 已移動到位置 ${toIndex + 1}`, 'success');
+                showAlert(`餐車已交換位置: "${fromTruck.title}" ↔ "${toTruck.title}"`, 'success');
                 
-                // 自動同步到遠端（如果已設定 Token）
-                try {
-                    const status = SimpleGitHubSync.getProjectStatus();
-                    if (status.hasToken) {
-                        console.log('🔄 自動同步拖曳排序到遠端...');
-                        await manualSaveData();
-                    }
-                } catch (error) {
-                    console.log('⚠️ 自動同步失敗，但本地已儲存');
-                }
+                // 拖曳排序只進行本地儲存，不自動同步到遠端
+                console.log('💾 拖曳排序已儲存到本地，請手動同步到遠端');
                 
             } catch (error) {
                 console.error('❌ 重新排序失敗:', error);
@@ -2474,16 +2412,8 @@
             applyFilters();
             renderPreview();
             
-            // 自動同步到遠端（如果已設定 Token）
-            try {
-                const status = SimpleGitHubSync.getProjectStatus();
-                if (status.hasToken) {
-                    console.log('🔄 自動同步新增餐車到遠端...');
-                    await manualSaveData();
-                }
-            } catch (error) {
-                console.log('⚠️ 自動同步失敗，但本地已儲存');
-            }
+            // 新增餐車只進行本地儲存，不自動同步到遠端
+            console.log('💾 新增餐車已儲存到本地，請手動同步到遠端');
         });
 
         document.addEventListener('DOMContentLoaded', async function() {
