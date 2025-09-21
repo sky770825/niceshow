@@ -1298,6 +1298,8 @@
                                 <button type="button" class="btn btn-info" onclick="openTokenSetup()">🔧 開啟 Token 設定頁</button>
                                 <button type="button" class="btn btn-secondary" onclick="debugDataStatus()">🔍 檢查狀態</button>
                                 <button type="button" class="btn btn-warning" onclick="forceReloadData()">🔄 強制重新載入</button>
+                                <button type="button" class="btn btn-danger" onclick="clearLocalData()">🗑️ 清除本地資料</button>
+                                <button type="button" class="btn btn-info" onclick="testDataJsonLoad()">🧪 測試 data.json 載入</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
                                 <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
                             </div>
@@ -1339,155 +1341,36 @@
     <script src="update-checker.js"></script>
     
     <script>
-        // 預設餐車資料庫（備用資料，主要資料來源為 data.json）
-        let foodTruckDatabase = [
-            {
-                id: 'truck_1758002427365',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png',
-                alt: '聯絡我',
-                title: '版主：蔡濬瑒',
-                link: [
-                    {
-                        url: 'https://realtor.houseprice.tw/agent/buy/0925666597/',
-                        text: '精選物件'
-                    },
-                    {
-                        url: 'https://www.tiktok.com/@aihouse168?is_from_webapp=1&sender_device=pc',
-                        text: 'Tiktok'
-                    }
-                ],
-                isActive: true,
-                priority: 1,
-                category: 'main'
-            },
-            {
-                id: 'truck_001',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg',
-                alt: '餐車品牌1',
-                title: '露露姐',
-                isActive: true,
-                priority: 2,
-                category: 'main'
-            },
-            {
-                id: 'truck_002',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg',
-                alt: '餐車品牌2',
-                title: '花生捲冰淇淋',
-                isActive: true,
-                priority: 3,
-                category: 'main'
-            },
-            {
-                id: 'truck_003',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg',
-                alt: '餐車品牌3',
-                title: '鄭老爹乾麵',
-                isActive: true,
-                priority: 4,
-                category: 'main'
-            },
-            {
-                id: 'truck_004',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg',
-                alt: '餐車品牌4',
-                title: '蔬孟園',
-                isActive: true,
-                priority: 5,
-                category: 'main'
-            },
-            {
-                id: 'truck_005',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg',
-                alt: '餐車品牌5',
-                title: '台東放山豬',
-                isActive: true,
-                priority: 6,
-                category: 'main'
-            },
-            {
-                id: 'truck_006',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg',
-                alt: '餐車品牌6',
-                title: '安德尼斯烘培坊',
-                isActive: true,
-                priority: 7,
-                category: 'main'
-            },
-            {
-                id: 'truck_007',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg',
-                alt: '餐車品牌7',
-                title: '韓式飯捲',
-                isActive: true,
-                priority: 8,
-                category: 'main'
-            },
-            {
-                id: 'truck_008',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg',
-                alt: '餐車品牌8',
-                title: '炸蛋𣄃魚黑輪',
-                isActive: true,
-                priority: 9,
-                category: 'main'
-            },
-            {
-                id: 'truck_009',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg',
-                alt: '餐車品牌9',
-                title: '向陽坡刈包',
-                isActive: true,
-                priority: 10,
-                category: 'main'
-            },
-            {
-                id: 'truck_010',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg',
-                alt: '餐車品牌10',
-                title: '滷拉拉',
-                isActive: true,
-                priority: 11,
-                category: 'main'
-            },
-            {
-                id: 'truck_011',
-                src: 'https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg',
-                alt: '餐車品牌11',
-                title: '餓食鬼美味販賣所',
-                isActive: true,
-                priority: 12,
-                category: 'main'
-            }
-        ];
+        // 餐車資料庫（從 data.json 載入）
+        let foodTruckDatabase = [];
         let filteredTrucks = [];
         let selectedTrucks = new Set();
 
         // 載入策略管理器
         const LoadStrategy = {
-            // 智能載入策略（優先本地，保護編輯）
+            // 智能載入策略（強制從 data.json 載入）
             async smartLoad() {
-                console.log('🧠 智能載入：優先檢查本地資料...');
+                console.log('🧠 智能載入：強制從 data.json 載入...');
                 
-                // 1. 嘗試從本地載入
-                const localData = DataManager.loadFromLocal();
-                if (localData) {
-                    console.log('✅ 使用本地資料（包含編輯變更）');
-                    return this.applyLocalData(localData);
-                }
-                
-                // 2. 本地沒有資料，嘗試從遠端載入
+                // 1. 強制從遠端載入 data.json
                 try {
                     const remoteData = await DataManager.loadFromRemote();
-                    console.log('✅ 使用遠端資料');
+                    console.log('✅ 從 data.json 載入成功');
                     return this.applyRemoteData(remoteData);
                 } catch (error) {
-                    console.log('⚠️ 遠端載入失敗:', error.message);
+                    console.log('⚠️ 從 data.json 載入失敗:', error.message);
+                    
+                    // 2. 遠端載入失敗，嘗試從本地載入
+                    const localData = DataManager.loadFromLocal();
+                    if (localData) {
+                        console.log('✅ 使用本地資料（備用）');
+                        return this.applyLocalData(localData);
+                    }
+                    
+                    // 3. 都失敗了，使用空狀態
+                    console.log('⚠️ 沒有找到任何資料，使用空狀態');
+                    return this.applyDefaultData();
                 }
-                
-                // 3. 都失敗了，使用預設資料
-                console.log('⚠️ 使用預設資料');
-                return this.applyDefaultData();
             },
             
             // 強制遠端載入策略
@@ -1497,7 +1380,7 @@
                 try {
                     const remoteData = await DataManager.loadFromRemote();
                     return this.applyRemoteData(remoteData);
-                } catch (error) {
+                    } catch (error) {
                     console.log('⚠️ 強制遠端載入失敗，使用預設資料');
                     return this.applyDefaultData();
                 }
@@ -1528,16 +1411,23 @@
             
             // 應用遠端資料
             applyRemoteData(data) {
-                foodTruckDatabase = data.foodTrucks;
+                console.log('🔄 應用遠端資料到 foodTruckDatabase...');
+                console.log(`   遠端資料包含 ${data.foodTrucks.length} 個餐車`);
                 
-                // 只有在沒有本地資料時才儲存到本地
-                const localData = DataManager.loadFromLocal();
-                if (!localData) {
-                    DataManager.saveToLocal();
-                    console.log('💾 遠端資料已儲存到本地');
-                } else {
-                    console.log('⚠️ 有本地資料，跳過遠端資料儲存');
-                }
+                // 直接覆蓋 foodTruckDatabase
+                foodTruckDatabase = [...data.foodTrucks];
+                
+                // 更新 filteredTrucks
+                filteredTrucks = [...foodTruckDatabase];
+                
+                // 儲存到本地作為備份
+                DataManager.saveToLocal();
+                console.log('💾 遠端資料已儲存到本地');
+                
+                // 立即渲染餐車卡片
+                console.log('🎨 立即渲染餐車卡片...');
+                renderTruckCards();
+                updateStats();
                 
                 return { 
                     success: true, 
@@ -1547,14 +1437,14 @@
                 };
             },
             
-            // 應用預設資料
+            // 應用預設資料（空狀態）
             applyDefaultData() {
-                // foodTruckDatabase 已經在腳本頂部定義了預設值
-                console.log('⚠️ 使用預設資料');
+                // 保持空陣列，不載入任何預設資料
+                console.log('⚠️ 沒有找到任何資料，使用空狀態');
                 return { 
                     success: false, 
-                    source: 'default', 
-                    count: foodTruckDatabase.length,
+                    source: 'empty', 
+                    count: 0,
                     data: null
                 };
             }
@@ -1694,21 +1584,21 @@
         }
 
         // ==================== 資料管理模組 ====================
-        
+            
         // 資料管理器 - 負責所有資料操作
         const DataManager = {
             // 儲存資料到本地
             saveToLocal() {
-                const data = {
-                    foodTrucks: foodTruckDatabase,
+            const data = {
+                foodTrucks: foodTruckDatabase,
                     lastUpdated: new Date().toISOString(),
                     version: '1.0',
                     syncCount: this.getSyncCount()
-                };
-                
-                localStorage.setItem('foodTruckData', JSON.stringify(data));
-                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
-                
+            };
+            
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+            
                 console.log('💾 資料已儲存到本地儲存');
                 return data;
             },
@@ -1848,8 +1738,8 @@
             
             // 3. 確保 foodTruckDatabase 有資料
             if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
-                console.log('⚠️ foodTruckDatabase 為空，使用預設資料');
-                // 使用預設資料（已在腳本頂部定義）
+                console.log('⚠️ foodTruckDatabase 為空，保持空狀態');
+                // 保持空陣列，不載入預設資料
             }
             
             // 4. 初始化 filteredTrucks
@@ -1878,36 +1768,36 @@
         const SyncManager = {
             // 手動儲存並同步
             async manualSave() {
-                const now = Date.now();
-                
-                if (isSaving || now - lastSaveTime < 300) {
-                    console.log('⚠️ 跳過重複儲存');
-                    return;
-                }
-                
-                isSaving = true;
-                lastSaveTime = now;
-                
+            const now = Date.now();
+            
+            if (isSaving || now - lastSaveTime < 300) {
+                console.log('⚠️ 跳過重複儲存');
+                return;
+            }
+            
+            isSaving = true;
+            lastSaveTime = now;
+            
                 // 1. 儲存到本地
                 const data = DataManager.saveToLocal();
                 
                 // 2. 增加同步計數
                 data.syncCount = DataManager.incrementSyncCount();
-                localStorage.setItem('foodTruckData', JSON.stringify(data));
-                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
-                
-                console.log('💾 資料已儲存到本地');
-                
-                try {
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+            
+            console.log('💾 資料已儲存到本地');
+            
+            try {
                     // 3. 檢查 GitHub 設定
-                    const status = githubSync.getProjectStatus();
-                    
-                    if (!status.hasToken) {
+                const status = githubSync.getProjectStatus();
+                
+                if (!status.hasToken) {
                         await this.handleTokenSetup(data);
                     } else {
-                        await validateAndSync(data);
-                    }
-                } catch (error) {
+                    await validateAndSync(data);
+                }
+            } catch (error) {
                     console.error('同步失敗:', error);
                     showSyncStatus('❌ 同步失敗，但已儲存到本地');
                     // 備用方案：下載檔案
@@ -1970,7 +1860,7 @@
                         `是否要開啟網站查看更新？`;
                     
                     if (confirm(message)) {
-                        window.open(githubSync.currentProject.website, '_blank');
+                            window.open(githubSync.currentProject.website, '_blank');
                     }
                 }, 1000);
                 
@@ -2409,7 +2299,7 @@
         }
 
         // ==================== 編輯函數（使用新的 EditManager） ====================
-        
+
         // 開始編輯模式
         function startTruckEdit(truckId) {
             if (EditManager.startEdit(truckId)) {
@@ -2421,20 +2311,20 @@
         async function saveTruckEdit(truckId) {
             const success = await EditManager.saveEdit(truckId);
             if (success) {
-                const truck = foodTruckDatabase.find(t => t.id === truckId);
-                showAlert(`餐車 "${truck.title}" 已更新並儲存`, 'success');
-                renderTruckCards();
-                renderPreview();
-                
-                // 自動同步到遠端（如果已設定 Token）
-                try {
-                    const status = githubSync.getProjectStatus();
-                    if (status.hasToken) {
-                        console.log('🔄 自動同步編輯變更到遠端...');
-                        await manualSaveData();
-                    }
-                } catch (error) {
-                    console.log('⚠️ 自動同步失敗，但本地已儲存');
+            const truck = foodTruckDatabase.find(t => t.id === truckId);
+            showAlert(`餐車 "${truck.title}" 已更新並儲存`, 'success');
+            renderTruckCards();
+            renderPreview();
+            
+            // 自動同步到遠端（如果已設定 Token）
+            try {
+                const status = githubSync.getProjectStatus();
+                if (status.hasToken) {
+                    console.log('🔄 自動同步編輯變更到遠端...');
+                    await manualSaveData();
+                }
+            } catch (error) {
+                console.log('⚠️ 自動同步失敗，但本地已儲存');
                 }
             }
         }
@@ -2728,6 +2618,74 @@
             showAlert(status, 'info');
         }
         
+        // 清除本地資料
+        function clearLocalData() {
+            if (confirm('確定要清除所有本地資料嗎？這會強制從 data.json 重新載入。')) {
+                localStorage.removeItem('foodTruckData');
+                sessionStorage.removeItem('foodTruckData');
+                console.log('🗑️ 本地資料已清除');
+                alert('本地資料已清除，頁面將重新載入');
+                location.reload();
+            }
+        }
+        
+        // 測試 data.json 載入
+        async function testDataJsonLoad() {
+            console.log('🧪 開始測試 data.json 載入...');
+            
+            try {
+                // 直接測試 fetch data.json
+                const response = await fetch('data.json?' + Date.now());
+                console.log('📡 Fetch 回應狀態:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('📄 解析的資料:', data);
+                console.log(`📊 餐車數量: ${data.foodTrucks ? data.foodTrucks.length : 0}`);
+                
+                if (data && data.foodTrucks && Array.isArray(data.foodTrucks)) {
+                    // 直接應用資料
+                    foodTruckDatabase = [...data.foodTrucks];
+                    filteredTrucks = [...foodTruckDatabase];
+                    
+                    // 重新渲染
+                    renderTruckCards();
+                    updateStats();
+                    
+                    alert(`✅ 成功載入 ${data.foodTrucks.length} 個餐車！`);
+                    console.log('✅ data.json 載入測試成功');
+                } else {
+                    throw new Error('資料格式不正確');
+                }
+                
+            } catch (error) {
+                console.error('❌ data.json 載入測試失敗:', error);
+                alert(`❌ 載入失敗: ${error.message}`);
+            }
+        }
+        
+        // 強制重新載入資料
+        async function forceReloadData() {
+            console.log('🔄 強制重新載入資料...');
+            
+            // 清除本地快取
+            localStorage.removeItem('foodTruckData');
+            sessionStorage.removeItem('foodTruckData');
+            
+            // 重新載入
+            const loadResult = await loadFoodTruckData(true); // 強制從遠端載入
+            console.log('📊 強制載入結果:', loadResult);
+            
+            // 強制渲染
+            renderTruckCards();
+            updateStats();
+            
+            alert(`✅ 強制重新載入完成！載入了 ${foodTruckDatabase ? foodTruckDatabase.length : 0} 個餐車`);
+        }
+        
         // 測試 F5 重新載入流程
         function testF5Reload() {
             console.log('🧪 測試 F5 重新載入流程...');
@@ -2944,6 +2902,28 @@
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 頁面載入完成，開始初始化...');
             
+            // 立即檢查並修復載入問題
+            setTimeout(async () => {
+                if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                    console.log('🔧 檢測到沒有資料，嘗試強制載入...');
+                    try {
+                        const response = await fetch('data.json?' + Date.now());
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data && data.foodTrucks && Array.isArray(data.foodTrucks)) {
+                                foodTruckDatabase = [...data.foodTrucks];
+                                filteredTrucks = [...foodTruckDatabase];
+                                renderTruckCards();
+                                updateStats();
+                                console.log(`✅ 自動修復完成，載入 ${data.foodTrucks.length} 個餐車`);
+                            }
+                        }
+                    } catch (error) {
+                        console.log('⚠️ 自動修復失敗:', error.message);
+                    }
+                }
+            }, 500);
+            
             try {
                 // 1. 初始化專案設定
                 projectConfig.initialize();
@@ -2957,13 +2937,14 @@
                 // 2. 載入餐車資料
                 const loadResult = await loadFoodTruckData();
                 console.log('📊 資料載入結果:', loadResult);
+                console.log('📊 載入後的 foodTruckDatabase 長度:', foodTruckDatabase ? foodTruckDatabase.length : 'undefined');
                 
                 // 3. 檢查是否需要初始化（只有在沒有有效資料時才初始化）
                 let initResult;
                 if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
                     console.log('⚠️ 沒有有效資料，執行初始化...');
                     initResult = initializeData();
-                    console.log('🔧 資料初始化結果:', initResult);
+                console.log('🔧 資料初始化結果:', initResult);
                 } else {
                     console.log('✅ 已有有效資料，跳過初始化');
                     // 只初始化 filteredTrucks 和 selectedTrucks
@@ -2982,7 +2963,18 @@
                 console.log(`🖼️ 開始渲染介面: ${initResult.foodTruckCount} 個餐車`);
                 updateStats();
                 applyFilters();
+                renderTruckCards(); // 渲染餐車卡片
                 renderPreview();
+                
+                // 5. 檢查渲染結果，如果沒有顯示餐車，強制重新載入
+                setTimeout(() => {
+                    const truckCards = document.querySelectorAll('.truck-card');
+                    if (truckCards.length === 0 && foodTruckDatabase && foodTruckDatabase.length > 0) {
+                        console.log('⚠️ 檢測到資料已載入但沒有渲染，強制重新渲染...');
+                        renderTruckCards();
+                        updateStats();
+                    }
+                }, 1000);
                 
                 // 5. 顯示載入結果
                 if (initResult.hasData) {
