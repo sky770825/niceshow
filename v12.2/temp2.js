@@ -1,4 +1,5 @@
-﻿        // 內建專案設定功能
+﻿
+        // 內建專案設定功能
         const SimpleProjectConfig = {
             // 載入專案設定
             load() {
@@ -342,13 +343,8 @@
                 DataManager.saveToLocal();
                 console.log('💾 遠端資料已儲存到本地');
                 
-                // 立即渲染餐車卡片
-                console.log('🎨 立即渲染餐車卡片...');
-                renderTruckCards();
-                updateStats();
-                
                 return { 
-                    success: true, 
+                    success: true,
                     source: 'remote', 
                     count: foodTruckDatabase.length,
                     data: data
@@ -977,8 +973,8 @@
             clearSelection();
             applyFilters();
             
-            // 批量狀態變更只進行本地儲存，不自動同步到遠端
-            console.log('💾 批量狀態變更已儲存到本地，請手動同步到遠端');
+            // 批量狀態變更完成，等待手動同步
+            console.log('✅ 批量狀態變更完成，請點擊「儲存並同步」按鈕進行遠端同步');
         }
 
         function clearSelection() {
@@ -1015,8 +1011,8 @@
                 applyFilters();
                 renderPreview();
                 
-                // 批量刪除只進行本地儲存，不自動同步到遠端
-                console.log('💾 批量刪除已儲存到本地，請手動同步到遠端');
+                // 批量刪除完成，等待手動同步
+                console.log('✅ 批量刪除完成，請點擊「儲存並同步」按鈕進行遠端同步');
             }
         }
 
@@ -1041,25 +1037,29 @@
                         applyFilters();
                         renderPreview();
                         
-                        // 刪除操作只進行本地儲存，不自動同步到遠端
-                        console.log('💾 刪除操作已儲存到本地，請手動同步到遠端');
+                        // 刪除完成，等待手動同步
+                        console.log('✅ 刪除完成，請點擊「儲存並同步」按鈕進行遠端同步');
                     }
                 }
             }
         }
 
         function renderTruckCards() {
+            console.log('🎨 renderTruckCards 開始執行...');
+            
             const grid = document.getElementById('truckGrid');
             if (!grid) {
                 console.error('❌ 找不到 truckGrid 元素');
                 return;
             }
             
+            console.log('✅ 找到 truckGrid 元素');
             grid.innerHTML = '';
             
             // 確保 foodTruckDatabase 有資料
             if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
                 console.log('⚠️ foodTruckDatabase 為空，顯示空狀態');
+                console.log('🔍 foodTruckDatabase 詳細資訊:', foodTruckDatabase);
                 grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748b;">暫無餐車資料</div>';
                 return;
             }
@@ -1071,6 +1071,7 @@
             }
             
             console.log(`🖼️ 渲染 ${filteredTrucks.length} 個餐車卡片 (總共 ${foodTruckDatabase.length} 個)`);
+            console.log('🔍 filteredTrucks 詳細資訊:', filteredTrucks);
             
             filteredTrucks.forEach(truck => {
                 const isSelected = selectedTrucks.has(truck.id);
@@ -1197,9 +1198,8 @@
             renderTruckCards();
             renderPreview();
             
-            // 編輯完成只進行本地儲存，不自動同步到遠端
-            console.log('💾 編輯變更已儲存到本地，請手動同步到遠端');
-            }
+            // 編輯完成，等待手動同步
+            console.log('✅ 編輯完成，請點擊「儲存並同步」按鈕進行遠端同步');
         }
 
         // 取消編輯
@@ -1248,8 +1248,8 @@
                 applyFilters();
                 renderPreview();
                 
-                // 狀態變更只進行本地儲存，不自動同步到遠端
-                console.log('💾 狀態變更已儲存到本地，請手動同步到遠端');
+                // 狀態變更完成，等待手動同步
+                console.log('✅ 狀態變更完成，請點擊「儲存並同步」按鈕進行遠端同步');
             }
         }
 
@@ -1267,8 +1267,8 @@
                 showAlert('餐車名稱已更新並儲存', 'success');
                 applyFilters();
                 
-                // 標題變更只進行本地儲存，不自動同步到遠端
-                console.log('💾 標題變更已儲存到本地，請手動同步到遠端');
+                // 標題變更完成，等待手動同步
+                console.log('✅ 標題變更完成，請點擊「儲存並同步」按鈕進行遠端同步');
             }
         }
 
@@ -1289,13 +1289,12 @@
                     // 即時更新本地儲存
                     saveDataToLocal();
                     
-                    const swappedTruck = foodTruckDatabase[currentIndex];
-                    showAlert(`餐車已交換: "${truck.title}" ↔ "${swappedTruck.title}"`, 'success');
+                    showAlert(`餐車 "${truck.title}" 已${direction === 'up' ? '上移' : '下移'}`, 'success');
                     applyFilters();
                     renderPreview();
                     
-                    // 上下移動只進行本地儲存，不自動同步到遠端
-                    console.log('💾 移動排序已儲存到本地，請手動同步到遠端');
+                    // 排序變更完成，等待手動同步
+                    console.log('✅ 排序變更完成，請點擊「儲存並同步」按鈕進行遠端同步');
                 }
             }
         }
@@ -1742,9 +1741,10 @@
                     );
                     
                     const sourceIndex = draggedIndex;
-                    const targetIndex = allCards.length - 1; // 最後一個位置
+                    const targetIndex = allCards.length; // 插入到最後（在最後一個元素之後）
                     
-                    console.log(`🔄 拖曳到網格末尾: 從位置 ${sourceIndex} 到位置 ${targetIndex}`);
+                    console.log(`🔄 拖曳到網格末尾: 從位置 ${sourceIndex + 1} 到位置 ${targetIndex + 1} (最後位置)`);
+                    console.log(`📋 拖曳行為：餐車將插入到最後位置，其他餐車保持原位`);
                     
                     // 執行重新排序
                     reorderTrucks(sourceIndex, targetIndex);
@@ -1756,16 +1756,6 @@
         function setupDragEvents(card, index) {
             // 設置可拖曳
             card.draggable = true;
-            
-            // 移除舊的事件監聽器（如果存在）
-            if (card._dragStartHandler) {
-                card.removeEventListener('dragstart', card._dragStartHandler);
-                card.removeEventListener('dragend', card._dragEndHandler);
-                card.removeEventListener('dragenter', card._dragEnterHandler);
-                card.removeEventListener('dragleave', card._dragLeaveHandler);
-                card.removeEventListener('dragover', card._dragOverHandler);
-                card.removeEventListener('drop', card._dropHandler);
-            }
             
             // 觸控設備支援
             let touchStartY = 0;
@@ -1832,7 +1822,7 @@
             }, { passive: true });
             
             // 拖曳開始
-            card._dragStartHandler = function(e) {
+            card.addEventListener('dragstart', function(e) {
                 draggedElement = this;
                 draggedIndex = index;
                 this.classList.add('dragging');
@@ -1842,11 +1832,10 @@
                 e.dataTransfer.setData('text/html', this.outerHTML);
                 
                 console.log(`🔄 開始拖曳餐車: ${index}`);
-            };
-            card.addEventListener('dragstart', card._dragStartHandler);
+            });
             
             // 拖曳結束
-            card._dragEndHandler = function(e) {
+            card.addEventListener('dragend', function(e) {
                 this.classList.remove('dragging');
                 draggedElement = null;
                 draggedIndex = -1;
@@ -1863,26 +1852,23 @@
                 }
                 
                 console.log('🔄 拖曳結束');
-            };
-            card.addEventListener('dragend', card._dragEndHandler);
+            });
             
             // 拖曳進入
-            card._dragEnterHandler = function(e) {
+            card.addEventListener('dragenter', function(e) {
                 e.preventDefault();
                 if (this !== draggedElement) {
                     this.classList.add('drag-over');
                 }
-            };
-            card.addEventListener('dragenter', card._dragEnterHandler);
+            });
             
             // 拖曳離開
-            card._dragLeaveHandler = function(e) {
+            card.addEventListener('dragleave', function(e) {
                 this.classList.remove('drag-over');
-            };
-            card.addEventListener('dragleave', card._dragLeaveHandler);
+            });
             
             // 拖曳懸停
-            card._dragOverHandler = function(e) {
+            card.addEventListener('dragover', function(e) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'move';
                 
@@ -1914,36 +1900,38 @@
                         }
                     }
                 }
-            };
-            card.addEventListener('dragover', card._dragOverHandler);
+            });
             
             // 放置
-            card._dropHandler = function(e) {
+            card.addEventListener('drop', function(e) {
                 e.preventDefault();
                 this.classList.remove('drag-over');
                 
                 if (this !== draggedElement && draggedElement && placeholderElement) {
-                    // 使用佔位符的位置來計算目標索引
+                    // 獲取所有實際的餐車卡片（排除佔位符）
                     const allCards = Array.from(this.parentNode.children).filter(child => 
                         child.classList.contains('truck-card') && !child.classList.contains('drag-placeholder')
                     );
                     
+                    // 計算佔位符在實際卡片中的位置
                     const placeholderIndex = Array.from(this.parentNode.children).indexOf(placeholderElement);
                     const sourceIndex = draggedIndex;
                     
-                    // 計算實際的目標索引（排除佔位符）
+                    // 計算目標索引
                     let targetIndex = placeholderIndex;
-                    if (placeholderIndex > sourceIndex) {
+                    
+                    // 如果拖曳到更後面的位置，需要調整索引
+                    if (sourceIndex < placeholderIndex) {
                         targetIndex = placeholderIndex - 1; // 因為源元素會被移除
                     }
                     
-                    console.log(`🔄 拖曳從位置 ${sourceIndex} 到位置 ${targetIndex} (佔位符位置: ${placeholderIndex})`);
+                    console.log(`🔄 拖曳從位置 ${sourceIndex + 1} 到位置 ${targetIndex + 1} (佔位符位置: ${placeholderIndex + 1})`);
+                    console.log(`📋 拖曳行為：餐車將插入到位置 ${targetIndex + 1}，其他餐車會往後移動`);
                     
                     // 執行重新排序
                     reorderTrucks(sourceIndex, targetIndex);
                 }
-            };
-            card.addEventListener('drop', card._dropHandler);
+            });
         }
         
         // 重新排序餐車
@@ -1960,21 +1948,29 @@
                     return;
                 }
                 
-                console.log(`🔄 交換餐車位置: ${fromIndex + 1} ↔ ${toIndex + 1}`);
+                console.log(`🔄 移動餐車從位置 ${fromIndex + 1} 到位置 ${toIndex + 1}`);
                 
-                // 交換兩個位置的餐車
-                [foodTruckDatabase[fromIndex], foodTruckDatabase[toIndex]] = 
-                [foodTruckDatabase[toIndex], foodTruckDatabase[fromIndex]];
+                // 獲取被拖曳的餐車
+                const draggedTruck = foodTruckDatabase[fromIndex];
+                
+                // 如果拖曳到更後面的位置，目標索引需要調整
+                let actualToIndex = toIndex;
+                if (fromIndex < toIndex) {
+                    actualToIndex = toIndex - 1; // 因為源元素會被移除，所以目標索引要減1
+                }
+                
+                // 從陣列中移除拖曳的元素
+                const removedTruck = foodTruckDatabase.splice(fromIndex, 1)[0];
+                
+                // 插入到新位置（其他元素會自動往後移動）
+                foodTruckDatabase.splice(actualToIndex, 0, removedTruck);
                 
                 // 更新所有餐車的優先級
                 foodTruckDatabase.forEach((truck, index) => {
                     truck.priority = index + 1;
                 });
                 
-                const fromTruck = foodTruckDatabase[toIndex];
-                const toTruck = foodTruckDatabase[fromIndex];
-                
-                console.log(`✅ 餐車已交換: "${fromTruck.title}" ↔ "${toTruck.title}"`);
+                console.log(`✅ 餐車 "${draggedTruck.title}" 已插入到位置 ${actualToIndex + 1}，其他餐車已同步調整`);
                 
                 // 立即更新本地儲存
                 saveDataToLocal();
@@ -1984,10 +1980,7 @@
                 renderPreview();
                 
                 // 顯示成功訊息
-                showAlert(`餐車已交換位置: "${fromTruck.title}" ↔ "${toTruck.title}"`, 'success');
-                
-                // 拖曳排序只進行本地儲存，不自動同步到遠端
-                console.log('💾 拖曳排序已儲存到本地，請手動同步到遠端');
+                showAlert(`餐車 "${draggedTruck.title}" 已插入到位置 ${actualToIndex + 1}`, 'success');
                 
             } catch (error) {
                 console.error('❌ 重新排序失敗:', error);
@@ -1999,7 +1992,15 @@
         function updateDragEvents() {
             const truckCards = document.querySelectorAll('.truck-card');
             truckCards.forEach((card, index) => {
-                // 重新設置事件（setupDragEvents 會自動移除舊的事件監聽器）
+                // 移除舊的事件監聽器
+                card.removeEventListener('dragstart', card._dragStartHandler);
+                card.removeEventListener('dragend', card._dragEndHandler);
+                card.removeEventListener('dragenter', card._dragEnterHandler);
+                card.removeEventListener('dragleave', card._dragLeaveHandler);
+                card.removeEventListener('dragover', card._dragOverHandler);
+                card.removeEventListener('drop', card._dropHandler);
+                
+                // 重新設置事件
                 setupDragEvents(card, index);
             });
         }
@@ -2262,6 +2263,42 @@
                 showAlert('🔧 除錯功能已隱藏', 'info');
             }
         }
+        
+        // 快速修復餐車載入問題
+        function quickFixTruckLoading() {
+            console.log('🔧 快速修復餐車載入問題...');
+            
+            // 1. 檢查當前狀態
+            console.log('🔍 當前狀態檢查:');
+            console.log(`  - foodTruckDatabase 長度: ${foodTruckDatabase ? foodTruckDatabase.length : 'undefined'}`);
+            console.log(`  - filteredTrucks 長度: ${filteredTrucks ? filteredTrucks.length : 'undefined'}`);
+            
+            // 2. 強制從 data.json 載入
+            fetch('data.json?' + Date.now())
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.foodTrucks && Array.isArray(data.foodTrucks)) {
+                        console.log(`✅ 成功載入 ${data.foodTrucks.length} 個餐車`);
+                        
+                        // 直接設置資料
+                        foodTruckDatabase = [...data.foodTrucks];
+                        filteredTrucks = [...foodTruckDatabase];
+                        
+                        // 重新渲染
+                        renderTruckCards();
+                        updateStats();
+                        renderPreview();
+                        
+                        showAlert(`✅ 快速修復成功！載入 ${data.foodTrucks.length} 個餐車`, 'success');
+                    } else {
+                        throw new Error('資料格式不正確');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ 快速修復失敗:', error);
+                    showAlert('❌ 快速修復失敗，請嘗試其他方法', 'danger');
+                });
+        }
 
         // 測試同步功能
         async function testSyncFunction() {
@@ -2420,8 +2457,8 @@
             applyFilters();
             renderPreview();
             
-            // 新增餐車只進行本地儲存，不自動同步到遠端
-            console.log('💾 新增餐車已儲存到本地，請手動同步到遠端');
+            // 新增餐車完成，等待手動同步
+            console.log('✅ 新增餐車完成，請點擊「儲存並同步」按鈕進行遠端同步');
         });
 
         document.addEventListener('DOMContentLoaded', async function() {
@@ -2539,14 +2576,30 @@
                         hasData: true,
                         filteredCount: filteredTrucks.length
                     };
+                    
+                    console.log(`✅ 資料已載入: ${foodTruckDatabase.length} 個餐車`);
                 }
                 
                 // 4. 渲染介面
                 console.log(`🖼️ 開始渲染介面: ${initResult.foodTruckCount} 個餐車`);
+                console.log(`🔍 渲染前檢查 - foodTruckDatabase 長度: ${foodTruckDatabase ? foodTruckDatabase.length : 'undefined'}`);
+                console.log(`🔍 渲染前檢查 - filteredTrucks 長度: ${filteredTrucks ? filteredTrucks.length : 'undefined'}`);
+                
                 updateStats();
                 applyFilters();
                 renderTruckCards(); // 渲染餐車卡片
                 renderPreview();
+                
+                // 檢查渲染結果
+                setTimeout(() => {
+                    const truckCards = document.querySelectorAll('.truck-card');
+                    console.log(`🔍 渲染後檢查 - 實際渲染的卡片數量: ${truckCards.length}`);
+                    if (truckCards.length === 0 && foodTruckDatabase && foodTruckDatabase.length > 0) {
+                        console.log('⚠️ 檢測到資料已載入但沒有渲染，強制重新渲染...');
+                        renderTruckCards();
+                        updateStats();
+                    }
+                }, 100);
                 
                 // 5. 初始化拖曳功能
                 setTimeout(() => {
@@ -2638,4 +2691,6 @@
                     closeDropdowns();
                 }
             });
+        });
+    
         });

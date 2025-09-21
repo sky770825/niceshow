@@ -104,12 +104,9 @@ if exist temp_status.txt (
         goto continue_upload
     )
     del temp_status.txt 2>nul
-    echo ✅ 沒有檢測到未提交的變更，直接上傳
-    goto continue_upload
-) else (
-    echo ✅ 沒有檢測到未提交的變更，直接上傳
-    goto continue_upload
 )
+echo ✅ 沒有檢測到未提交的變更，直接上傳
+goto continue_upload
 :continue_upload
 
 echo 🔄 正在上傳檔案...
