@@ -1757,16 +1757,6 @@
             // 設置可拖曳
             card.draggable = true;
             
-            // 移除舊的事件監聽器（如果存在）
-            if (card._dragStartHandler) {
-                card.removeEventListener('dragstart', card._dragStartHandler);
-                card.removeEventListener('dragend', card._dragEndHandler);
-                card.removeEventListener('dragenter', card._dragEnterHandler);
-                card.removeEventListener('dragleave', card._dragLeaveHandler);
-                card.removeEventListener('dragover', card._dragOverHandler);
-                card.removeEventListener('drop', card._dropHandler);
-            }
-            
             // 觸控設備支援
             let touchStartY = 0;
             let touchStartX = 0;
@@ -1832,7 +1822,7 @@
             }, { passive: true });
             
             // 拖曳開始
-            card._dragStartHandler = function(e) {
+            card.addEventListener('dragstart', function(e) {
                 draggedElement = this;
                 draggedIndex = index;
                 this.classList.add('dragging');
@@ -1842,11 +1832,10 @@
                 e.dataTransfer.setData('text/html', this.outerHTML);
                 
                 console.log(`🔄 開始拖曳餐車: ${index}`);
-            };
-            card.addEventListener('dragstart', card._dragStartHandler);
+            });
             
             // 拖曳結束
-            card._dragEndHandler = function(e) {
+            card.addEventListener('dragend', function(e) {
                 this.classList.remove('dragging');
                 draggedElement = null;
                 draggedIndex = -1;
@@ -1863,26 +1852,23 @@
                 }
                 
                 console.log('🔄 拖曳結束');
-            };
-            card.addEventListener('dragend', card._dragEndHandler);
+            });
             
             // 拖曳進入
-            card._dragEnterHandler = function(e) {
+            card.addEventListener('dragenter', function(e) {
                 e.preventDefault();
                 if (this !== draggedElement) {
                     this.classList.add('drag-over');
                 }
-            };
-            card.addEventListener('dragenter', card._dragEnterHandler);
+            });
             
             // 拖曳離開
-            card._dragLeaveHandler = function(e) {
+            card.addEventListener('dragleave', function(e) {
                 this.classList.remove('drag-over');
-            };
-            card.addEventListener('dragleave', card._dragLeaveHandler);
+            });
             
             // 拖曳懸停
-            card._dragOverHandler = function(e) {
+            card.addEventListener('dragover', function(e) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'move';
                 
@@ -1914,11 +1900,10 @@
                         }
                     }
                 }
-            };
-            card.addEventListener('dragover', card._dragOverHandler);
+            });
             
             // 放置
-            card._dropHandler = function(e) {
+            card.addEventListener('drop', function(e) {
                 e.preventDefault();
                 this.classList.remove('drag-over');
                 
@@ -1942,8 +1927,7 @@
                     // 執行重新排序
                     reorderTrucks(sourceIndex, targetIndex);
                 }
-            };
-            card.addEventListener('drop', card._dropHandler);
+            });
         }
         
         // 重新排序餐車
@@ -1999,7 +1983,15 @@
         function updateDragEvents() {
             const truckCards = document.querySelectorAll('.truck-card');
             truckCards.forEach((card, index) => {
-                // 重新設置事件（setupDragEvents 會自動移除舊的事件監聽器）
+                // 移除舊的事件監聽器
+                card.removeEventListener('dragstart', card._dragStartHandler);
+                card.removeEventListener('dragend', card._dragEndHandler);
+                card.removeEventListener('dragenter', card._dragEnterHandler);
+                card.removeEventListener('dragleave', card._dragLeaveHandler);
+                card.removeEventListener('dragover', card._dragOverHandler);
+                card.removeEventListener('drop', card._dropHandler);
+                
+                // 重新設置事件
                 setupDragEvents(card, index);
             });
         }
