@@ -1,6 +1,23 @@
 {
   "foodTrucks": [
     {
+      "id": "truck_1758443730960",
+      "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
+      "alt": "聯絡我",
+      "title": "急售一天",
+      "imgLink": "https://liny14705.github.io/nicehouse/index1",
+      "link": [
+        {
+          "text": "點我看照",
+          "url": "https://liny14705.github.io/nicehouse/index1"
+        }
+      ],
+      "isActive": true,
+      "priority": 1,
+      "category": "main",
+      "isEditing": false
+    },
+    {
       "id": "truck_1758002427365",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png",
       "alt": "聯絡我",
@@ -20,25 +37,9 @@
         }
       ],
       "isActive": true,
-      "priority": 1,
+      "priority": 2,
       "category": "main",
       "isEditing": false
-    },
-    {
-      "id": "truck_1758443730960",
-      "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
-      "alt": "聯絡我",
-      "title": "急售一天",
-      "imgLink": "https://liny14705.github.io/nicehouse/index1",
-      "link": [
-        {
-          "url": "https://liny14705.github.io/nicehouse/index1",
-          "text": "點我看照片"
-        }
-      ],
-      "isActive": true,
-      "priority": 2,
-      "category": "main"
     },
     {
       "id": "truck_1758421647704",
@@ -166,7 +167,7 @@
       "link": ""
     }
   ],
-  "lastUpdated": "2025-09-21T08:35:41.654Z",
+  "lastUpdated": "2025-09-21T08:36:42.701Z",
   "version": "1.0",
-  "syncCount": 61
+  "syncCount": 62
 }
