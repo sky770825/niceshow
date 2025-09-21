@@ -1801,8 +1801,7 @@
             } catch (error) {
                     console.error('同步失敗:', error);
                     showSyncStatus('❌ 同步失敗，但已儲存到本地');
-                    // 備用方案：下載檔案
-                    updateDataJsonAndPush(data);
+                    // 移除自動下載檔案功能
                 }
                 
                 setTimeout(() => {
@@ -1850,9 +1849,7 @@
             } catch (error) {
                 console.error('同步失敗:', error);
                 showSyncStatus(`❌ 同步失敗：${error.message}`);
-                
-                // 備用方案：下載檔案
-                updateDataJsonAndPush(data);
+                // 移除自動下載檔案功能
             }
         }
         
@@ -1861,27 +1858,9 @@
         }
         
         function updateDataJsonAndPush(data) {
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'data.json';
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            console.log('📥 已自動下載更新後的 data.json');
-            showSyncStatus('📥 已下載 data.json，請手動上傳到 GitHub');
-            
-            setTimeout(() => {
-                const message = `資料已更新！\n\n📥 data.json 已自動下載\n\n📄 要同步到 GitHub，請執行：\n1. 將下載的 data.json 替換專案中的檔案\n2. 執行 "auto_github_sync.bat" 自動同步\n3. 或手動執行 Git 命令\n\n是否要開啟 GitHub 頁面？`;
-                
-                if (confirm(message)) {
-                    window.open('https://github.com', '_blank');
-                }
-            }, 1000);
+            // 已移除自動下載和彈出視窗功能
+            console.log('📄 資料已更新，但未自動下載檔案');
+            showSyncStatus('📄 資料已更新到本地');
         }
 
         function showSyncStatus(message) {
