@@ -320,25 +320,46 @@ echo.
 set /p version=請輸入要部署的版本號 (如 v1.5): 
 
 if "%version%"=="" (
-    echo 版本號不能為空！
-    pause
-    goto start
+    echo ❌ 版本號不能為空！
+    echo 按任意鍵重新輸入...
+    pause >nul
+    goto deploy_version
 )
 
 if not exist "%version%" (
-    echo 版本資料夾不存在：%version%
+    echo ❌ 版本資料夾不存在：%version%
     echo 可用的版本：
     dir /b | findstr "^v"
     echo.
-    pause
-    goto start
+    echo 按任意鍵重新選擇...
+    pause >nul
+    goto deploy_version
 )
 
 echo.
-echo  正在部署版本：%version%
+echo 🚀 正在部署版本：%version%
 echo.
 
-echo  步驟1: 備份當前檔案...
+REM 檢查版本資料夾內容
+echo 檢查版本資料夾內容...
+if not exist "%version%\index.html" (
+    echo ❌ 版本資料夾缺少 index.html 檔案
+    echo 請確認版本資料夾包含完整的網站檔案
+    echo 按任意鍵重新選擇版本...
+    pause >nul
+    goto deploy_version
+)
+if not exist "%version%\script.js" (
+    echo ❌ 版本資料夾缺少 script.js 檔案
+    echo 請確認版本資料夾包含完整的網站檔案
+    echo 按任意鍵重新選擇版本...
+    pause >nul
+    goto deploy_version
+)
+echo ✅ 版本資料夾內容檢查通過
+
+echo.
+echo 步驟1: 備份當前檔案...
 if not exist "backup_current" mkdir backup_current
 copy index.html backup_current\ 2>nul
 copy index1.html backup_current\ 2>nul
@@ -380,28 +401,42 @@ echo  步驟4: 檢查Git狀態...
 git status
 echo.
 
-echo  步驟5: 添加版本檔案到Git...
+echo 步驟5: 添加版本檔案到Git...
 git add .
 if errorlevel 1 (
-    echo  ❌ 添加檔案失敗
+    echo ❌ 添加檔案失敗
+    echo 可能原因：檔案權限問題或Git狀態異常
     pause
     goto start
 )
-echo  版本檔案已添加到Git
+echo ✅ 版本檔案已添加到Git
 
 echo.
-echo  步驟6: 提交變更...
+echo 步驟6: 提交變更...
 set commit_msg=部署版本 %version% - %date% %time%
 git commit -m "!commit_msg!"
 if errorlevel 1 (
-    echo  ❌ 提交失敗
+    echo ❌ 提交失敗
+    echo 可能原因：沒有變更需要提交或提交訊息問題
+    echo 嘗試強制推送...
+    goto force_push_deploy
+)
+echo ✅ 變更已提交
+
+:force_push_deploy
+echo.
+echo ⚠️  嘗試強制推送部署...
+echo 注意：強制推送會覆蓋遠端的變更！
+echo.
+set /p force_confirm=確定要強制推送部署嗎？這會覆蓋遠端變更！(y/n):
+if /i not "%force_confirm%"=="y" (
+    echo 操作已取消
     pause
     goto start
 )
-echo  變更已提交
 
 echo.
-echo  步驟7: 檢查認證狀態...
+echo 步驟7: 檢查認證狀態...
 git config --get user.name >nul 2>&1
 if errorlevel 1 (
     echo  ❌ Git 用戶資訊未設定
@@ -411,44 +446,43 @@ if errorlevel 1 (
 )
 
 echo.
-echo  步驟8: 上架到GitHub...
-echo  正在嘗試推送...
+echo 步驟8: 上架到GitHub...
+echo 正在嘗試推送...
 git push origin main
 if errorlevel 1 (
-    echo  ❌ 上架失敗，嘗試強制推送...
-    git push -f origin main
+    echo ❌ 推送到main失敗，嘗試master分支...
+    git push origin master
     if errorlevel 1 (
-        echo  ❌ 強制推送到 main 也失敗，嘗試 master...
-        git push -f origin master
+        echo ❌ 推送到master也失敗，嘗試強制推送...
+        git push origin main --force
         if errorlevel 1 (
-            echo  ❌ 上架失敗
-            echo.
-            echo  可能的原因：
-            echo  1. 網路連接問題
-            echo  2. GitHub 認證問題 (需要 Personal Access Token)
-            echo  3. 倉庫權限問題
-            echo.
-            echo  建議操作：
-            echo  1. 使用「修正 GitHub 認證權限」功能
-            echo  2. 或使用「修復 Git 同步問題」功能
-            echo  3. 檢查是否需要 Personal Access Token
-            echo.
-            pause
-            goto start
+            git push origin master --force
+            if errorlevel 1 (
+                echo ❌ 強制推送部署也失敗
+                echo 可能原因：認證問題或網路問題
+                pause
+                goto start
+            ) else (
+                echo ✅ 已強制推送到master分支
+                goto deploy_success
+            )
         ) else (
-            echo  ✅ 已強制推送到 master 分支
+            echo ✅ 已強制推送到main分支
+            goto deploy_success
         )
     ) else (
-        echo  ✅ 已強制推送到 main 分支
+        echo ✅ 已推送到master分支
+        goto deploy_success
     )
 ) else (
-    echo  ✅ 已推送到 main 分支
+    echo ✅ 已推送到main分支
+    goto deploy_success
 )
-echo  版本 %version% 已上架到GitHub
 
+:deploy_success
 echo.
 echo ================================
-echo  部署完成！
+echo 🎉 部署完成！
 echo ================================
 echo.
 echo  部署資訊：

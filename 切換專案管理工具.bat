@@ -11,7 +11,7 @@ echo 版本 2.0 - 簡化版
 echo.
 echo 請選擇操作：
 echo.
-echo  📁 檔案管理
+echo  檔案管理
 echo  1. 快速上傳到 GitHub (推薦)
 echo  2. 檢查檔案狀態
 echo  3. 建立版本備份
@@ -32,7 +32,10 @@ echo  11. 查看版本資訊
 echo  0. 退出程式
 echo.
 
-set /p choice=請輸入選項 (0-11): 
+set /p choice=選項 (0-11): 
+
+REM 清理輸入，移除可能的空白字符
+set choice=%choice: =%
 
 if "%choice%"=="1" goto quick_upload
 if "%choice%"=="2" goto check_files
@@ -146,7 +149,7 @@ echo.
 echo ⚠️  嘗試強制推送...
 echo 注意：強制推送會覆蓋遠端的變更！
 echo.
-set /p force_confirm=確定要強制推送嗎？這會覆蓋遠端變更！(y/n): 
+set /p force_confirm=強制推送？會覆蓋遠端變更！(y/n): 
 if /i not "%force_confirm%"=="y" (
     echo 操作已取消
     pause
@@ -208,7 +211,7 @@ echo.
 echo 建立版本備份
 echo.
 
-set /p version=請輸入版本號 (如 v2.1): 
+set /p version=版本號 (如 v2.1): 
 
 if "%version%"=="" (
     echo ❌ 版本號不能為空！
@@ -302,7 +305,7 @@ echo 📚 說明文件：所有*.md 檔案
 echo 🔧 其他工具：所有HTML、JS、JSON、BAT檔案
 echo.
 
-set /p deploy_now=是否立即部署此版本？(y/n): 
+set /p deploy_now=立即部署此版本？(y/n): 
 if /i "%deploy_now%"=="y" (
     echo 正在部署版本 %version%...
     goto deploy_version
@@ -329,7 +332,7 @@ if errorlevel 1 (
 )
 
 echo.
-set /p version=請輸入要部署的版本號: 
+set /p version=要部署的版本號: 
 
 if "%version%"=="" (
     echo ❌ 版本號不能為空！
@@ -339,6 +342,9 @@ if "%version%"=="" (
 
 if not exist "%version%" (
     echo ❌ 版本資料夾不存在：%version%
+    echo 可用的版本：
+    dir /b | findstr "^v"
+    echo.
     pause
     goto start
 )
@@ -348,16 +354,13 @@ echo 🚀 正在部署版本：%version%
 echo.
 
 REM 檢查版本資料夾內容
-echo 檢查版本資料夾內容...
 if not exist "%version%\index.html" (
     echo ❌ 版本資料夾缺少 index.html 檔案
-    echo 請確認版本資料夾包含完整的網站檔案
     pause
     goto start
 )
 if not exist "%version%\script.js" (
     echo ❌ 版本資料夾缺少 script.js 檔案
-    echo 請確認版本資料夾包含完整的網站檔案
     pause
     goto start
 )
@@ -381,87 +384,41 @@ echo ✅ 版本檔案已複製
 
 echo.
 echo 步驟3: 上傳到GitHub...
-echo 步驟3.1: 添加檔案到暫存區...
 git add .
 if errorlevel 1 (
     echo ❌ 添加檔案失敗
-    echo 可能原因：檔案權限問題或Git狀態異常
     pause
     goto start
 )
-echo ✅ 檔案已添加到暫存區
+echo ✅ 檔案已添加
 
-echo.
-echo 步驟3.2: 提交變更...
 git commit -m "部署版本 %version% - %date% %time%"
 if errorlevel 1 (
-    echo ❌ 提交失敗
-    echo 可能原因：沒有變更需要提交或提交訊息問題
-    echo 嘗試強制推送...
-    goto force_push_deploy
+    echo ❌ 提交失敗，嘗試強制推送...
+    goto force_push
 )
 echo ✅ 變更已提交
 
-echo.
-echo 步驟3.3: 推送到GitHub...
 git push origin main
 if errorlevel 1 (
-    echo ❌ 推送到main失敗，檢查原因...
-    echo 可能原因：遠端有新的提交
-    echo 正在嘗試同步...
-    echo.
-    
-    echo 步驟3.1: 獲取遠端變更...
-    git fetch origin
-    if errorlevel 1 (
-        echo ❌ 獲取遠端變更失敗
-        echo 嘗試推送到master分支...
-        goto try_master_deploy
-    )
-    
-    echo 步驟3.2: 合併遠端變更...
-    git merge origin/main
-    if errorlevel 1 (
-        echo ❌ 合併衝突！需要手動解決
-        echo 建議使用「修復同步問題」功能
-        pause
-        goto start
-    )
-    
-    echo 步驟3.3: 重新推送部署...
-    git push origin main
-    if errorlevel 1 (
-        echo ❌ 重新推送失敗，嘗試master分支...
-        goto try_master_deploy
-    ) else (
-        echo ✅ 已成功部署到main分支
-        goto deploy_success
-    )
-    
-    :try_master_deploy
-    echo 嘗試推送到master分支...
+    echo ❌ 推送到main失敗，嘗試master分支...
     git push origin master
     if errorlevel 1 (
-        echo ❌ 部署失敗
-        echo 可能原因：認證問題或網路問題
-        echo 建議使用「修復同步問題」功能
-        pause
-        goto start
+        echo ❌ 推送失敗，嘗試強制推送...
+        goto force_push
     ) else (
-        echo ✅ 已部署到master分支
+        echo ✅ 已推送到master分支
         goto deploy_success
     )
 ) else (
-echo ✅ 已部署到main分支
-goto deploy_success
+    echo ✅ 已推送到main分支
+    goto deploy_success
 )
 
-:force_push_deploy
+:force_push
 echo.
-echo ⚠️  嘗試強制推送部署...
-echo 注意：強制推送會覆蓋遠端的變更！
-echo.
-set /p force_confirm=確定要強制推送部署嗎？這會覆蓋遠端變更！(y/n): 
+echo ⚠️  嘗試強制推送...
+set /p force_confirm=強制推送？(y/n): 
 if /i not "%force_confirm%"=="y" (
     echo 操作已取消
     pause
@@ -472,8 +429,7 @@ git push origin main --force
 if errorlevel 1 (
     git push origin master --force
     if errorlevel 1 (
-        echo ❌ 強制推送部署也失敗
-        echo 可能原因：認證問題或網路問題
+        echo ❌ 強制推送也失敗
         pause
         goto start
     ) else (
@@ -486,9 +442,8 @@ if errorlevel 1 (
 )
 
 :deploy_success
-
 echo.
-echo 部署完成！
+echo 🎉 部署完成！
 echo.
 echo 📋 部署資訊：
 echo 版本：%version%
@@ -519,7 +474,7 @@ echo 2. 直接下架（危險）
 echo 0. 取消操作
 echo.
 
-set /p cleanup_choice=請選擇操作 (0-2): 
+set /p cleanup_choice=操作 (0-2): 
 
 if "%cleanup_choice%"=="0" goto start
 if "%cleanup_choice%"=="1" goto backup_and_cleanup
@@ -556,7 +511,7 @@ echo.
 echo ⚠️  最後警告：這將永久刪除所有檔案！
 echo 建議您先手動備份重要檔案
 echo.
-set /p confirm=確定要下架所有檔案嗎？(y/n): 
+set /p confirm=下架所有檔案？(y/n): 
 if /i not "%confirm%"=="y" (
     echo 操作已取消
     pause
@@ -656,7 +611,7 @@ if exist ".git" (
     echo 0. 取消操作
     echo.
     
-    set /p init_choice=請選擇操作 (0-3): 
+    set /p init_choice=操作 (0-3): 
     
     if "%init_choice%"=="0" goto start
     if "%init_choice%"=="1" goto reconfigure_existing
@@ -672,7 +627,7 @@ if exist ".git" (
 echo 請輸入您的 GitHub 倉庫連結：
 echo 範例：https://github.com/username/repository-name
 echo.
-set /p repo_url=請輸入 GitHub 連結: 
+set /p repo_url=GitHub 連結: 
 
 if "%repo_url%"=="" (
     echo ❌ 連結不能為空！
@@ -738,7 +693,7 @@ goto start
 echo.
 echo ⚠️  警告：這將覆蓋現有的Git配置！
 echo.
-set /p confirm=確定要重新配置嗎？(y/n): 
+set /p confirm=重新配置？(y/n): 
 if /i not "%confirm%"=="y" (
     echo 操作已取消
     pause
@@ -747,7 +702,7 @@ if /i not "%confirm%"=="y" (
 
 echo.
 echo 請輸入新的 GitHub 倉庫連結：
-set /p repo_url=請輸入 GitHub 連結: 
+set /p repo_url=GitHub 連結: 
 
 if "%repo_url%"=="" (
     echo ❌ 連結不能為空！
@@ -772,7 +727,7 @@ if "%remote_name%"=="" set remote_name=backup
 
 echo.
 echo 請輸入新的 GitHub 倉庫連結：
-set /p repo_url=請輸入 GitHub 連結: 
+set /p repo_url=GitHub 連結: 
 
 if "%repo_url%"=="" (
     echo ❌ 連結不能為空！
@@ -798,7 +753,7 @@ echo ✅ 配置已備份到：backup_git_config 資料夾
 
 echo.
 echo 請輸入新的 GitHub 倉庫連結：
-set /p repo_url=請輸入 GitHub 連結: 
+set /p repo_url=GitHub 連結: 
 
 if "%repo_url%"=="" (
     echo ❌ 連結不能為空！
@@ -848,7 +803,7 @@ echo 3. 強制推送 - 放棄遠端修改，使用本地版本
 echo 0. 返回主選單
 echo.
 
-set /p fix_choice=請選擇修復方式 (0-3): 
+set /p fix_choice=修復方式 (0-3): 
 
 if "%fix_choice%"=="0" goto start
 if "%fix_choice%"=="1" goto safe_fix
@@ -913,7 +868,7 @@ goto start
 echo.
 echo ⚠️  警告：這將放棄所有本地修改！
 echo.
-set /p confirm=確定要放棄本地修改嗎？(y/n): 
+set /p confirm=放棄本地修改？(y/n): 
 if /i not "%confirm%"=="y" (
     echo 操作已取消
     pause
@@ -933,7 +888,7 @@ goto start
 echo.
 echo ⚠️  警告：這將覆蓋遠端的所有修改！
 echo.
-set /p confirm=確定要覆蓋遠端修改嗎？(y/n): 
+set /p confirm=覆蓋遠端修改？(y/n): 
 if /i not "%confirm%"=="y" (
     echo 操作已取消
     pause
@@ -1009,7 +964,7 @@ echo 10. 房子物件銷售 (liny14705/house0825)
 echo 0. 返回主選單
 echo.
 
-set /p project_choice=請選擇要切換的專案 (0-10): 
+set /p project_choice=要切換的專案 (0-10): 
 
 if "%project_choice%"=="0" goto start
 if "%project_choice%"=="1" goto switch_niceshow
@@ -1177,7 +1132,7 @@ echo 3. chu20170103 (chu20170103@gmail.com) - 獨立開發帳戶
 echo 0. 返回主選單
 echo.
 
-set /p account_choice=請選擇要切換的帳戶 (0-3): 
+set /p account_choice=要切換的帳戶 (0-3): 
 
 if "%account_choice%"=="0" goto start
 if "%account_choice%"=="1" goto switch_sky770825
