@@ -2721,13 +2721,8 @@
 
         // 設定 GitHub Token
         function setupGitHubToken() {
-            // 直接設定提供的 Token
-            const token = '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';
-            SimpleProjectConfig.setGitHubToken(token);
-            showAlert('✅ GitHub Token 已設定！同步功能已啟用', 'success');
-            
-            // 測試 Token 是否有效
-            testGitHubToken();
+            // 開啟 Token 設定頁面
+            window.open('simple-token-setup.html', '_blank', 'width=700,height=800,scrollbars=yes,resizable=yes');
         }
         
         // 測試 GitHub Token
@@ -2752,7 +2747,7 @@
         
         // 開啟 Token 設定頁面
         function openTokenSetup() {
-            window.open('setup-github-token.html', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            window.open('simple-token-setup.html', '_blank', 'width=700,height=800,scrollbars=yes,resizable=yes');
         }
 
         // 檢查遠端更新
@@ -2906,25 +2901,6 @@
                 console.error('❌ data.json 載入測試失敗:', error);
                 alert(`❌ 載入失敗: ${error.message}`);
             }
-        }
-        
-        // 強制重新載入資料
-        async function forceReloadData() {
-            console.log('🔄 強制重新載入資料...');
-            
-            // 清除本地快取
-            localStorage.removeItem('foodTruckData');
-            sessionStorage.removeItem('foodTruckData');
-            
-            // 重新載入
-            const loadResult = await loadFoodTruckData(true); // 強制從遠端載入
-            console.log('📊 強制載入結果:', loadResult);
-            
-            // 強制渲染
-            renderTruckCards();
-            updateStats();
-            
-            alert(`✅ 強制重新載入完成！載入了 ${foodTruckDatabase ? foodTruckDatabase.length : 0} 個餐車`);
         }
         
         // 測試 F5 重新載入流程
@@ -3305,7 +3281,7 @@
                 console.log('✅ 專案設定已初始化');
                 
                 // 1.5. 自動設定 GitHub Token
-                const token = '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';
+                const token = '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';
                 SimpleProjectConfig.setGitHubToken(token);
                 console.log('✅ GitHub Token 已自動設定');
                 
@@ -3433,5 +3409,4 @@
         });
     </script>
 </body>
-</html>
 </html>
