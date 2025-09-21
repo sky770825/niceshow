@@ -72,24 +72,6 @@
       "category": "main"
     },
     {
-      "id": "truck_006",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
-      "alt": "餐車品牌6",
-      "title": "安德尼斯烘培坊",
-      "isActive": true,
-      "priority": 7,
-      "category": "main"
-    },
-    {
-      "id": "truck_007",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg",
-      "alt": "餐車品牌7",
-      "title": "韓式飯捲",
-      "isActive": true,
-      "priority": 8,
-      "category": "main"
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -109,6 +91,24 @@
           "text": "FB"
         }
       ],
+      "isActive": true,
+      "priority": 7,
+      "category": "main"
+    },
+    {
+      "id": "truck_006",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
+      "alt": "餐車品牌6",
+      "title": "安德尼斯烘培坊",
+      "isActive": true,
+      "priority": 8,
+      "category": "main"
+    },
+    {
+      "id": "truck_007",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg",
+      "alt": "餐車品牌7",
+      "title": "韓式飯捲",
       "isActive": true,
       "priority": 9,
       "category": "main"
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:27:35.471Z",
+  "lastUpdated": "2025-09-21T02:27:37.805Z",
   "version": "1.0",
-  "syncCount": 18
+  "syncCount": 19
 }
