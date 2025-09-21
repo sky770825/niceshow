@@ -105,44 +105,6 @@
       "category": "main"
     },
     {
-      "id": "truck_011",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
-      "alt": "餐車品牌11",
-      "title": "餓食鬼美味販賣所",
-      "isActive": true,
-      "priority": 10,
-      "category": "main"
-    },
-    {
-      "id": "truck_006",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
-      "alt": "餐車品牌6",
-      "title": "安德尼斯烘培坊",
-      "isActive": true,
-      "priority": 11,
-      "category": "main"
-    },
-    {
-      "id": "truck_008",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg",
-      "alt": "餐車品牌8",
-      "title": "炸蛋𣄃魚黑輪",
-      "isActive": true,
-      "priority": 12,
-      "category": "main"
-    },
-    {
-      "id": "truck_001",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg",
-      "alt": "餐車品牌1",
-      "title": "露露姐",
-      "isActive": true,
-      "priority": 13,
-      "category": "main",
-      "isEditing": false,
-      "link": ""
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -163,11 +125,49 @@
         }
       ],
       "isActive": true,
-      "priority": 14,
+      "priority": 10,
       "category": "main"
+    },
+    {
+      "id": "truck_011",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
+      "alt": "餐車品牌11",
+      "title": "餓食鬼美味販賣所",
+      "isActive": true,
+      "priority": 11,
+      "category": "main"
+    },
+    {
+      "id": "truck_006",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
+      "alt": "餐車品牌6",
+      "title": "安德尼斯烘培坊",
+      "isActive": true,
+      "priority": 12,
+      "category": "main"
+    },
+    {
+      "id": "truck_008",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg",
+      "alt": "餐車品牌8",
+      "title": "炸蛋𣄃魚黑輪",
+      "isActive": true,
+      "priority": 13,
+      "category": "main"
+    },
+    {
+      "id": "truck_001",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg",
+      "alt": "餐車品牌1",
+      "title": "露露姐",
+      "isActive": true,
+      "priority": 14,
+      "category": "main",
+      "isEditing": false,
+      "link": ""
     }
   ],
-  "lastUpdated": "2025-09-21T09:56:00.835Z",
+  "lastUpdated": "2025-09-21T09:56:22.000Z",
   "version": "1.0",
-  "syncCount": 64
+  "syncCount": 65
 }
