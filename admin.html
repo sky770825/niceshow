@@ -364,6 +364,110 @@
         .drag-handle:active {
             cursor: grabbing;
         }
+        
+        /* 下拉選單樣式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+        
+        .dropdown-arrow {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-toggle.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            min-width: 280px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+            animation: dropdownFadeIn 0.2s ease;
+        }
+        
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-section {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .dropdown-section:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem 0.25rem 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            color: var(--text-primary);
+            text-align: left;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 0;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--surface-hover);
+            color: var(--primary-color);
+        }
+        
+        .dropdown-item:active {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        /* 響應式調整 */
+        @media (max-width: 768px) {
+            .dropdown-menu {
+                right: auto;
+                left: 0;
+                min-width: 250px;
+            }
+        }
 
         .truck-image-container {
             position: relative;
@@ -1344,25 +1448,55 @@
                             <div>
                                 <h4 class="form-section-title" style="margin-bottom: 0;">💾 資料管理</h4>
                             </div>
-                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                                <!-- 主要功能按鈕 -->
                                 <button type="submit" class="btn btn-primary">➕ 新增餐車</button>
                                 <button type="button" class="btn btn-secondary" onclick="openPostimageUpload()">🖼️ 開啟 Postimage</button>
                                 <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
-                                <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
-                                <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
-                                <button type="button" class="btn btn-info" onclick="openTokenSetup()">🔧 開啟 Token 設定頁</button>
-                                <button type="button" class="btn btn-success" onclick="exportToken()">📤 匯出 Token</button>
-                                <button type="button" class="btn btn-warning" onclick="importToken()">📥 匯入 Token</button>
-                                <button type="button" class="btn btn-info" onclick="showTokenStatus()">🔍 檢查 Token 狀態</button>
-                                <button type="button" class="btn btn-secondary" onclick="window.open('token-guide.html', '_blank')">📖 Token 設定指南</button>
-                                <button type="button" class="btn btn-info" onclick="showDragHelp()">🖱️ 拖曳排序說明</button>
-                                <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
-                                <button type="button" class="btn btn-info" onclick="testSyncFunction()">🧪 測試同步</button>
-                                <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
-                                <button type="button" class="btn btn-secondary" onclick="debugDataStatus()" style="display: none;">🔍 檢查狀態</button>
-                                <button type="button" class="btn btn-warning" onclick="forceReloadData()" style="display: none;">🔄 強制重新載入</button>
-                                <button type="button" class="btn btn-danger" onclick="clearLocalData()" style="display: none;">🗑️ 清除本地資料</button>
-                                <button type="button" class="btn btn-info" onclick="testDataJsonLoad()" style="display: none;">🧪 測試 data.json 載入</button>
+                                
+                                <!-- 更多功能下拉選單 -->
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" onclick="toggleDropdown('moreFunctions')">
+                                        ⚙️ 更多功能 <span class="dropdown-arrow">▼</span>
+                                    </button>
+                                    <div id="moreFunctions" class="dropdown-menu">
+                                        <div class="dropdown-section">
+                                            <div class="dropdown-section-title">🔄 同步功能</div>
+                                            <button type="button" class="dropdown-item" onclick="checkForUpdates()">🔄 檢查更新</button>
+                                            <button type="button" class="dropdown-item" onclick="testSyncFunction()">🧪 測試同步</button>
+                                        </div>
+                                        <div class="dropdown-section">
+                                            <div class="dropdown-section-title">🔑 Token 管理</div>
+                                            <button type="button" class="dropdown-item" onclick="setupGitHubToken()">🔑 設定 Token</button>
+                                            <button type="button" class="dropdown-item" onclick="openTokenSetup()">🔧 開啟 Token 設定頁</button>
+                                            <button type="button" class="dropdown-item" onclick="exportToken()">📤 匯出 Token</button>
+                                            <button type="button" class="dropdown-item" onclick="importToken()">📥 匯入 Token</button>
+                                            <button type="button" class="dropdown-item" onclick="showTokenStatus()">🔍 檢查 Token 狀態</button>
+                                            <button type="button" class="dropdown-item" onclick="window.open('token-guide.html', '_blank')">📖 Token 設定指南</button>
+                                        </div>
+                                        <div class="dropdown-section">
+                                            <div class="dropdown-section-title">📁 資料管理</div>
+                                            <button type="button" class="dropdown-item" onclick="saveFoodTruckData()">📥 匯出資料</button>
+                                            <button type="button" class="dropdown-item" onclick="location.reload()">🔄 重新載入</button>
+                                        </div>
+                                        <div class="dropdown-section">
+                                            <div class="dropdown-section-title">🖱️ 拖曳功能</div>
+                                            <button type="button" class="dropdown-item" onclick="showDragHelp()">🖱️ 拖曳排序說明</button>
+                                        </div>
+                                        <div class="dropdown-section">
+                                            <div class="dropdown-section-title">⚙️ 進階設定</div>
+                                            <button type="button" class="dropdown-item" onclick="toggleDebugSection()">🔧 切換除錯功能</button>
+                                        </div>
+                                        <div class="dropdown-section" style="display: none;" id="debugSection">
+                                            <div class="dropdown-section-title">🔧 除錯功能</div>
+                                            <button type="button" class="dropdown-item" onclick="debugDataStatus()">🔍 檢查狀態</button>
+                                            <button type="button" class="dropdown-item" onclick="forceReloadData()">🔄 強制重新載入</button>
+                                            <button type="button" class="dropdown-item" onclick="clearLocalData()">🗑️ 清除本地資料</button>
+                                            <button type="button" class="dropdown-item" onclick="testDataJsonLoad()">🧪 測試 data.json 載入</button>
+                                            <button type="button" class="dropdown-item" onclick="testDragSort()">🧪 測試拖曳排序</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -3138,6 +3272,75 @@
             truckCards.forEach((card, index) => {
                 setupDragEvents(card, index);
             });
+            
+            // 為網格容器添加拖曳事件（處理拖曳到邊緣的情況）
+            const grid = document.getElementById('truckGrid');
+            if (grid) {
+                setupGridDragEvents(grid);
+            }
+        }
+        
+        // 設置網格容器的拖曳事件
+        function setupGridDragEvents(grid) {
+            // 拖曳進入網格
+            grid.addEventListener('dragenter', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            });
+            
+            // 拖曳懸停在網格上
+            grid.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                
+                // 如果沒有拖曳到任何卡片上，在網格末尾添加佔位符
+                if (draggedElement && !e.target.closest('.truck-card')) {
+                    // 移除舊的佔位符
+                    if (placeholderElement && placeholderElement.parentNode) {
+                        placeholderElement.remove();
+                    }
+                    
+                    // 創建新的佔位符
+                    placeholderElement = document.createElement('div');
+                    placeholderElement.className = 'truck-card drag-placeholder';
+                    placeholderElement.style.height = '120px'; // 使用固定高度
+                    placeholderElement.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748b;">放置到末尾</div>';
+                    
+                    // 添加到網格末尾
+                    grid.appendChild(placeholderElement);
+                }
+            });
+            
+            // 拖曳離開網格
+            grid.addEventListener('dragleave', function(e) {
+                // 只有在完全離開網格時才移除佔位符
+                if (!grid.contains(e.relatedTarget)) {
+                    if (placeholderElement && placeholderElement.parentNode) {
+                        placeholderElement.remove();
+                        placeholderElement = null;
+                    }
+                }
+            });
+            
+            // 在網格上放置
+            grid.addEventListener('drop', function(e) {
+                e.preventDefault();
+                
+                if (draggedElement && placeholderElement) {
+                    // 計算目標索引（網格末尾）
+                    const allCards = Array.from(grid.children).filter(child => 
+                        child.classList.contains('truck-card') && !child.classList.contains('drag-placeholder')
+                    );
+                    
+                    const sourceIndex = draggedIndex;
+                    const targetIndex = allCards.length - 1; // 最後一個位置
+                    
+                    console.log(`🔄 拖曳到網格末尾: 從位置 ${sourceIndex} 到位置 ${targetIndex}`);
+                    
+                    // 執行重新排序
+                    reorderTrucks(sourceIndex, targetIndex);
+                }
+            });
         }
         
         // 設置拖曳事件
@@ -3230,11 +3433,11 @@
                 
                 // 清除所有拖曳樣式
                 document.querySelectorAll('.truck-card').forEach(card => {
-                    card.classList.remove('drag-over', 'drag-placeholder');
+                    card.classList.remove('drag-over');
                 });
                 
                 // 移除佔位符
-                if (placeholderElement) {
+                if (placeholderElement && placeholderElement.parentNode) {
                     placeholderElement.remove();
                     placeholderElement = null;
                 }
@@ -3261,22 +3464,31 @@
                 e.dataTransfer.dropEffect = 'move';
                 
                 if (this !== draggedElement) {
-                    // 創建佔位符
-                    if (!placeholderElement) {
-                        placeholderElement = document.createElement('div');
-                        placeholderElement.className = 'truck-card drag-placeholder';
-                        placeholderElement.style.height = this.offsetHeight + 'px';
-                        placeholderElement.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748b;">放置位置</div>';
+                    // 移除舊的佔位符
+                    if (placeholderElement && placeholderElement.parentNode) {
+                        placeholderElement.remove();
                     }
                     
-                    // 插入佔位符
+                    // 創建新的佔位符
+                    placeholderElement = document.createElement('div');
+                    placeholderElement.className = 'truck-card drag-placeholder';
+                    placeholderElement.style.height = this.offsetHeight + 'px';
+                    placeholderElement.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748b;">放置位置</div>';
+                    
+                    // 計算插入位置
                     const rect = this.getBoundingClientRect();
                     const midpoint = rect.top + rect.height / 2;
                     
+                    // 插入佔位符
                     if (e.clientY < midpoint) {
                         this.parentNode.insertBefore(placeholderElement, this);
                     } else {
-                        this.parentNode.insertBefore(placeholderElement, this.nextSibling);
+                        // 如果是最後一個元素，直接插入到末尾
+                        if (this.nextSibling) {
+                            this.parentNode.insertBefore(placeholderElement, this.nextSibling);
+                        } else {
+                            this.parentNode.appendChild(placeholderElement);
+                        }
                     }
                 }
             });
@@ -3286,11 +3498,22 @@
                 e.preventDefault();
                 this.classList.remove('drag-over');
                 
-                if (this !== draggedElement && draggedElement) {
-                    const targetIndex = Array.from(this.parentNode.children).indexOf(this);
+                if (this !== draggedElement && draggedElement && placeholderElement) {
+                    // 使用佔位符的位置來計算目標索引
+                    const allCards = Array.from(this.parentNode.children).filter(child => 
+                        child.classList.contains('truck-card') && !child.classList.contains('drag-placeholder')
+                    );
+                    
+                    const placeholderIndex = Array.from(this.parentNode.children).indexOf(placeholderElement);
                     const sourceIndex = draggedIndex;
                     
-                    console.log(`🔄 拖曳從位置 ${sourceIndex} 到位置 ${targetIndex}`);
+                    // 計算實際的目標索引（排除佔位符）
+                    let targetIndex = placeholderIndex;
+                    if (placeholderIndex > sourceIndex) {
+                        targetIndex = placeholderIndex - 1; // 因為源元素會被移除
+                    }
+                    
+                    console.log(`🔄 拖曳從位置 ${sourceIndex} 到位置 ${targetIndex} (佔位符位置: ${placeholderIndex})`);
                     
                     // 執行重新排序
                     reorderTrucks(sourceIndex, targetIndex);
@@ -3301,10 +3524,18 @@
         // 重新排序餐車
         async function reorderTrucks(fromIndex, toIndex) {
             try {
-                // 調整索引（考慮佔位符）
-                if (toIndex > fromIndex) {
-                    toIndex--;
+                // 確保索引在有效範圍內
+                const maxIndex = foodTruckDatabase.length - 1;
+                fromIndex = Math.max(0, Math.min(fromIndex, maxIndex));
+                toIndex = Math.max(0, Math.min(toIndex, maxIndex));
+                
+                // 如果源索引和目標索引相同，不需要移動
+                if (fromIndex === toIndex) {
+                    console.log('📍 位置相同，無需移動');
+                    return;
                 }
+                
+                console.log(`🔄 移動餐車從位置 ${fromIndex + 1} 到位置 ${toIndex + 1}`);
                 
                 // 從陣列中移除拖曳的元素
                 const draggedTruck = foodTruckDatabase.splice(fromIndex, 1)[0];
@@ -3327,7 +3558,7 @@
                 renderPreview();
                 
                 // 顯示成功訊息
-                showAlert(`餐車 "${draggedTruck.title}" 已移動到新位置`, 'success');
+                showAlert(`餐車 "${draggedTruck.title}" 已移動到位置 ${toIndex + 1}`, 'success');
                 
                 // 自動同步到遠端（如果已設定 Token）
                 try {
@@ -3541,6 +3772,85 @@
                 `• 拖曳到其他卡片上會高亮顯示`;
             
             alert(message);
+        }
+        
+        // 測試拖曳排序功能
+        function testDragSort() {
+            console.log('🧪 測試拖曳排序功能...');
+            
+            if (foodTruckDatabase.length < 2) {
+                showAlert('❌ 需要至少 2 個餐車才能測試拖曳排序', 'warning');
+                return;
+            }
+            
+            // 測試移動第一個餐車到第二個位置
+            const firstTruck = foodTruckDatabase[0];
+            const secondTruck = foodTruckDatabase[1];
+            
+            console.log(`🧪 測試移動: "${firstTruck.title}" 到 "${secondTruck.title}" 的位置`);
+            
+            // 執行測試移動
+            reorderTrucks(0, 1).then(() => {
+                showAlert('✅ 拖曳排序測試完成！', 'success');
+                
+                // 2秒後恢復原位置
+                setTimeout(() => {
+                    reorderTrucks(1, 0).then(() => {
+                        showAlert('🔄 已恢復原位置', 'info');
+                    });
+                }, 2000);
+            }).catch(error => {
+                console.error('❌ 拖曳排序測試失敗:', error);
+                showAlert('❌ 拖曳排序測試失敗', 'danger');
+            });
+        }
+        
+        // ==================== 下拉選單功能 ====================
+        
+        // 切換下拉選單顯示/隱藏
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const toggle = dropdown.previousElementSibling;
+            
+            if (dropdown.classList.contains('show')) {
+                // 隱藏下拉選單
+                dropdown.classList.remove('show');
+                toggle.classList.remove('active');
+            } else {
+                // 隱藏其他下拉選單
+                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+                document.querySelectorAll('.dropdown-toggle.active').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 顯示當前下拉選單
+                dropdown.classList.add('show');
+                toggle.classList.add('active');
+            }
+        }
+        
+        // 點擊外部關閉下拉選單
+        function closeDropdowns() {
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            document.querySelectorAll('.dropdown-toggle.active').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+        
+        // 切換除錯功能顯示
+        function toggleDebugSection() {
+            const debugSection = document.getElementById('debugSection');
+            if (debugSection.style.display === 'none') {
+                debugSection.style.display = 'block';
+                showAlert('🔧 除錯功能已顯示', 'info');
+            } else {
+                debugSection.style.display = 'none';
+                showAlert('🔧 除錯功能已隱藏', 'info');
+            }
         }
 
         // 測試同步功能
@@ -3916,6 +4226,14 @@
                 if (e.key === 'Escape') {
                     hideImageModal();
                     clearSelection();
+                    closeDropdowns(); // 關閉下拉選單
+                }
+            });
+            
+            // 點擊外部關閉下拉選單
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    closeDropdowns();
                 }
             });
         });
