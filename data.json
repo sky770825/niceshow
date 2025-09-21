@@ -87,12 +87,21 @@
       "category": "main"
     },
     {
+      "id": "truck_007",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg",
+      "alt": "餐車品牌7",
+      "title": "韓式飯捲",
+      "isActive": true,
+      "priority": 7,
+      "category": "main"
+    },
+    {
       "id": "truck_004",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg",
       "alt": "餐車品牌4",
       "title": "蔬孟園",
       "isActive": true,
-      "priority": 7,
+      "priority": 8,
       "category": "main"
     },
     {
@@ -100,15 +109,6 @@
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg",
       "alt": "餐車品牌5",
       "title": "台東放山豬",
-      "isActive": true,
-      "priority": 8,
-      "category": "main"
-    },
-    {
-      "id": "truck_007",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg",
-      "alt": "餐車品牌7",
-      "title": "韓式飯捲",
       "isActive": true,
       "priority": 9,
       "category": "main"
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:38:02.728Z",
+  "lastUpdated": "2025-09-21T02:38:14.045Z",
   "version": "1.0",
-  "syncCount": 25
+  "syncCount": 26
 }
