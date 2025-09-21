@@ -1337,11 +1337,172 @@
 
     <!-- 載入專案設定和 GitHub 同步模組 -->
     <script src="backup_current/project-config.js"></script>
-    <script src="backup_current/github-sync.js"></script>
     <script src="backup_current/auto-setup-token.js"></script>
     <script src="backup_current/update-checker.js"></script>
     
     <script>
+        // 簡化版 GitHub 同步功能
+        const SimpleGitHubSync = {
+            currentProject: {
+                name: "餐開月行程表",
+                username: "sky770825",
+                repository: "https://github.com/sky770825/niceshow.git",
+                website: "https://sky770825.github.io/niceshow"
+            },
+            
+            getProjectStatus() {
+                const token = projectConfig?.getGitHubToken();
+                return {
+                    hasToken: !!token,
+                    hasProject: !!this.currentProject,
+                    projectName: this.currentProject?.name || '未設定',
+                    repository: this.currentProject?.repository || '未設定'
+                };
+            },
+            
+            async validateToken() {
+                try {
+                    const token = projectConfig?.getGitHubToken();
+                    
+                    if (!token) {
+                        return {
+                            valid: false,
+                            message: '未設定 GitHub Token'
+                        };
+                    }
+
+                    const response = await fetch('https://api.github.com/user', {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const user = await response.json();
+                        return {
+                            valid: true,
+                            message: `Token 有效，使用者: ${user.login}`,
+                            user: user
+                        };
+                    } else {
+                        return {
+                            valid: false,
+                            message: `Token 無效: ${response.status} ${response.statusText}`
+                        };
+                    }
+
+                } catch (error) {
+                    return {
+                        valid: false,
+                        message: `驗證失敗: ${error.message}`
+                    };
+                }
+            },
+            
+            async syncData(data) {
+                try {
+                    const token = projectConfig?.getGitHubToken();
+                    if (!token) {
+                        throw new Error('未設定 GitHub Token');
+                    }
+
+                    // 取得倉庫資訊
+                    const repoInfo = this.parseRepositoryUrl(this.currentProject.repository);
+                    if (!repoInfo) {
+                        throw new Error('無效的倉庫 URL');
+                    }
+
+                    // 取得當前檔案內容
+                    const fileResponse = await fetch(
+                        `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/data.json`,
+                        {
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        }
+                    );
+
+                    let sha = null;
+                    if (fileResponse.ok) {
+                        const fileData = await fileResponse.json();
+                        sha = fileData.sha;
+                    }
+
+                    // 準備上傳資料
+                    const content = JSON.stringify(data, null, 2);
+                    const encodedContent = btoa(unescape(encodeURIComponent(content)));
+
+                    const uploadData = {
+                        message: '自動同步餐車資料',
+                        content: encodedContent,
+                        branch: 'main'
+                    };
+
+                    if (sha) {
+                        uploadData.sha = sha;
+                    }
+
+                    // 上傳到 GitHub
+                    const uploadResponse = await fetch(
+                        `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/contents/data.json`,
+                        {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(uploadData)
+                        }
+                    );
+
+                    if (!uploadResponse.ok) {
+                        const errorData = await uploadResponse.json();
+                        throw new Error(`上傳失敗: ${uploadResponse.status} ${errorData.message || uploadResponse.statusText}`);
+                    }
+
+                    const result = await uploadResponse.json();
+                    
+                    return {
+                        success: true,
+                        commitUrl: result.commit.html_url,
+                        commitMessage: result.commit.message,
+                        commitSha: result.commit.sha
+                    };
+
+                } catch (error) {
+                    console.error('同步失敗:', error);
+                    throw error;
+                }
+            },
+            
+            parseRepositoryUrl(url) {
+                try {
+                    const patterns = [
+                        /github\.com\/([^\/]+)\/([^\/]+?)(?:\.git)?$/,
+                        /github\.com\/([^\/]+)\/([^\/]+?)(?:\/)?$/
+                    ];
+                    
+                    for (const pattern of patterns) {
+                        const match = url.match(pattern);
+                        if (match) {
+                            return {
+                                owner: match[1],
+                                repo: match[2]
+                            };
+                        }
+                    }
+                    
+                    return null;
+                } catch (error) {
+                    console.error('解析倉庫 URL 失敗:', error);
+                    return null;
+                }
+            }
+        };
+
         // 餐車資料庫（從 data.json 載入）
         let foodTruckDatabase = [];
         let filteredTrucks = [];
@@ -1791,7 +1952,7 @@
             
             try {
                     // 3. 檢查 GitHub 設定
-                const status = githubSync.getProjectStatus();
+                const status = SimpleGitHubSync.getProjectStatus();
                 
                 if (!status.hasToken) {
                         // 靜默處理，不顯示 Token 設定提醒
@@ -1833,7 +1994,7 @@
                 console.log('🔍 開始驗證 Token 和同步...');
                 
                 // 驗證 Token
-                const validation = await githubSync.validateToken();
+                const validation = await SimpleGitHubSync.validateToken();
                 console.log('🔍 Token 驗證結果:', validation);
                 
                 if (!validation.valid) {
@@ -1843,7 +2004,7 @@
                 showSyncStatus('🔄 正在同步到 GitHub...');
                 
                 // 同步到 GitHub
-                const result = await githubSync.syncData(data);
+                const result = await SimpleGitHubSync.syncData(data);
                 console.log('✅ 同步結果:', result);
                 
                 showSyncStatus('✅ 資料已同步到 GitHub！');
@@ -2062,7 +2223,7 @@
             
             // 自動同步到遠端（如果已設定 Token）
             try {
-                const status = githubSync.getProjectStatus();
+                const status = SimpleGitHubSync.getProjectStatus();
                 if (status.hasToken) {
                     console.log('🔄 自動同步批量狀態變更到遠端...');
                     await manualSaveData();
@@ -2108,7 +2269,7 @@
                 
                 // 自動同步到遠端（如果已設定 Token）
                 try {
-                    const status = githubSync.getProjectStatus();
+                    const status = SimpleGitHubSync.getProjectStatus();
                     if (status.hasToken) {
                         console.log('🔄 自動同步批量刪除到遠端...');
                         await manualSaveData();
@@ -2142,7 +2303,7 @@
                         
                         // 自動同步到遠端（如果已設定 Token）
                         try {
-                            const status = githubSync.getProjectStatus();
+                            const status = SimpleGitHubSync.getProjectStatus();
                             if (status.hasToken) {
                                 console.log('🔄 自動同步刪除到遠端...');
                                 await manualSaveData();
@@ -2300,7 +2461,7 @@
             
             // 自動同步到遠端（如果已設定 Token）
             try {
-                const status = githubSync.getProjectStatus();
+                const status = SimpleGitHubSync.getProjectStatus();
                 if (status.hasToken) {
                     console.log('🔄 自動同步編輯變更到遠端...');
                     await manualSaveData();
@@ -2359,7 +2520,7 @@
                 
                 // 自動同步到遠端（如果已設定 Token）
                 try {
-                    const status = githubSync.getProjectStatus();
+                    const status = SimpleGitHubSync.getProjectStatus();
                     if (status.hasToken) {
                         console.log('🔄 自動同步狀態變更到遠端...');
                         await manualSaveData();
@@ -2386,7 +2547,7 @@
                 
                 // 自動同步到遠端（如果已設定 Token）
                 try {
-                    const status = githubSync.getProjectStatus();
+                    const status = SimpleGitHubSync.getProjectStatus();
                     if (status.hasToken) {
                         console.log('🔄 自動同步標題變更到遠端...');
                         await manualSaveData();
@@ -2420,7 +2581,7 @@
                     
                     // 自動同步到遠端（如果已設定 Token）
                     try {
-                        const status = githubSync.getProjectStatus();
+                        const status = SimpleGitHubSync.getProjectStatus();
                         if (status.hasToken) {
                             console.log('🔄 自動同步排序變更到遠端...');
                             await manualSaveData();
@@ -2476,7 +2637,7 @@
             try {
                 showSyncStatus('🔄 正在測試 GitHub Token...');
                 
-                const validation = await githubSync.validateToken();
+                const validation = await SimpleGitHubSync.validateToken();
                 
                 if (validation.valid) {
                     showSyncStatus('✅ GitHub Token 驗證成功！');
@@ -2501,13 +2662,13 @@
             try {
                 showSyncStatus('🔄 正在檢查遠端更新...');
                 
-                const status = githubSync.getProjectStatus();
+                const status = SimpleGitHubSync.getProjectStatus();
                 if (!status.hasToken) {
                     showAlert('請先設定 GitHub Token', 'danger');
                     return;
                 }
 
-                const updateInfo = await githubSync.checkForUpdates('data.json');
+                const updateInfo = await SimpleGitHubSync.checkForUpdates('data.json');
                 
                 if (updateInfo.hasUpdate) {
                     const shouldUpdate = confirm(
@@ -2535,7 +2696,7 @@
             try {
                 showSyncStatus('🔄 正在下載遠端資料...');
                 
-                const result = await githubSync.pullData('data.json');
+                const result = await SimpleGitHubSync.pullData('data.json');
                 const data = JSON.parse(result.content);
                 
                 // 更新本地資料
@@ -2829,16 +2990,14 @@
             
             try {
                 // 0. 檢查模組是否載入
-                if (typeof githubSync === 'undefined') {
-                    throw new Error('GitHub 同步模組未載入，請檢查 github-sync.js 檔案');
-                }
+                // 使用內建的簡化版同步功能
                 
                 if (typeof projectConfig === 'undefined') {
                     throw new Error('專案設定模組未載入，請檢查 project-config.js 檔案');
                 }
                 
                 // 1. 檢查專案狀態
-                const status = githubSync.getProjectStatus();
+                const status = SimpleGitHubSync.getProjectStatus();
                 console.log('📊 專案狀態:', status);
                 
                 // 2. 測試專案設定
@@ -2874,7 +3033,7 @@
                 
                 // 4. 測試 Token 驗證
                 console.log('🔍 測試 Token 驗證...');
-                const validation = await githubSync.validateToken();
+                const validation = await SimpleGitHubSync.validateToken();
                 console.log('🔍 Token 驗證結果:', validation);
                 
                 if (!validation.valid) {
@@ -2885,7 +3044,7 @@
                 // 5. 測試同步（使用當前資料）
                 console.log('🔄 測試同步到 GitHub...');
                 const data = DataManager.saveToLocal();
-                const result = await githubSync.syncData(data);
+                const result = await SimpleGitHubSync.syncData(data);
                 
                 console.log('✅ 同步測試成功:', result);
                 showSyncStatus('✅ 同步功能測試成功！');
@@ -2983,7 +3142,7 @@
             
             // 自動同步到遠端（如果已設定 Token）
             try {
-                const status = githubSync.getProjectStatus();
+                const status = SimpleGitHubSync.getProjectStatus();
                 if (status.hasToken) {
                     console.log('🔄 自動同步新增餐車到遠端...');
                     await manualSaveData();
@@ -3000,15 +3159,15 @@
             setTimeout(() => {
                 console.log('🔍 檢查模組載入狀態...');
                 console.log('  - projectConfig:', typeof projectConfig !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
-                console.log('  - githubSync:', typeof githubSync !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
+                console.log('  - SimpleGitHubSync:', typeof SimpleGitHubSync !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
                 
                 if (typeof projectConfig === 'undefined') {
                     console.error('❌ projectConfig 未載入，請檢查 project-config.js 檔案');
                     showAlert('❌ 專案設定模組載入失敗', 'danger');
                 }
                 
-                if (typeof githubSync === 'undefined') {
-                    console.error('❌ githubSync 未載入，請檢查 github-sync.js 檔案');
+                if (typeof SimpleGitHubSync === 'undefined') {
+                    console.error('❌ SimpleGitHubSync 未載入，內建同步功能失敗');
                     showAlert('❌ GitHub 同步模組載入失敗', 'danger');
                 }
             }, 100);
@@ -3041,9 +3200,7 @@
                     throw new Error('projectConfig 模組未載入');
                 }
                 
-                if (typeof githubSync === 'undefined') {
-                    throw new Error('githubSync 模組未載入');
-                }
+                // 使用內建的 SimpleGitHubSync
                 
                 // 1. 初始化專案設定
                 projectConfig.initialize();
@@ -3056,7 +3213,7 @@
                 
                 // 1.6. 測試 Token 是否有效
                 try {
-                    const validation = await githubSync.validateToken();
+                    const validation = await SimpleGitHubSync.validateToken();
                     console.log('🔍 Token 驗證結果:', validation);
                     if (validation.valid) {
                         console.log('✅ Token 驗證成功，使用者:', validation.user?.login);
