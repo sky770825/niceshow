@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料同步測試</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-warning {
+            background: #f59e0b;
+        }
+        .log {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .data-info {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 資料同步測試</h1>
+        <p>測試 F5 重新載入和強制重新載入的差異</p>
+        
+        <div>
+            <button class="btn" onclick="testF5Reload()">🔄 模擬 F5 重新載入</button>
+            <button class="btn btn-warning" onclick="testForceReload()">🔄 模擬強制重新載入</button>
+            <button class="btn btn-success" onclick="simulateDataUpdate()">📝 模擬資料更新</button>
+            <button class="btn" onclick="clearAllData()">🗑️ 清除所有資料</button>
+        </div>
+        
+        <div id="status"></div>
+        
+        <div class="data-info">
+            <h3>📊 目前資料狀態</h3>
+            <div id="dataInfo">載入中...</div>
+        </div>
+        
+        <div>
+            <h3>📝 測試日誌</h3>
+            <div id="log" class="log">等待測試開始...\n</div>
+        </div>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log');
+        let statusElement = document.getElementById('status');
+        let dataInfoElement = document.getElementById('dataInfo');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        function showStatus(message, type = 'success') {
+            statusElement.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function updateDataInfo() {
+            const localData = localStorage.getItem('foodTruckData');
+            const dataInfo = {
+                hasLocalData: !!localData,
+                localDataSize: localData ? localData.length : 0,
+                lastUpdate: localData ? JSON.parse(localData).lastUpdated : '無'
+            };
+            
+            dataInfoElement.innerHTML = `
+                <p><strong>本地資料:</strong> ${dataInfo.hasLocalData ? '有' : '無'}</p>
+                <p><strong>資料大小:</strong> ${dataInfo.localDataSize} 字元</p>
+                <p><strong>最後更新:</strong> ${dataInfo.lastUpdate}</p>
+            `;
+        }
+        
+        // 模擬餐車資料
+        let foodTruckDatabase = [
+            {
+                id: 'truck_001',
+                title: '測試餐車1',
+                src: 'https://example.com/image1.jpg',
+                isActive: true,
+                priority: 1
+            },
+            {
+                id: 'truck_002',
+                title: '測試餐車2',
+                src: 'https://example.com/image2.jpg',
+                isActive: true,
+                priority: 2
+            }
+        ];
+        
+        // 模擬 loadFoodTruckData 函數
+        async function loadFoodTruckData(forceRemote = false) {
+            log('🔄 開始載入餐車資料...');
+            
+            try {
+                if (forceRemote) {
+                    log('🌐 強制從 data.json 載入最新資料...');
+                    return await loadFromRemote();
+                } else {
+                    log('🧠 智能載入：檢查遠端更新...');
+                    
+                    try {
+                        const remoteResult = await loadFromRemote();
+                        if (remoteResult.success) {
+                            return remoteResult;
+                        }
+                    } catch (error) {
+                        log('⚠️ 遠端載入失敗，嘗試本地載入');
+                    }
+                    
+                    return await loadFromLocal();
+                }
+                
+            } catch (error) {
+                log(`❌ 載入餐車資料失敗: ${error.message}`);
+                return await loadFromDefault();
+            }
+        }
+        
+        // 從遠端載入資料
+        async function loadFromRemote() {
+            log('🌐 從 data.json 載入資料...');
+            
+            try {
+                const response = await fetch('data.json?' + Date.now());
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                if (!data || !data.foodTrucks || !Array.isArray(data.foodTrucks)) {
+                    throw new Error('data.json 格式不正確');
+                }
+                
+                foodTruckDatabase = data.foodTrucks;
+                
+                // 儲存到本地
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                
+                log(`🌐 從 data.json 載入最新資料: ${foodTruckDatabase.length} 個餐車`);
+                return { success: true, source: 'data.json', count: foodTruckDatabase.length };
+                
+            } catch (error) {
+                log(`❌ 遠端載入失敗: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        // 從本地載入資料
+        async function loadFromLocal() {
+            log('📱 從 localStorage 載入資料...');
+            
+            const localData = localStorage.getItem('foodTruckData');
+            if (!localData) {
+                throw new Error('localStorage 中沒有資料');
+            }
+            
+            const data = JSON.parse(localData);
+            if (!data || !data.foodTrucks || !Array.isArray(data.foodTrucks) || data.foodTrucks.length === 0) {
+                throw new Error('localStorage 資料格式不正確或為空');
+            }
+            
+            foodTruckDatabase = data.foodTrucks;
+            log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
+            return { success: true, source: 'localStorage', count: foodTruckDatabase.length };
+        }
+        
+        // 使用預設資料
+        async function loadFromDefault() {
+            log('⚠️ 使用預設資料');
+            showAlert('使用預設餐車資料', 'warning');
+            return { success: false, source: 'default', count: foodTruckDatabase.length, error: '所有載入方式都失敗' };
+        }
+        
+        // 模擬 F5 重新載入
+        async function testF5Reload() {
+            log('🧪 開始測試 F5 重新載入...');
+            showStatus('正在測試 F5 重新載入...', 'warning');
+            
+            try {
+                const result = await loadFoodTruckData(false); // 智能載入
+                log(`📊 載入結果: ${JSON.stringify(result)}`);
+                
+                updateDataInfo();
+                
+                if (result.success) {
+                    showStatus(`✅ F5 重新載入成功: ${result.count} 個餐車 (來源: ${result.source})`, 'success');
+                } else {
+                    showStatus('⚠️ F5 重新載入失敗，使用預設資料', 'warning');
+                }
+            } catch (error) {
+                log(`❌ 測試失敗: ${error.message}`);
+                showStatus(`❌ 測試失敗: ${error.message}`, 'error');
+            }
+        }
+        
+        // 模擬強制重新載入
+        async function testForceReload() {
+            log('🧪 開始測試強制重新載入...');
+            showStatus('正在測試強制重新載入...', 'warning');
+            
+            try {
+                // 清除快取
+                localStorage.removeItem('foodTruckData');
+                sessionStorage.removeItem('foodTruckData');
+                log('🗑️ 已清除本地快取');
+                
+                const result = await loadFoodTruckData(true); // 強制遠端載入
+                log(`📊 載入結果: ${JSON.stringify(result)}`);
+                
+                updateDataInfo();
+                
+                if (result.success) {
+                    showStatus(`✅ 強制重新載入成功: ${result.count} 個餐車 (來源: ${result.source})`, 'success');
+                } else {
+                    showStatus('⚠️ 強制重新載入失敗，使用預設資料', 'warning');
+                }
+            } catch (error) {
+                log(`❌ 測試失敗: ${error.message}`);
+                showStatus(`❌ 測試失敗: ${error.message}`, 'error');
+            }
+        }
+        
+        // 模擬資料更新
+        function simulateDataUpdate() {
+            log('📝 模擬資料更新...');
+            
+            // 更新餐車資料
+            foodTruckDatabase[0].title = '更新後的餐車1 - ' + new Date().toLocaleTimeString();
+            foodTruckDatabase[1].title = '更新後的餐車2 - ' + new Date().toLocaleTimeString();
+            
+            // 儲存到本地
+            const data = {
+                foodTrucks: foodTruckDatabase,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('foodTruckData', JSON.stringify(data));
+            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+            
+            updateDataInfo();
+            showStatus('✅ 資料已更新並儲存到本地', 'success');
+            log('✅ 資料更新完成');
+        }
+        
+        // 清除所有資料
+        function clearAllData() {
+            log('🗑️ 清除所有資料...');
+            localStorage.removeItem('foodTruckData');
+            sessionStorage.removeItem('foodTruckData');
+            
+            updateDataInfo();
+            showStatus('✅ 所有資料已清除', 'success');
+        }
+        
+        // 頁面載入時自動測試
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 資料同步測試頁面已載入');
+            updateDataInfo();
+            testF5Reload();
+        });
+    </script>
+</body>
+</html>

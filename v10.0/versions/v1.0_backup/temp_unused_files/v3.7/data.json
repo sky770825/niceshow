@@ -1,0 +1,103 @@
+{
+  "foodTrucks": [
+    {
+      "id": "truck_001",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg",
+      "alt": "餐車品牌1",
+      "title": "餐車品牌1",
+      "isActive": true,
+      "priority": 1,
+      "category": "main"
+    },
+    {
+      "id": "truck_002",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg",
+      "alt": "餐車品牌2",
+      "title": "餐車品牌2",
+      "isActive": true,
+      "priority": 2,
+      "category": "main"
+    },
+    {
+      "id": "truck_003",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg",
+      "alt": "餐車品牌3",
+      "title": "餐車品牌3",
+      "isActive": true,
+      "priority": 3,
+      "category": "main"
+    },
+    {
+      "id": "truck_004",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg",
+      "alt": "餐車品牌4",
+      "title": "餐車品牌4",
+      "isActive": true,
+      "priority": 4,
+      "category": "main"
+    },
+    {
+      "id": "truck_005",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg",
+      "alt": "餐車品牌5",
+      "title": "餐車品牌5",
+      "isActive": true,
+      "priority": 5,
+      "category": "main"
+    },
+    {
+      "id": "truck_006",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
+      "alt": "餐車品牌6",
+      "title": "餐車品牌6",
+      "isActive": true,
+      "priority": 6,
+      "category": "main"
+    },
+    {
+      "id": "truck_007",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653096_0_vycs5h.jpg",
+      "alt": "餐車品牌7",
+      "title": "餐車品牌7",
+      "isActive": true,
+      "priority": 7,
+      "category": "main"
+    },
+    {
+      "id": "truck_008",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg",
+      "alt": "餐車品牌8",
+      "title": "餐車品牌8",
+      "isActive": true,
+      "priority": 8,
+      "category": "main"
+    },
+    {
+      "id": "truck_009",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg",
+      "alt": "餐車品牌9",
+      "title": "餐車品牌9",
+      "isActive": true,
+      "priority": 9,
+      "category": "main"
+    },
+    {
+      "id": "truck_010",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg",
+      "alt": "餐車品牌10",
+      "title": "餐車品牌10",
+      "isActive": true,
+      "priority": 10,
+      "category": "main"
+    },
+    {
+      "id": "truck_011",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
+      "alt": "餐車品牌11",
+      "title": "餐車品牌11",
+      "isActive": true,
+      "priority": 11,
+      "category": "main"
+    }
+  ]
+}
