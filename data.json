@@ -78,12 +78,21 @@
       "category": "main"
     },
     {
+      "id": "truck_006",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
+      "alt": "餐車品牌6",
+      "title": "安德尼斯烘培坊",
+      "isActive": true,
+      "priority": 6,
+      "category": "main"
+    },
+    {
       "id": "truck_004",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg",
       "alt": "餐車品牌4",
       "title": "蔬孟園",
       "isActive": true,
-      "priority": 6,
+      "priority": 7,
       "category": "main"
     },
     {
@@ -91,15 +100,6 @@
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg",
       "alt": "餐車品牌5",
       "title": "台東放山豬",
-      "isActive": true,
-      "priority": 7,
-      "category": "main"
-    },
-    {
-      "id": "truck_006",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
-      "alt": "餐車品牌6",
-      "title": "安德尼斯烘培坊",
       "isActive": true,
       "priority": 8,
       "category": "main"
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:37:53.459Z",
+  "lastUpdated": "2025-09-21T02:38:02.728Z",
   "version": "1.0",
-  "syncCount": 24
+  "syncCount": 25
 }
