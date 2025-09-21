@@ -1294,8 +1294,8 @@
                                 <button type="button" class="btn btn-secondary" onclick="openPostimageUpload()">🖼️ 開啟 Postimage</button>
                                 <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
                                 <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
-                                <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()" style="display: none;">🔑 設定 Token</button>
-                                <button type="button" class="btn btn-info" onclick="openTokenSetup()" style="display: none;">🔧 開啟 Token 設定頁</button>
+                                <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
+                                <button type="button" class="btn btn-info" onclick="openTokenSetup()">🔧 開啟 Token 設定頁</button>
                                 <button type="button" class="btn btn-secondary" onclick="debugDataStatus()" style="display: none;">🔍 檢查狀態</button>
                                 <button type="button" class="btn btn-warning" onclick="forceReloadData()" style="display: none;">🔄 強制重新載入</button>
                                 <button type="button" class="btn btn-danger" onclick="clearLocalData()" style="display: none;">🗑️ 清除本地資料</button>
@@ -2721,8 +2721,8 @@
 
         // 設定 GitHub Token
         function setupGitHubToken() {
-            // 開啟 Token 設定頁面
-            window.open('simple-token-setup.html', '_blank', 'width=700,height=800,scrollbars=yes,resizable=yes');
+            // 開啟安全的 Token 設定頁面
+            window.open('secure-token-setup.html', '_blank', 'width=700,height=900,scrollbars=yes,resizable=yes');
         }
         
         // 測試 GitHub Token
@@ -2747,7 +2747,7 @@
         
         // 開啟 Token 設定頁面
         function openTokenSetup() {
-            window.open('simple-token-setup.html', '_blank', 'width=700,height=800,scrollbars=yes,resizable=yes');
+            window.open('secure-token-setup.html', '_blank', 'width=700,height=900,scrollbars=yes,resizable=yes');
         }
 
         // 檢查遠端更新
@@ -3280,10 +3280,14 @@
                 SimpleProjectConfig.initialize();
                 console.log('✅ 專案設定已初始化');
                 
-                // 1.5. 自動設定 GitHub Token
-                const token = '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';
-                SimpleProjectConfig.setGitHubToken(token);
-                console.log('✅ GitHub Token 已自動設定');
+                // 1.5. 檢查並設定 GitHub Token
+                const existingToken = SimpleProjectConfig.getGitHubToken();
+                if (!existingToken) {
+                    console.log('⚠️ 未設定 GitHub Token，請使用設定頁面設定');
+                    showAlert('請先設定 GitHub Token 才能使用同步功能', 'warning');
+                } else {
+                    console.log('✅ GitHub Token 已載入');
+                }
                 
                 // 1.6. 測試 Token 是否有效
                 try {
