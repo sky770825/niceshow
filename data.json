@@ -58,23 +58,12 @@
       "category": "main"
     },
     {
-      "id": "truck_001",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg",
-      "alt": "餐車品牌1",
-      "title": "露露姐",
-      "isActive": true,
-      "priority": 4,
-      "category": "main",
-      "isEditing": false,
-      "link": ""
-    },
-    {
       "id": "truck_002",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg",
       "alt": "餐車品牌2",
       "title": "花生捲冰淇淋",
       "isActive": true,
-      "priority": 5,
+      "priority": 4,
       "category": "main"
     },
     {
@@ -83,7 +72,7 @@
       "alt": "餐車品牌7",
       "title": "韓式飯捲",
       "isActive": true,
-      "priority": 6,
+      "priority": 5,
       "category": "main"
     },
     {
@@ -92,7 +81,7 @@
       "alt": "餐車品牌4",
       "title": "蔬孟園",
       "isActive": true,
-      "priority": 7,
+      "priority": 6,
       "category": "main"
     },
     {
@@ -101,7 +90,7 @@
       "alt": "餐車品牌5",
       "title": "台東放山豬",
       "isActive": true,
-      "priority": 8,
+      "priority": 7,
       "category": "main"
     },
     {
@@ -110,7 +99,7 @@
       "alt": "餐車品牌8",
       "title": "炸蛋𣄃魚黑輪",
       "isActive": true,
-      "priority": 9,
+      "priority": 8,
       "category": "main"
     },
     {
@@ -119,7 +108,7 @@
       "alt": "餐車品牌9",
       "title": "向陽坡刈包",
       "isActive": true,
-      "priority": 10,
+      "priority": 9,
       "category": "main"
     },
     {
@@ -128,7 +117,7 @@
       "alt": "餐車品牌3",
       "title": "鄭老爹乾麵",
       "isActive": true,
-      "priority": 11,
+      "priority": 10,
       "category": "main"
     },
     {
@@ -137,7 +126,7 @@
       "alt": "餐車品牌11",
       "title": "餓食鬼美味販賣所",
       "isActive": true,
-      "priority": 12,
+      "priority": 11,
       "category": "main"
     },
     {
@@ -146,11 +135,22 @@
       "alt": "餐車品牌10",
       "title": "滷拉拉",
       "isActive": true,
-      "priority": 13,
+      "priority": 12,
       "category": "main"
+    },
+    {
+      "id": "truck_001",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg",
+      "alt": "餐車品牌1",
+      "title": "露露姐",
+      "isActive": true,
+      "priority": 13,
+      "category": "main",
+      "isEditing": false,
+      "link": ""
     }
   ],
-  "lastUpdated": "2025-09-21T02:50:23.285Z",
+  "lastUpdated": "2025-09-21T02:50:49.218Z",
   "version": "1.0",
-  "syncCount": 37
+  "syncCount": 38
 }
