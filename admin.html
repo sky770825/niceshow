@@ -1463,107 +1463,207 @@
         let filteredTrucks = [];
         let selectedTrucks = new Set();
 
+        // 載入策略管理器
+        const LoadStrategy = {
+            // 智能載入策略（優先本地，保護編輯）
+            async smartLoad() {
+                console.log('🧠 智能載入：優先檢查本地資料...');
+                
+                // 1. 嘗試從本地載入
+                const localData = DataManager.loadFromLocal();
+                if (localData) {
+                    console.log('✅ 使用本地資料（包含編輯變更）');
+                    return this.applyLocalData(localData);
+                }
+                
+                // 2. 本地沒有資料，嘗試從遠端載入
+                try {
+                    const remoteData = await DataManager.loadFromRemote();
+                    console.log('✅ 使用遠端資料');
+                    return this.applyRemoteData(remoteData);
+                } catch (error) {
+                    console.log('⚠️ 遠端載入失敗:', error.message);
+                }
+                
+                // 3. 都失敗了，使用預設資料
+                console.log('⚠️ 使用預設資料');
+                return this.applyDefaultData();
+            },
+            
+            // 強制遠端載入策略
+            async forceRemote() {
+                console.log('🌐 強制從遠端載入資料...');
+                
+                try {
+                    const remoteData = await DataManager.loadFromRemote();
+                    return this.applyRemoteData(remoteData);
+                } catch (error) {
+                    console.log('⚠️ 強制遠端載入失敗，使用預設資料');
+                    return this.applyDefaultData();
+                }
+            },
+            
+            // 應用本地資料（強制覆蓋）
+            applyLocalData(data) {
+                console.log('🔄 強制應用本地資料到 foodTruckDatabase...');
+                console.log(`   本地資料包含 ${data.foodTrucks.length} 個餐車`);
+                
+                // 強制覆蓋 foodTruckDatabase
+                foodTruckDatabase = [...data.foodTrucks];
+                
+                // 檢查是否有編輯中的餐車
+                const editingCount = foodTruckDatabase.filter(truck => truck.isEditing).length;
+                if (editingCount > 0) {
+                    console.log(`   ⚠️ 發現 ${editingCount} 個餐車正在編輯中`);
+                }
+                
+                console.log(`✅ 本地資料已強制應用到 foodTruckDatabase`);
+                return { 
+                    success: true, 
+                    source: 'localStorage', 
+                    count: foodTruckDatabase.length,
+                    data: data
+                };
+            },
+            
+            // 應用遠端資料
+            applyRemoteData(data) {
+                foodTruckDatabase = data.foodTrucks;
+                
+                // 只有在沒有本地資料時才儲存到本地
+                const localData = DataManager.loadFromLocal();
+                if (!localData) {
+                    DataManager.saveToLocal();
+                    console.log('💾 遠端資料已儲存到本地');
+                } else {
+                    console.log('⚠️ 有本地資料，跳過遠端資料儲存');
+                }
+                
+                return { 
+                    success: true, 
+                    source: 'remote', 
+                    count: foodTruckDatabase.length,
+                    data: data
+                };
+            },
+            
+            // 應用預設資料
+            applyDefaultData() {
+                // foodTruckDatabase 已經在腳本頂部定義了預設值
+                console.log('⚠️ 使用預設資料');
+                return { 
+                    success: false, 
+                    source: 'default', 
+                    count: foodTruckDatabase.length,
+                    data: null
+                };
+            }
+        };
+        
+        // 主要的資料載入函數
         async function loadFoodTruckData(forceRemote = false) {
             console.log('🔄 開始載入餐車資料...');
             
             try {
-                // 1. 根據參數決定載入策略
                 if (forceRemote) {
-                    console.log('🌐 強制從 data.json 載入最新資料...');
-                    return await loadFromRemote();
+                    return await LoadStrategy.forceRemote();
                 } else {
-                    // 優先載入本地資料，確保編輯變更不會被覆蓋
-                    console.log('🧠 智能載入：優先檢查本地資料...');
+                    return await LoadStrategy.smartLoad();
+                }
+            } catch (error) {
+                console.error('❌ 載入餐車資料失敗:', error);
+                return LoadStrategy.applyDefaultData();
+            }
+        }
+        
+        // ==================== 編輯管理模組 ====================
+        
+        const EditManager = {
+            // 開始編輯
+            startEdit(truckId) {
+                const truck = foodTruckDatabase.find(t => t.id === truckId);
+                if (truck) {
+                    truck.isEditing = true;
+                    this.saveState();
+                    console.log(`✏️ 開始編輯餐車: ${truck.title}`);
+                    return true;
+                }
+                return false;
+            },
+            
+            // 保存編輯
+            async saveEdit(truckId) {
+                const truck = foodTruckDatabase.find(t => t.id === truckId);
+                if (!truck) return false;
+                
+                // 獲取編輯後的值
+                const newTitle = document.getElementById(`edit-title-${truckId}`)?.value.trim();
+                const newAlt = document.getElementById(`edit-alt-${truckId}`)?.value.trim();
+                
+                if (!newTitle) {
+                    alert('餐車名稱不能為空！');
+                    return false;
+                }
+                
+                // 更新基本資訊
+                truck.title = newTitle;
+                truck.alt = newAlt || newTitle;
+                
+                // 更新連結
+                const linkData = [];
+                for (let i = 1; i <= 3; i++) {
+                    const textInput = document.getElementById(`edit-text-${truckId}-${i}`);
+                    const urlInput = document.getElementById(`edit-url-${truckId}-${i}`);
                     
-                    try {
-                        // 先嘗試從本地載入
-                        const localResult = await loadFromLocal();
-                        if (localResult.success) {
-                            console.log('✅ 使用本地最新資料');
-                            return localResult;
+                    if (textInput && urlInput) {
+                        const text = textInput.value.trim();
+                        const url = urlInput.value.trim();
+                        
+                        if (text && url) {
+                            linkData.push({ text, url });
                         }
-                    } catch (error) {
-                        console.log('⚠️ 本地載入失敗，嘗試遠端載入');
-                    }
-                    
-                    // 如果本地載入失敗，再嘗試從遠端載入
-                    try {
-                        const remoteResult = await loadFromRemote();
-                        if (remoteResult.success) {
-                            console.log('✅ 使用遠端資料');
-                            return remoteResult;
-                        }
-                    } catch (error) {
-                        console.log('⚠️ 遠端載入也失敗，使用預設資料');
                     }
                 }
                 
-            } catch (error) {
-                console.error('❌ 載入餐車資料失敗:', error);
+                truck.link = linkData.length > 0 ? linkData : '';
+                truck.isEditing = false;
+                
+                // 保存狀態
+                this.saveState();
+                
+                console.log(`💾 餐車 "${truck.title}" 編輯已保存`);
+                return true;
+            },
+            
+            // 取消編輯
+            cancelEdit(truckId) {
+                const truck = foodTruckDatabase.find(t => t.id === truckId);
+                if (truck) {
+                    truck.isEditing = false;
+                    this.saveState();
+                    console.log(`❌ 取消編輯餐車: ${truck.title}`);
+                    return true;
+                }
+                return false;
+            },
+            
+            // 保存編輯狀態到本地
+            saveState() {
+                console.log('💾 保存編輯狀態...');
+                DataManager.saveToLocal();
+                console.log('✅ 編輯狀態已保存');
+            },
+            
+            // 檢查是否有餐車正在編輯
+            hasEditingTruck() {
+                return foodTruckDatabase && foodTruckDatabase.some(truck => truck.isEditing);
+            },
+            
+            // 獲取正在編輯的餐車
+            getEditingTrucks() {
+                return foodTruckDatabase ? foodTruckDatabase.filter(truck => truck.isEditing) : [];
             }
-            
-            // 如果所有載入方式都失敗，使用預設資料
-            return await loadFromDefault();
-        }
-        
-        // 從遠端載入資料
-        async function loadFromRemote() {
-            console.log('🌐 從 data.json 載入資料...');
-            const response = await fetch('data.json?' + Date.now()); // 強制重新載入
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            if (!data || !data.foodTrucks || !Array.isArray(data.foodTrucks)) {
-                throw new Error('data.json 格式不正確');
-            }
-            
-            foodTruckDatabase = data.foodTrucks;
-            
-            // 只有在沒有本地資料時才儲存到本地，避免覆蓋用戶編輯
-            const localData = localStorage.getItem('foodTruckData');
-            if (!localData) {
-                localStorage.setItem('foodTruckData', JSON.stringify(data));
-                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
-                console.log('💾 遠端資料已儲存到本地');
-            } else {
-                console.log('⚠️ 跳過本地儲存，保持用戶編輯的資料');
-            }
-            
-            console.log(`🌐 從 data.json 載入資料: ${foodTruckDatabase.length} 個餐車`);
-            return { success: true, source: 'data.json', count: foodTruckDatabase.length };
-        }
-        
-        // 從本地載入資料
-        async function loadFromLocal() {
-            console.log('📱 從 localStorage 載入資料...');
-            const localData = localStorage.getItem('foodTruckData');
-            if (!localData) {
-                throw new Error('localStorage 中沒有資料');
-            }
-            
-            const data = JSON.parse(localData);
-            if (!data || !data.foodTrucks || !Array.isArray(data.foodTrucks) || data.foodTrucks.length === 0) {
-                throw new Error('localStorage 資料格式不正確或為空');
-            }
-            
-            foodTruckDatabase = data.foodTrucks;
-            console.log(`📱 從本地儲存載入資料: ${foodTruckDatabase.length} 個餐車`);
-            return { success: true, source: 'localStorage', count: foodTruckDatabase.length };
-        }
-        
-        // 使用預設資料
-        async function loadFromDefault() {
-            console.log('⚠️ 使用預設資料');
-            if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
-                console.log('🔄 初始化預設餐車資料...');
-                // foodTruckDatabase 已經在腳本頂部定義了預設值
-            }
-            
-            showAlert('使用預設餐車資料', 'warning');
-            return { success: false, source: 'default', count: foodTruckDatabase.length, error: '所有載入方式都失敗' };
-        }
+        };
 
         // 獨立的資料驗證函數
         function validateData() {
@@ -1582,6 +1682,10 @@
                     validCount++;
                 } else {
                     console.log(`⚠️ 餐車 ${index} 資料不完整:`, truck);
+                    console.log(`   - ID: ${truck?.id || '缺少'}`);
+                    console.log(`   - Title: ${truck?.title || '缺少'}`);
+                    console.log(`   - Src: ${truck?.src || '缺少'}`);
+                    console.log(`   - 編輯狀態: ${truck?.isEditing || false}`);
                 }
             });
             
@@ -1589,12 +1693,112 @@
             return validCount > 0;
         }
 
-        // 編輯狀態管理函數
-        function saveEditingState() {
-            console.log('💾 保存編輯狀態...');
+        // ==================== 資料管理模組 ====================
+        
+        // 資料管理器 - 負責所有資料操作
+        const DataManager = {
+            // 儲存資料到本地
+            saveToLocal() {
+                const data = {
+                    foodTrucks: foodTruckDatabase,
+                    lastUpdated: new Date().toISOString(),
+                    version: '1.0',
+                    syncCount: this.getSyncCount()
+                };
+                
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                
+                console.log('💾 資料已儲存到本地儲存');
+                return data;
+            },
             
-            saveDataToLocal();
-            console.log('✅ 編輯狀態已保存');
+            // 從本地載入資料（更積極的載入策略）
+            loadFromLocal() {
+                console.log('📱 檢查本地儲存資料...');
+                const localData = localStorage.getItem('foodTruckData');
+                
+                if (!localData) {
+                    console.log('📱 localStorage 中沒有 foodTruckData');
+                    return null;
+                }
+                
+                try {
+                    const data = JSON.parse(localData);
+                    console.log('📱 成功解析本地資料');
+                    
+                    if (data && data.foodTrucks && Array.isArray(data.foodTrucks) && data.foodTrucks.length > 0) {
+                        console.log(`📱 本地資料包含 ${data.foodTrucks.length} 個餐車`);
+                        console.log(`📱 最後更新時間: ${data.lastUpdated}`);
+                        
+                        // 檢查是否有編輯中的餐車
+                        const editingCount = data.foodTrucks.filter(truck => truck.isEditing).length;
+                        if (editingCount > 0) {
+                            console.log(`📱 ⚠️ 發現 ${editingCount} 個餐車正在編輯中，優先使用本地資料`);
+                        }
+                        
+                        return data;
+                    } else {
+                        console.log('📱 本地資料格式不正確或為空');
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('❌ 解析本地資料失敗:', error);
+                    return null;
+                }
+            },
+            
+            // 從遠端載入資料
+            async loadFromRemote() {
+                try {
+                    const response = await fetch('data.json?' + Date.now());
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    if (data && data.foodTrucks && Array.isArray(data.foodTrucks)) {
+                        console.log('🌐 從遠端載入資料成功');
+                        return data;
+                    }
+                    throw new Error('遠端資料格式不正確');
+                } catch (error) {
+                    console.error('❌ 從遠端載入資料失敗:', error);
+                    throw error;
+                }
+            },
+            
+            // 獲取同步計數
+            getSyncCount() {
+                try {
+                    const existingData = localStorage.getItem('foodTruckData');
+                    if (existingData) {
+                        const parsed = JSON.parse(existingData);
+                        return parsed.syncCount || 0;
+                    }
+                } catch (error) {
+                    console.warn('⚠️ 獲取同步計數失敗:', error);
+                }
+                return 0;
+            },
+            
+            // 更新同步計數
+            incrementSyncCount() {
+                const currentCount = this.getSyncCount();
+                const newCount = currentCount + 1;
+                console.log(`📊 同步計數: ${currentCount} → ${newCount}`);
+                return newCount;
+            }
+        };
+        
+        // 統一的本地儲存函數（向後兼容）
+        function saveDataToLocal() {
+            return DataManager.saveToLocal();
+        }
+
+        // 編輯狀態管理函數（向後兼容）
+        function saveEditingState() {
+            EditManager.saveState();
         }
 
         // 獨立的資料修復函數
@@ -1614,13 +1818,14 @@
                 return true;
             });
             
-            // 3. 重新設定優先級和預設值
+            // 3. 重新設定優先級和預設值（保留編輯狀態）
             foodTruckDatabase.forEach((truck, index) => {
                 truck.priority = index + 1;
                 if (truck.isActive === undefined) truck.isActive = true;
                 if (!truck.category) truck.category = 'main';
-                // 保留編輯狀態，不要重置
-                // if (truck.isEditing === undefined) truck.isEditing = false;
+                // 重要：保留編輯狀態，絕對不要重置！
+                // truck.isEditing 保持原值，不進行任何修改
+                console.log(`🔧 修復餐車 ${index}: ${truck.title}, 編輯狀態: ${truck.isEditing}`);
             });
             
             console.log(`🔧 資料修復完成: ${foodTruckDatabase.length} 個有效餐車`);
@@ -1668,62 +1873,76 @@
         let isSaving = false;
         let lastSaveTime = 0;
         
-        async function manualSaveData() {
-            const now = Date.now();
-            
-            if (isSaving || now - lastSaveTime < 300) {
-                console.log('⚠️ 跳過重複儲存');
-                return;
-            }
-            
-            isSaving = true;
-            lastSaveTime = now;
-            
-            const data = {
-                foodTrucks: foodTruckDatabase,
-                lastUpdated: new Date().toISOString()
-            };
-            
-            // 儲存到本地
-            localStorage.setItem('foodTruckData', JSON.stringify(data));
-            sessionStorage.setItem('foodTruckData', JSON.stringify(data));
-            
-            console.log('💾 資料已儲存到本地');
-            
-            try {
-                // 檢查 GitHub 設定
-                const status = githubSync.getProjectStatus();
+        // ==================== 同步管理模組 ====================
+        
+        const SyncManager = {
+            // 手動儲存並同步
+            async manualSave() {
+                const now = Date.now();
                 
-                if (!status.hasToken) {
-                    const setupToken = confirm(
-                        '需要設定 GitHub Token 才能同步到遠端\n\n' +
-                        '是否現在設定？\n\n' +
-                        '點擊「確定」設定 Token\n' +
-                        '點擊「取消」僅儲存到本地'
-                    );
+                if (isSaving || now - lastSaveTime < 300) {
+                    console.log('⚠️ 跳過重複儲存');
+                    return;
+                }
+                
+                isSaving = true;
+                lastSaveTime = now;
+                
+                // 1. 儲存到本地
+                const data = DataManager.saveToLocal();
+                
+                // 2. 增加同步計數
+                data.syncCount = DataManager.incrementSyncCount();
+                localStorage.setItem('foodTruckData', JSON.stringify(data));
+                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                
+                console.log('💾 資料已儲存到本地');
+                
+                try {
+                    // 3. 檢查 GitHub 設定
+                    const status = githubSync.getProjectStatus();
                     
-                    if (setupToken) {
-                        if (githubSync.showTokenDialog()) {
-                            await validateAndSync(data);
-                        } else {
-                            showSyncStatus('❌ 未設定 Token，僅儲存到本地');
-                        }
+                    if (!status.hasToken) {
+                        await this.handleTokenSetup(data);
                     } else {
-                        showSyncStatus('💾 已儲存到本地（未同步到遠端）');
+                        await validateAndSync(data);
+                    }
+                } catch (error) {
+                    console.error('同步失敗:', error);
+                    showSyncStatus('❌ 同步失敗，但已儲存到本地');
+                    // 備用方案：下載檔案
+                    updateDataJsonAndPush(data);
+                }
+                
+                setTimeout(() => {
+                    isSaving = false;
+                }, 300);
+            },
+            
+            // 處理 Token 設定
+            async handleTokenSetup(data) {
+                const setupToken = confirm(
+                    '需要設定 GitHub Token 才能同步到遠端\n\n' +
+                    '是否現在設定？\n\n' +
+                    '點擊「確定」設定 Token\n' +
+                    '點擊「取消」僅儲存到本地'
+                );
+                
+                if (setupToken) {
+                    if (githubSync.showTokenDialog()) {
+                        await validateAndSync(data);
+                    } else {
+                        showSyncStatus('❌ 未設定 Token，僅儲存到本地');
                     }
                 } else {
-                    await validateAndSync(data);
+                    showSyncStatus('💾 已儲存到本地（未同步到遠端）');
                 }
-            } catch (error) {
-                console.error('同步失敗:', error);
-                showSyncStatus('❌ 同步失敗，但已儲存到本地');
-                // 備用方案：下載檔案
-                updateDataJsonAndPush(data);
             }
-            
-            setTimeout(() => {
-                isSaving = false;
-            }, 300);
+        };
+        
+        // 手動儲存資料函數（向後兼容）
+        async function manualSaveData() {
+            await SyncManager.manualSave();
         }
 
         async function validateAndSync(data) {
@@ -2189,81 +2408,41 @@
             });
         }
 
+        // ==================== 編輯函數（使用新的 EditManager） ====================
+        
         // 開始編輯模式
         function startTruckEdit(truckId) {
-            const truck = foodTruckDatabase.find(t => t.id === truckId);
-            if (truck) {
-                truck.isEditing = true;
-                saveEditingState();
+            if (EditManager.startEdit(truckId)) {
                 renderTruckCards();
-                console.log(`✏️ 開始編輯餐車: ${truck.title}`);
             }
         }
 
         // 儲存編輯
         async function saveTruckEdit(truckId) {
-            const truck = foodTruckDatabase.find(t => t.id === truckId);
-            if (!truck) return;
-
-            // 獲取編輯後的值
-            const newTitle = document.getElementById(`edit-title-${truckId}`).value.trim();
-            const newAlt = document.getElementById(`edit-alt-${truckId}`).value.trim();
-            
-            if (!newTitle) {
-                alert('餐車名稱不能為空！');
-                return;
-            }
-
-            // 更新基本資訊
-            truck.title = newTitle;
-            truck.alt = newAlt || newTitle;
-
-            // 更新連結
-            const linkData = [];
-            for (let i = 1; i <= 3; i++) {
-                const textInput = document.getElementById(`edit-text-${truckId}-${i}`);
-                const urlInput = document.getElementById(`edit-url-${truckId}-${i}`);
+            const success = await EditManager.saveEdit(truckId);
+            if (success) {
+                const truck = foodTruckDatabase.find(t => t.id === truckId);
+                showAlert(`餐車 "${truck.title}" 已更新並儲存`, 'success');
+                renderTruckCards();
+                renderPreview();
                 
-                if (textInput && urlInput) {
-                    const text = textInput.value.trim();
-                    const url = urlInput.value.trim();
-                    
-                    if (text && url) {
-                        linkData.push({ text, url });
+                // 自動同步到遠端（如果已設定 Token）
+                try {
+                    const status = githubSync.getProjectStatus();
+                    if (status.hasToken) {
+                        console.log('🔄 自動同步編輯變更到遠端...');
+                        await manualSaveData();
                     }
+                } catch (error) {
+                    console.log('⚠️ 自動同步失敗，但本地已儲存');
                 }
-            }
-            
-            truck.link = linkData.length > 0 ? linkData : '';
-            truck.isEditing = false;
-
-            // 即時更新本地儲存
-            saveDataToLocal();
-
-            showAlert(`餐車 "${truck.title}" 已更新並儲存`, 'success');
-            renderTruckCards();
-            renderPreview();
-            
-            // 自動同步到遠端（如果已設定 Token）
-            try {
-                const status = githubSync.getProjectStatus();
-                if (status.hasToken) {
-                    console.log('🔄 自動同步編輯變更到遠端...');
-                    await manualSaveData();
-                }
-            } catch (error) {
-                console.log('⚠️ 自動同步失敗，但本地已儲存');
             }
         }
 
         // 取消編輯
         function cancelTruckEdit(truckId) {
-            const truck = foodTruckDatabase.find(t => t.id === truckId);
-            if (truck) {
-                truck.isEditing = false;
-                saveEditingState();
+            if (EditManager.cancelEdit(truckId)) {
                 renderTruckCards();
-                console.log(`❌ 取消編輯餐車: ${truck.title}`);
             }
         }
 
@@ -2343,30 +2522,6 @@
                 } catch (error) {
                     console.log('⚠️ 自動同步失敗，但本地已儲存');
                 }
-            }
-        }
-
-        function editTruck(truckId) {
-            const truck = foodTruckDatabase.find(t => t.id === truckId);
-            if (!truck) return;
-            
-            const newSrc = prompt('請輸入圖片網址:', truck.src || '');
-            if (newSrc !== null && newSrc.trim() !== '') {
-                truck.src = newSrc.trim();
-                
-                const newAlt = prompt('請輸入替代文字:', truck.alt || '');
-                if (newAlt !== null) {
-                    truck.alt = newAlt.trim() || truck.title;
-                }
-                
-                const newImgLink = prompt('請輸入圖片超連結 (選填):', truck.imgLink || '');
-                if (newImgLink !== null) {
-                    truck.imgLink = newImgLink.trim();
-                }
-                
-                showAlert('餐車資訊已更新', 'success');
-                applyFilters();
-                renderPreview();
             }
         }
 
@@ -2516,8 +2671,7 @@
                 filteredTrucks = [...foodTruckDatabase];
                 
                 // 儲存到本地
-                localStorage.setItem('foodTruckData', JSON.stringify(data));
-                sessionStorage.setItem('foodTruckData', JSON.stringify(data));
+                saveDataToLocal();
                 
                 showAlert('已從遠端更新資料', 'success');
                 applyFilters();
@@ -2537,16 +2691,152 @@
             console.log(`  filteredTrucks: ${filteredTrucks ? filteredTrucks.length : 'undefined'} 個餐車`);
             console.log(`  selectedTrucks: ${selectedTrucks ? selectedTrucks.size : 'undefined'} 個選中`);
             
+            // 檢查 localStorage 中的資料
+            const localData = localStorage.getItem('foodTruckData');
+            if (localData) {
+                try {
+                    const data = JSON.parse(localData);
+                    console.log('📱 localStorage 資料:');
+                    console.log(`  最後更新: ${data.lastUpdated}`);
+                    console.log(`  版本: ${data.version}`);
+                    console.log(`  同步計數: ${data.syncCount}`);
+                    console.log(`  餐車數量: ${data.foodTrucks ? data.foodTrucks.length : 0}`);
+                    
+                    if (data.foodTrucks) {
+                        const editingTrucks = data.foodTrucks.filter(truck => truck.isEditing);
+                        console.log(`  正在編輯的餐車: ${editingTrucks.length} 個`);
+                        editingTrucks.forEach(truck => {
+                            console.log(`    - ${truck.title} (ID: ${truck.id})`);
+                        });
+                    }
+                } catch (error) {
+                    console.error('❌ 解析 localStorage 資料失敗:', error);
+                }
+            } else {
+                console.log('📱 localStorage 中沒有 foodTruckData');
+            }
+            
             if (foodTruckDatabase && foodTruckDatabase.length > 0) {
                 console.log('  餐車列表:');
                 foodTruckDatabase.forEach((truck, index) => {
-                    console.log(`    ${index + 1}. ${truck.title} (${truck.isActive ? '已上架' : '已下架'})`);
+                    console.log(`    ${index + 1}. ${truck.title} (${truck.isActive ? '已上架' : '已下架'}) ${truck.isEditing ? '[編輯中]' : ''}`);
                 });
             }
             
             // 顯示在頁面上
             const status = `資料狀態: 總共 ${foodTruckDatabase ? foodTruckDatabase.length : 0} 個餐車, 篩選後 ${filteredTrucks ? filteredTrucks.length : 0} 個餐車`;
             showAlert(status, 'info');
+        }
+        
+        // 測試 F5 重新載入流程
+        function testF5Reload() {
+            console.log('🧪 測試 F5 重新載入流程...');
+            
+            // 1. 檢查 localStorage
+            const localData = localStorage.getItem('foodTruckData');
+            console.log('1. localStorage 檢查:', localData ? '有資料' : '無資料');
+            
+            if (localData) {
+                try {
+                    const data = JSON.parse(localData);
+                    console.log('   - 餐車數量:', data.foodTrucks ? data.foodTrucks.length : 0);
+                    console.log('   - 最後更新:', data.lastUpdated);
+                    
+                    if (data.foodTrucks) {
+                        const editingCount = data.foodTrucks.filter(t => t.isEditing).length;
+                        console.log('   - 編輯中的餐車:', editingCount);
+                    }
+                } catch (error) {
+                    console.error('   - 解析失敗:', error);
+                }
+            }
+            
+            // 2. 檢查當前 foodTruckDatabase
+            console.log('2. 當前 foodTruckDatabase:', foodTruckDatabase ? foodTruckDatabase.length : 'undefined');
+            
+            // 3. 模擬 loadFoodTruckData 流程
+            console.log('3. 模擬載入流程...');
+            const localDataFromManager = DataManager.loadFromLocal();
+            console.log('   - DataManager.loadFromLocal():', localDataFromManager ? '成功' : '失敗');
+            
+            // 4. 檢查資料是否一致
+            if (localData && localDataFromManager) {
+                const localStorageCount = JSON.parse(localData).foodTrucks?.length || 0;
+                const managerCount = localDataFromManager.foodTrucks?.length || 0;
+                console.log('4. 資料一致性檢查:');
+                console.log(`   - localStorage: ${localStorageCount} 個餐車`);
+                console.log(`   - DataManager: ${managerCount} 個餐車`);
+                console.log(`   - 是否一致: ${localStorageCount === managerCount ? '是' : '否'}`);
+            }
+        }
+        
+        // 強制重新載入本地資料
+        function forceReloadLocalData() {
+            console.log('🔄 強制重新載入本地資料...');
+            
+            const localData = DataManager.loadFromLocal();
+            if (localData) {
+                console.log('✅ 找到本地資料，強制應用...');
+                LoadStrategy.applyLocalData(localData);
+                
+                // 更新介面
+                filteredTrucks = [...foodTruckDatabase];
+                updateStats();
+                applyFilters();
+                renderPreview();
+                
+                console.log('✅ 本地資料已強制載入並更新介面');
+                showAlert('已強制載入本地資料', 'success');
+            } else {
+                console.log('❌ 沒有找到本地資料');
+                showAlert('沒有找到本地資料', 'warning');
+            }
+        }
+        
+        // 測試本地儲存功能
+        function testLocalSave() {
+            console.log('🧪 測試本地儲存功能...');
+            
+            // 1. 檢查當前資料
+            console.log('1. 當前 foodTruckDatabase 狀態:');
+            console.log(`   - 餐車數量: ${foodTruckDatabase ? foodTruckDatabase.length : 'undefined'}`);
+            if (foodTruckDatabase && foodTruckDatabase.length > 0) {
+                console.log(`   - 第一個餐車: ${foodTruckDatabase[0].title}`);
+            }
+            
+            // 2. 嘗試儲存
+            console.log('2. 嘗試儲存到本地...');
+            const savedData = DataManager.saveToLocal();
+            console.log('   - 儲存結果:', savedData ? '成功' : '失敗');
+            if (savedData) {
+                console.log(`   - 儲存的餐車數量: ${savedData.foodTrucks.length}`);
+                console.log(`   - 最後更新時間: ${savedData.lastUpdated}`);
+            }
+            
+            // 3. 檢查 localStorage
+            console.log('3. 檢查 localStorage...');
+            const storedData = localStorage.getItem('foodTruckData');
+            if (storedData) {
+                try {
+                    const parsed = JSON.parse(storedData);
+                    console.log(`   - localStorage 中的餐車數量: ${parsed.foodTrucks ? parsed.foodTrucks.length : 'undefined'}`);
+                    console.log(`   - localStorage 中的最後更新: ${parsed.lastUpdated}`);
+                } catch (error) {
+                    console.error('   - 解析 localStorage 失敗:', error);
+                }
+            } else {
+                console.log('   - localStorage 中沒有資料');
+            }
+            
+            // 4. 嘗試重新載入
+            console.log('4. 嘗試重新載入...');
+            const reloadedData = DataManager.loadFromLocal();
+            console.log('   - 重新載入結果:', reloadedData ? '成功' : '失敗');
+            if (reloadedData) {
+                console.log(`   - 重新載入的餐車數量: ${reloadedData.foodTrucks.length}`);
+            }
+            
+            showAlert('本地儲存測試完成，請查看控制台', 'info');
         }
 
         // 強制重新載入資料
@@ -2668,9 +2958,25 @@
                 const loadResult = await loadFoodTruckData();
                 console.log('📊 資料載入結果:', loadResult);
                 
-                // 3. 獨立初始化資料狀態
-                const initResult = initializeData();
-                console.log('🔧 資料初始化結果:', initResult);
+                // 3. 檢查是否需要初始化（只有在沒有有效資料時才初始化）
+                let initResult;
+                if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
+                    console.log('⚠️ 沒有有效資料，執行初始化...');
+                    initResult = initializeData();
+                    console.log('🔧 資料初始化結果:', initResult);
+                } else {
+                    console.log('✅ 已有有效資料，跳過初始化');
+                    // 只初始化 filteredTrucks 和 selectedTrucks
+                    filteredTrucks = [...foodTruckDatabase];
+                    if (!selectedTrucks || !(selectedTrucks instanceof Set)) {
+                        selectedTrucks = new Set();
+                    }
+                    initResult = {
+                        foodTruckCount: foodTruckDatabase.length,
+                        hasData: true,
+                        filteredCount: filteredTrucks.length
+                    };
+                }
                 
                 // 4. 渲染介面
                 console.log(`🖼️ 開始渲染介面: ${initResult.foodTruckCount} 個餐車`);
