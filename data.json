@@ -33,12 +33,7 @@
       "priority": 2,
       "category": "main",
       "isEditing": false,
-      "link": [
-        {
-          "text": "測試",
-          "url": "123"
-        }
-      ]
+      "link": ""
     },
     {
       "id": "truck_002",
@@ -131,7 +126,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:09:22.745Z",
+  "lastUpdated": "2025-09-21T02:11:09.461Z",
   "version": "1.0",
-  "syncCount": 13
+  "syncCount": 14
 }
