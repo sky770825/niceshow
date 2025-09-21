@@ -25,6 +25,22 @@
       "isEditing": false
     },
     {
+      "id": "truck_1758443730960",
+      "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
+      "alt": "聯絡我",
+      "title": "急售一天",
+      "imgLink": "https://liny14705.github.io/nicehouse/index1",
+      "link": [
+        {
+          "url": "https://liny14705.github.io/nicehouse/index1",
+          "text": "點我看照片"
+        }
+      ],
+      "isActive": true,
+      "priority": 2,
+      "category": "main"
+    },
+    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -42,22 +58,6 @@
         {
           "url": "https://www.facebook.com/Chen.cc126/?locale=zh_TW",
           "text": "FB"
-        }
-      ],
-      "isActive": true,
-      "priority": 2,
-      "category": "main"
-    },
-    {
-      "id": "truck_1758443730960",
-      "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
-      "alt": "聯絡我",
-      "title": "急售一天",
-      "imgLink": "https://liny14705.github.io/nicehouse/index1",
-      "link": [
-        {
-          "url": "https://liny14705.github.io/nicehouse/index1",
-          "text": "點我看照片"
         }
       ],
       "isActive": true,
@@ -166,7 +166,7 @@
       "link": ""
     }
   ],
-  "lastUpdated": "2025-09-21T08:35:38.648Z",
+  "lastUpdated": "2025-09-21T08:35:41.654Z",
   "version": "1.0",
-  "syncCount": 60
+  "syncCount": 61
 }
