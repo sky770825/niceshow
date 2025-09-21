@@ -25,26 +25,6 @@
       "isEditing": false
     },
     {
-      "id": "truck_001",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg",
-      "alt": "餐車品牌1",
-      "title": "露露姐",
-      "isActive": true,
-      "priority": 2,
-      "category": "main",
-      "isEditing": false,
-      "link": ""
-    },
-    {
-      "id": "truck_002",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg",
-      "alt": "餐車品牌2",
-      "title": "花生捲冰淇淋",
-      "isActive": true,
-      "priority": 3,
-      "category": "main"
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -64,6 +44,26 @@
           "text": "FB"
         }
       ],
+      "isActive": true,
+      "priority": 2,
+      "category": "main"
+    },
+    {
+      "id": "truck_001",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653108_0_u5egpg.jpg",
+      "alt": "餐車品牌1",
+      "title": "露露姐",
+      "isActive": true,
+      "priority": 3,
+      "category": "main",
+      "isEditing": false,
+      "link": ""
+    },
+    {
+      "id": "truck_002",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg",
+      "alt": "餐車品牌2",
+      "title": "花生捲冰淇淋",
       "isActive": true,
       "priority": 4,
       "category": "main"
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:27:41.337Z",
+  "lastUpdated": "2025-09-21T02:27:43.195Z",
   "version": "1.0",
-  "syncCount": 21
+  "syncCount": 22
 }
