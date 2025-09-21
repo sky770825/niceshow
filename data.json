@@ -105,21 +105,12 @@
       "link": ""
     },
     {
-      "id": "truck_008",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg",
-      "alt": "餐車品牌8",
-      "title": "炸蛋𣄃魚黑輪",
-      "isActive": true,
-      "priority": 9,
-      "category": "main"
-    },
-    {
       "id": "truck_009",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg",
       "alt": "餐車品牌9",
       "title": "向陽坡刈包",
       "isActive": true,
-      "priority": 10,
+      "priority": 9,
       "category": "main"
     },
     {
@@ -128,7 +119,7 @@
       "alt": "餐車品牌3",
       "title": "鄭老爹乾麵",
       "isActive": true,
-      "priority": 11,
+      "priority": 10,
       "category": "main"
     },
     {
@@ -137,7 +128,7 @@
       "alt": "餐車品牌11",
       "title": "餓食鬼美味販賣所",
       "isActive": true,
-      "priority": 12,
+      "priority": 11,
       "category": "main"
     },
     {
@@ -146,11 +137,20 @@
       "alt": "餐車品牌6",
       "title": "安德尼斯烘培坊",
       "isActive": true,
+      "priority": 12,
+      "category": "main"
+    },
+    {
+      "id": "truck_008",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653098_0_gidf0n.jpg",
+      "alt": "餐車品牌8",
+      "title": "炸蛋𣄃魚黑輪",
+      "isActive": true,
       "priority": 13,
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T03:06:24.499Z",
+  "lastUpdated": "2025-09-21T03:08:08.989Z",
   "version": "1.0",
-  "syncCount": 56
+  "syncCount": 57
 }
