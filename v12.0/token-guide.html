@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Token 設定指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .section h2 {
+            color: #3b82f6;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .section h3 {
+            color: #1e293b;
+            margin: 1.5rem 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .step {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .success {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            word-break: break-all;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: #10b981;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .troubleshooting {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .troubleshooting h4 {
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .back-link a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .feature-card h4 {
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔑 GitHub Token 設定指南</h1>
+            <p>解決多設備間 Token 同步問題的完整指南</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>🚨 問題說明</h2>
+                <p>目前系統使用 <code>localStorage</code> 儲存 Token，這意味著：</p>
+                <ul>
+                    <li>Token 只儲存在當前瀏覽器的本地儲存中</li>
+                    <li>每台電腦的瀏覽器都有獨立的 Token 設定</li>
+                    <li>在 A 電腦設定的 Token 不會自動出現在 B 電腦上</li>
+                    <li>需要每台電腦都重新設定 Token</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>💡 解決方案</h2>
+                <p>我們提供了多種方式來解決這個問題：</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>📤 匯出 Token</h4>
+                        <p>將 Token 設定匯出為 JSON 檔案</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📥 匯入 Token</h4>
+                        <p>從 JSON 檔案匯入 Token 設定</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔍 狀態檢查</h4>
+                        <p>檢查當前 Token 和專案設定狀態</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🧪 測試同步</h4>
+                        <p>測試 Token 是否有效並能正常同步</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 使用步驟</h2>
+
+                <h3>方法一：使用匯出/匯入功能（推薦）</h3>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>在已設定 Token 的電腦上：</strong>
+                    <ol>
+                        <li>開啟管理後台 (admin.html)</li>
+                        <li>點擊「📤 匯出 Token」按鈕</li>
+                        <li>下載產生的 JSON 檔案</li>
+                    </ol>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>在新電腦上：</strong>
+                    <ol>
+                        <li>開啟管理後台 (admin.html)</li>
+                        <li>點擊「📥 匯入 Token」按鈕</li>
+                        <li>選擇之前下載的 JSON 檔案</li>
+                        <li>確認匯入設定</li>
+                    </ol>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>驗證設定：</strong>
+                    <ol>
+                        <li>點擊「🔍 檢查 Token 狀態」確認設定正確</li>
+                        <li>點擊「🧪 測試同步」驗證功能正常</li>
+                    </ol>
+                </div>
+
+                <h3>方法二：手動設定 Token</h3>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>取得 GitHub Token：</strong>
+                    <ol>
+                        <li>前往 <a href="https://github.com/settings/tokens" target="_blank">GitHub Token 設定頁面</a></li>
+                        <li>點擊「Generate new token (classic)」</li>
+                        <li>填寫 Token 名稱：<code>餐開月行程表同步</code></li>
+                        <li>選擇過期時間：<code>No expiration</code></li>
+                        <li>勾選權限：<code>repo</code>（完整倉庫存取權限）</li>
+                        <li>點擊「Generate token」</li>
+                        <li>複製產生的 Token（只會顯示一次！）</li>
+                    </ol>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>在每台電腦上設定：</strong>
+                    <ol>
+                        <li>開啟管理後台 (admin.html)</li>
+                        <li>點擊「🔑 設定 Token」按鈕</li>
+                        <li>貼上剛才複製的 Token</li>
+                        <li>確認儲存</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 故障排除</h2>
+
+                <div class="troubleshooting">
+                    <h4>❌ Token 驗證失敗 (401 錯誤)</h4>
+                    <p><strong>原因：</strong>Token 無效或已過期</p>
+                    <p><strong>解決：</strong>重新生成 Token 並重新設定</p>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>❌ 權限不足 (403 錯誤)</h4>
+                    <p><strong>原因：</strong>Token 沒有 repo 權限</p>
+                    <p><strong>解決：</strong>重新生成 Token 時確保勾選「repo」權限</p>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>❌ 找不到倉庫 (404 錯誤)</h4>
+                    <p><strong>原因：</strong>專案設定不正確或倉庫不存在</p>
+                    <p><strong>解決：</strong>檢查專案設定，確認倉庫 URL 正確</p>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>❌ CORS 跨域限制</h4>
+                    <p><strong>原因：</strong>瀏覽器安全限制</p>
+                    <p><strong>解決：</strong>
+                        <ul>
+                            <li>安裝瀏覽器擴展（如 CORS Unblock）</li>
+                            <li>使用代理服務器</li>
+                            <li>手動上傳 data.json 到 GitHub</li>
+                            <li>使用 GitHub CLI 工具</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 專案資訊</h2>
+                <div class="success">
+                    <p><strong>當前專案設定：</strong></p>
+                    <ul>
+                        <li><strong>專案名稱：</strong>餐開月行程表</li>
+                        <li><strong>GitHub 倉庫：</strong>sky770825/niceshow</li>
+                        <li><strong>網站：</strong>https://sky770825.github.io/niceshow</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛡️ 安全提醒</h2>
+                <div class="warning">
+                    <p><strong>⚠️ 重要安全提醒：</strong></p>
+                    <ul>
+                        <li>Token 僅儲存在您的瀏覽器本地，不會上傳到任何伺服器</li>
+                        <li>請妥善保管您的 Token，不要分享給他人</li>
+                        <li>如果懷疑 Token 洩露，請立即在 GitHub 上撤銷並重新生成</li>
+                        <li>匯出的 JSON 檔案包含敏感資訊，請妥善保管</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="back-link">
+                <a href="admin.html">← 返回管理後台</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
