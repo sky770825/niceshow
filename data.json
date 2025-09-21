@@ -103,21 +103,12 @@
       "category": "main"
     },
     {
-      "id": "truck_009",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg",
-      "alt": "餐車品牌9",
-      "title": "向陽坡刈包",
-      "isActive": true,
-      "priority": 9,
-      "category": "main"
-    },
-    {
       "id": "truck_003",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg",
       "alt": "餐車品牌3",
       "title": "鄭老爹乾麵",
       "isActive": true,
-      "priority": 10,
+      "priority": 9,
       "category": "main"
     },
     {
@@ -126,7 +117,7 @@
       "alt": "餐車品牌11",
       "title": "餓食鬼美味販賣所",
       "isActive": true,
-      "priority": 11,
+      "priority": 10,
       "category": "main"
     },
     {
@@ -135,7 +126,7 @@
       "alt": "餐車品牌10",
       "title": "滷拉拉",
       "isActive": true,
-      "priority": 12,
+      "priority": 11,
       "category": "main"
     },
     {
@@ -144,13 +135,22 @@
       "alt": "餐車品牌1",
       "title": "露露姐",
       "isActive": true,
-      "priority": 13,
+      "priority": 12,
       "category": "main",
       "isEditing": false,
       "link": ""
+    },
+    {
+      "id": "truck_009",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg",
+      "alt": "餐車品牌9",
+      "title": "向陽坡刈包",
+      "isActive": true,
+      "priority": 13,
+      "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:50:49.218Z",
+  "lastUpdated": "2025-09-21T02:50:53.712Z",
   "version": "1.0",
-  "syncCount": 38
+  "syncCount": 39
 }
