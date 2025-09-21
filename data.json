@@ -99,24 +99,6 @@
       "category": "main"
     },
     {
-      "id": "truck_009",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg",
-      "alt": "餐車品牌9",
-      "title": "向陽坡刈包",
-      "isActive": true,
-      "priority": 10,
-      "category": "main"
-    },
-    {
-      "id": "truck_010",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg",
-      "alt": "餐車品牌10",
-      "title": "滷拉拉",
-      "isActive": true,
-      "priority": 11,
-      "category": "main"
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -137,6 +119,24 @@
         }
       ],
       "isActive": true,
+      "priority": 10,
+      "category": "main"
+    },
+    {
+      "id": "truck_009",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653094_0_mxdtdj.jpg",
+      "alt": "餐車品牌9",
+      "title": "向陽坡刈包",
+      "isActive": true,
+      "priority": 11,
+      "category": "main"
+    },
+    {
+      "id": "truck_010",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg",
+      "alt": "餐車品牌10",
+      "title": "滷拉拉",
+      "isActive": true,
       "priority": 12,
       "category": "main"
     },
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:27:31.982Z",
+  "lastUpdated": "2025-09-21T02:27:34.007Z",
   "version": "1.0",
-  "syncCount": 16
+  "syncCount": 17
 }
