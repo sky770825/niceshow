@@ -94,21 +94,12 @@
       "category": "main"
     },
     {
-      "id": "truck_011",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
-      "alt": "餐車品牌11",
-      "title": "餓食鬼美味販賣所",
-      "isActive": true,
-      "priority": 8,
-      "category": "main"
-    },
-    {
       "id": "truck_010",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg",
       "alt": "餐車品牌10",
       "title": "滷拉拉",
       "isActive": true,
-      "priority": 9,
+      "priority": 8,
       "category": "main"
     },
     {
@@ -117,7 +108,7 @@
       "alt": "餐車品牌1",
       "title": "露露姐",
       "isActive": true,
-      "priority": 10,
+      "priority": 9,
       "category": "main",
       "isEditing": false,
       "link": ""
@@ -128,7 +119,7 @@
       "alt": "餐車品牌8",
       "title": "炸蛋𣄃魚黑輪",
       "isActive": true,
-      "priority": 11,
+      "priority": 10,
       "category": "main"
     },
     {
@@ -137,7 +128,7 @@
       "alt": "餐車品牌9",
       "title": "向陽坡刈包",
       "isActive": true,
-      "priority": 12,
+      "priority": 11,
       "category": "main"
     },
     {
@@ -146,11 +137,20 @@
       "alt": "餐車品牌3",
       "title": "鄭老爹乾麵",
       "isActive": true,
+      "priority": 12,
+      "category": "main"
+    },
+    {
+      "id": "truck_011",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
+      "alt": "餐車品牌11",
+      "title": "餓食鬼美味販賣所",
+      "isActive": true,
       "priority": 13,
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:51:27.281Z",
+  "lastUpdated": "2025-09-21T02:51:29.003Z",
   "version": "1.0",
-  "syncCount": 54
+  "syncCount": 55
 }
