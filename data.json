@@ -117,15 +117,6 @@
       "category": "main"
     },
     {
-      "id": "truck_011",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
-      "alt": "餐車品牌11",
-      "title": "餓食鬼美味販賣所",
-      "isActive": true,
-      "priority": 12,
-      "category": "main"
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -146,11 +137,20 @@
         }
       ],
       "isActive": true,
+      "priority": 12,
+      "category": "main"
+    },
+    {
+      "id": "truck_011",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
+      "alt": "餐車品牌11",
+      "title": "餓食鬼美味販賣所",
+      "isActive": true,
       "priority": 13,
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:27:27.705Z",
+  "lastUpdated": "2025-09-21T02:27:31.982Z",
   "version": "1.0",
-  "syncCount": 15
+  "syncCount": 16
 }
