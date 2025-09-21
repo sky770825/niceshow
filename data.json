@@ -54,24 +54,6 @@
       "category": "main"
     },
     {
-      "id": "truck_004",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg",
-      "alt": "餐車品牌4",
-      "title": "蔬孟園",
-      "isActive": true,
-      "priority": 5,
-      "category": "main"
-    },
-    {
-      "id": "truck_005",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg",
-      "alt": "餐車品牌5",
-      "title": "台東放山豬",
-      "isActive": true,
-      "priority": 6,
-      "category": "main"
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -91,6 +73,24 @@
           "text": "FB"
         }
       ],
+      "isActive": true,
+      "priority": 5,
+      "category": "main"
+    },
+    {
+      "id": "truck_004",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg",
+      "alt": "餐車品牌4",
+      "title": "蔬孟園",
+      "isActive": true,
+      "priority": 6,
+      "category": "main"
+    },
+    {
+      "id": "truck_005",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg",
+      "alt": "餐車品牌5",
+      "title": "台東放山豬",
       "isActive": true,
       "priority": 7,
       "category": "main"
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:27:37.805Z",
+  "lastUpdated": "2025-09-21T02:27:40.061Z",
   "version": "1.0",
-  "syncCount": 19
+  "syncCount": 20
 }
