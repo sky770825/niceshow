@@ -16,12 +16,12 @@ echo  1. 快速上傳到 GitHub (推薦)
 echo  2. 檢查檔案狀態
 echo  3. 建立版本備份
 echo.
-echo  🚀 部署管理
+echo  部署管理
 echo  4. 部署指定版本
 echo  5. 下架所有檔案
 echo  6. 切換專案
 echo.
-echo  ⚙️ 系統設定
+echo  系統設定
 echo  7. 初始化/連接 GitHub 倉庫
 echo  8. 修復同步問題
 echo  9. 檢查認證狀態
