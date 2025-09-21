@@ -31,7 +31,14 @@
       "title": "露露姐",
       "isActive": true,
       "priority": 2,
-      "category": "main"
+      "category": "main",
+      "isEditing": false,
+      "link": [
+        {
+          "text": "測試",
+          "url": "123"
+        }
+      ]
     },
     {
       "id": "truck_002",
@@ -124,7 +131,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:09:12.467Z",
+  "lastUpdated": "2025-09-21T02:09:21.027Z",
   "version": "1.0",
-  "syncCount": 11
+  "syncCount": 12
 }
