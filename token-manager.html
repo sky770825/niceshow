@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token 管理系統</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .status.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.5rem;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-warning {
+            background: #f59e0b;
+        }
+        .btn-danger {
+            background: #ef4444;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin: 1rem 0;
+            box-sizing: border-box;
+        }
+        .token-info {
+            background: #f3f4f6;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.875rem;
+            margin: 0.5rem 0;
+            word-break: break-all;
+        }
+        .log {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.875rem;
+            margin: 1rem 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 GitHub Token 管理系統</h1>
+        
+        <div id="currentStatus" class="status">
+            <div id="statusMessage">正在檢查 Token 狀態...</div>
+        </div>
+        
+        <div>
+            <h3>📊 Token 資訊</h3>
+            <div id="tokenInfo" class="token-info">
+                載入中...
+            </div>
+        </div>
+        
+        <div>
+            <h3>🔄 操作</h3>
+            <button class="btn btn-success" onclick="testCurrentToken()">🧪 測試當前 Token</button>
+            <button class="btn btn-warning" onclick="updateToken()">💾 更新 Token</button>
+            <button class="btn btn-danger" onclick="clearToken()">🗑️ 清除 Token</button>
+        </div>
+        
+        <div>
+            <h3>📝 新 Token 設定</h3>
+            <input type="password" id="newToken" placeholder="輸入新的 GitHub Token">
+            <button class="btn" onclick="saveNewToken()">💾 儲存新 Token</button>
+        </div>
+        
+        <div>
+            <h3>📋 操作日誌</h3>
+            <div id="log" class="log">
+                系統啟動中...<br>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <h3>💡 Token 失效原因分析</h3>
+            <ul>
+                <li><strong>過期設定</strong>：檢查 GitHub 設定中的過期時間</li>
+                <li><strong>速率限制</strong>：短時間內大量請求被限制</li>
+                <li><strong>權限變更</strong>：Token 權限被修改或移除</li>
+                <li><strong>安全撤銷</strong>：GitHub 檢測到異常活動</li>
+                <li><strong>重複生成</strong>：新 Token 生成時舊 Token 被撤銷</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let logMessages = [];
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            logMessages.push(logMessage);
+            
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML = logMessages.join('<br>');
+            logDiv.scrollTop = logDiv.scrollHeight;
+            
+            console.log(logMessage);
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('currentStatus');
+            const messageDiv = document.getElementById('statusMessage');
+            
+            statusDiv.className = `status ${type}`;
+            messageDiv.innerHTML = message;
+        }
+        
+        async function checkCurrentToken() {
+            log('🔍 檢查當前 Token 狀態...');
+            
+            try {
+                const token = localStorage.getItem('githubToken');
+                if (!token) {
+                    showStatus('❌ 未找到 Token', 'error');
+                    document.getElementById('tokenInfo').textContent = '未設定 Token';
+                    log('❌ localStorage 中沒有 Token');
+                    return;
+                }
+                
+                // 顯示 Token 資訊（部分遮蓋）
+                const maskedToken = token.substring(0, 8) + '...' + token.substring(token.length - 4);
+                document.getElementById('tokenInfo').textContent = `Token: ${maskedToken}`;
+                
+                // 測試 Token
+                const response = await fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    showStatus(`✅ Token 有效 - 使用者: ${user.login}`, 'success');
+                    log(`✅ Token 驗證成功，使用者: ${user.login}`);
+                    
+                    // 檢查速率限制
+                    const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
+                    const rateLimitReset = response.headers.get('X-RateLimit-Reset');
+                    
+                    if (rateLimitRemaining) {
+                        log(`📊 API 請求剩餘: ${rateLimitRemaining}`);
+                        
+                        if (parseInt(rateLimitRemaining) < 100) {
+                            log('⚠️ API 請求接近限制，可能影響同步功能');
+                        }
+                    }
+                    
+                } else {
+                    showStatus(`❌ Token 無效: ${response.status} ${response.statusText}`, 'error');
+                    log(`❌ Token 驗證失敗: ${response.status} ${response.statusText}`);
+                    
+                    // 分析失敗原因
+                    if (response.status === 401) {
+                        log('🔍 401 錯誤可能原因:');
+                        log('   - Token 已過期');
+                        log('   - Token 被撤銷');
+                        log('   - 權限不足');
+                    } else if (response.status === 403) {
+                        log('🔍 403 錯誤可能原因:');
+                        log('   - API 速率限制');
+                        log('   - 權限不足');
+                    }
+                }
+                
+            } catch (error) {
+                showStatus(`❌ 檢查失敗: ${error.message}`, 'error');
+                log(`❌ 檢查過程中發生錯誤: ${error.message}`);
+            }
+        }
+        
+        async function testCurrentToken() {
+            log('🧪 開始測試當前 Token...');
+            await checkCurrentToken();
+        }
+        
+        async function saveNewToken() {
+            const newToken = document.getElementById('newToken').value.trim();
+            
+            if (!newToken) {
+                log('❌ 請輸入新的 Token');
+                return;
+            }
+            
+            log('💾 儲存新 Token...');
+            
+            // 先測試新 Token
+            try {
+                const response = await fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': `token ${newToken}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    
+                    // 儲存新 Token
+                    localStorage.setItem('githubToken', newToken);
+                    
+                    showStatus(`✅ 新 Token 已儲存 - 使用者: ${user.login}`, 'success');
+                    log(`✅ 新 Token 驗證成功並已儲存，使用者: ${user.login}`);
+                    
+                    // 清空輸入框
+                    document.getElementById('newToken').value = '';
+                    
+                    // 更新顯示
+                    setTimeout(() => checkCurrentToken(), 1000);
+                    
+                } else {
+                    log(`❌ 新 Token 無效: ${response.status} ${response.statusText}`);
+                    showStatus(`❌ 新 Token 無效: ${response.status}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ 測試新 Token 失敗: ${error.message}`);
+                showStatus(`❌ 測試失敗: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearToken() {
+            if (confirm('確定要清除當前 Token 嗎？')) {
+                localStorage.removeItem('githubToken');
+                log('🗑️ Token 已清除');
+                showStatus('🗑️ Token 已清除', 'warning');
+                document.getElementById('tokenInfo').textContent = '未設定 Token';
+            }
+        }
+        
+        function updateToken() {
+            document.getElementById('newToken').focus();
+            log('💡 請在下方輸入框中輸入新的 Token');
+        }
+        
+        // 頁面載入時自動檢查
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Token 管理系統啟動');
+            checkCurrentToken();
+            
+            // 每 5 分鐘自動檢查一次
+            setInterval(() => {
+                log('⏰ 定期檢查 Token 狀態...');
+                checkCurrentToken();
+            }, 5 * 60 * 1000);
+        });
+    </script>
+</body>
+</html>
