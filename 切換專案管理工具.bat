@@ -76,61 +76,9 @@ set current_repo=%current_repo:.git=%
 echo 📋 當前專案：%current_user%/%current_repo%
 echo.
 
-REM 檢查是否有未提交的變更
-git status --porcelain > temp_status.txt 2>nul
-if exist temp_status.txt (
-    REM 檢查檔案是否為空（檔案存在但內容為空表示沒有變更）
-    for /f %%i in (temp_status.txt) do (
-        echo ⚠️  警告：檢測到未提交的變更！
-        echo.
-        echo 未提交的檔案：
-        git status --short
-        echo.
-        echo 操作選項：
-        echo 1. 繼續上傳（會提交所有變更）
-        echo 2. 先查看變更內容
-        echo 0. 取消操作
-        echo.
-        
-        set /p upload_choice=請選擇操作 (0-2): 
-        
-        if "!upload_choice!"=="0" goto start
-        if "!upload_choice!"=="2" goto show_changes
-        if not "!upload_choice!"=="1" (
-            echo ❌ 無效選項，請重新選擇
-            timeout /t 2 >nul
-            goto quick_upload
-        )
-        goto continue_upload
-    )
-    del temp_status.txt 2>nul
-    echo ✅ 沒有檢測到未提交的變更，直接上傳
-    goto continue_upload
-) else (
-    echo ✅ 沒有檢測到未提交的變更，直接上傳
-    goto continue_upload
-)
-:continue_upload
-
 echo 🔄 正在上傳檔案...
 echo.
 
-REM 檢查工作目錄狀態
-echo 檢查工作目錄狀態...
-git status --porcelain > temp_workdir.txt 2>nul
-if exist temp_workdir.txt (
-    for /f %%i in (temp_workdir.txt) do (
-        echo ⚠️  檢測到工作目錄有變更
-        del temp_workdir.txt 2>nul
-        goto add_files
-    )
-    del temp_workdir.txt 2>nul
-    echo ✅ 工作目錄乾淨
-) else (
-    echo ✅ 工作目錄乾淨
-)
-
-:add_files
 echo 步驟1: 添加所有檔案...
 git add .
 if errorlevel 1 (
@@ -146,18 +94,7 @@ set commit_msg=更新餐開月行程表 - %date% %time%
 git commit -m "%commit_msg%"
 if errorlevel 1 (
     echo ⚠️  提交失敗（可能沒有變更需要提交）
-    echo 檢查是否有變更...
-    git status --porcelain > temp_check.txt 2>nul
-    if exist temp_check.txt (
-        for /f %%i in (temp_check.txt) do (
-            echo ❌ 仍有未提交的變更，請檢查Git狀態
-            del temp_check.txt 2>nul
-            pause
-            goto start
-        )
-    )
-    del temp_check.txt 2>nul
-    echo ✅ 沒有變更需要提交，直接推送
+    echo 直接嘗試推送...
     goto push_only
 )
 echo ✅ 變更已提交
@@ -167,52 +104,11 @@ echo.
 echo 步驟3: 推送到GitHub...
 git push origin main
 if errorlevel 1 (
-    echo ❌ 推送到main失敗，檢查原因...
-    echo.
-    echo 可能原因：遠端有新的提交
-    echo 正在嘗試自動同步...
-    echo.
-    
-    echo 步驟3.1: 獲取遠端變更...
-    git fetch origin
-    if errorlevel 1 (
-        echo ❌ 獲取遠端變更失敗
-        echo 嘗試推送到master分支...
-        goto try_master
-    )
-    
-    echo 步驟3.2: 合併遠端變更...
-    git merge origin/main
-    if errorlevel 1 (
-        echo ❌ 合併衝突！需要手動解決
-        echo 建議使用「修復同步問題」功能
-        pause
-        goto start
-    )
-    
-    echo 步驟3.3: 重新推送到main...
-    git push origin main
-    if errorlevel 1 (
-        echo ❌ 重新推送失敗，嘗試master分支...
-        goto try_master
-    ) else (
-        echo ✅ 已成功推送到main分支
-        goto upload_success
-    )
-    
-    :try_master
-    echo 嘗試推送到master分支...
+    echo ❌ 推送到main失敗，嘗試master分支...
     git push origin master
     if errorlevel 1 (
         echo ❌ 推送失敗
-        echo.
-        echo 可能原因：
-        echo - 網路連接問題
-        echo - GitHub認證問題
-        echo - 倉庫權限問題
-        echo - 遠端有新的提交且無法自動合併
-        echo.
-        echo 建議使用「修復同步問題」功能
+        echo 可能原因：網路連接問題或GitHub認證問題
         pause
         goto start
     ) else (
@@ -225,7 +121,6 @@ if errorlevel 1 (
 )
 
 :upload_success
-
 echo.
 echo 上傳完成！
 echo.
