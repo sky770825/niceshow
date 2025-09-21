@@ -1301,6 +1301,7 @@
                                 <button type="button" class="btn btn-danger" onclick="clearLocalData()" style="display: none;">🗑️ 清除本地資料</button>
                                 <button type="button" class="btn btn-info" onclick="testDataJsonLoad()" style="display: none;">🧪 測試 data.json 載入</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
+                                <button type="button" class="btn btn-info" onclick="testSyncFunction()">🧪 測試同步</button>
                                 <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
                             </div>
                         </div>
@@ -1829,8 +1830,11 @@
 
         async function validateAndSync(data) {
             try {
+                console.log('🔍 開始驗證 Token 和同步...');
+                
                 // 驗證 Token
                 const validation = await githubSync.validateToken();
+                console.log('🔍 Token 驗證結果:', validation);
                 
                 if (!validation.valid) {
                     throw new Error(validation.message);
@@ -1840,6 +1844,7 @@
                 
                 // 同步到 GitHub
                 const result = await githubSync.syncData(data);
+                console.log('✅ 同步結果:', result);
                 
                 showSyncStatus('✅ 資料已同步到 GitHub！');
                 
@@ -1847,8 +1852,23 @@
                 console.log('✅ 同步成功:', result.commitUrl);
                 
             } catch (error) {
-                console.error('同步失敗:', error);
-                showSyncStatus(`❌ 同步失敗：${error.message}`);
+                console.error('❌ 同步失敗詳細錯誤:', error);
+                console.error('❌ 錯誤堆疊:', error.stack);
+                
+                // 提供更詳細的錯誤訊息
+                let errorMessage = error.message;
+                if (error.message.includes('401')) {
+                    errorMessage = 'Token 無效或已過期，請檢查 GitHub Token';
+                } else if (error.message.includes('403')) {
+                    errorMessage = '權限不足，請確認 Token 有 repo 權限';
+                } else if (error.message.includes('404')) {
+                    errorMessage = '找不到倉庫或檔案，請檢查專案設定';
+                } else if (error.message.includes('CORS')) {
+                    errorMessage = '網路連線問題，請檢查網路設定';
+                }
+                
+                showSyncStatus(`❌ 同步失敗：${errorMessage}`);
+                
                 // 移除自動下載檔案功能
             }
         }
@@ -2801,6 +2821,82 @@
                 showAlert(`❌ 重新載入失敗: ${error.message}，使用預設資料`, 'danger');
             }
         }
+        
+        // 測試同步功能
+        async function testSyncFunction() {
+            console.log('🧪 開始測試同步功能...');
+            showSyncStatus('🧪 正在測試同步功能...');
+            
+            try {
+                // 1. 檢查專案狀態
+                const status = githubSync.getProjectStatus();
+                console.log('📊 專案狀態:', status);
+                
+                // 2. 測試 Token 驗證
+                console.log('🔍 測試 Token 驗證...');
+                const validation = await githubSync.validateToken();
+                console.log('🔍 Token 驗證結果:', validation);
+                
+                if (!validation.valid) {
+                    showSyncStatus(`❌ Token 驗證失敗: ${validation.message}`);
+                    return;
+                }
+                
+                // 3. 測試專案設定
+                const project = projectConfig.getCurrentProject();
+                console.log('📁 當前專案:', project);
+                
+                if (!project || !project.repository) {
+                    showSyncStatus('❌ 專案設定不完整');
+                    return;
+                }
+                
+                // 4. 測試同步（使用當前資料）
+                console.log('🔄 測試同步到 GitHub...');
+                const data = DataManager.saveToLocal();
+                const result = await githubSync.syncData(data);
+                
+                console.log('✅ 同步測試成功:', result);
+                showSyncStatus('✅ 同步功能測試成功！');
+                
+                // 顯示成功訊息
+                setTimeout(() => {
+                    const message = `同步測試成功！\n\n` +
+                        `📝 提交訊息：${result.commitMessage}\n` +
+                        `🔗 查看提交：${result.commitUrl}\n` +
+                        `🌐 網站：${project.website}`;
+                    
+                    alert(message);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ 同步測試失敗:', error);
+                
+                // 提供詳細的錯誤診斷
+                let diagnosticMessage = `同步測試失敗：\n\n`;
+                
+                if (error.message.includes('401')) {
+                    diagnosticMessage += '❌ Token 無效或已過期\n';
+                    diagnosticMessage += '💡 請檢查 GitHub Token 是否正確\n';
+                } else if (error.message.includes('403')) {
+                    diagnosticMessage += '❌ 權限不足\n';
+                    diagnosticMessage += '💡 請確認 Token 有 repo 權限\n';
+                } else if (error.message.includes('404')) {
+                    diagnosticMessage += '❌ 找不到倉庫或檔案\n';
+                    diagnosticMessage += '💡 請檢查專案設定和倉庫 URL\n';
+                } else if (error.message.includes('CORS')) {
+                    diagnosticMessage += '❌ 網路連線問題\n';
+                    diagnosticMessage += '💡 請檢查網路設定和防火牆\n';
+                } else {
+                    diagnosticMessage += `❌ ${error.message}\n`;
+                }
+                
+                diagnosticMessage += `\n🔍 詳細錯誤請查看控制台`;
+                
+                showSyncStatus(`❌ 同步測試失敗: ${error.message}`);
+                alert(diagnosticMessage);
+            }
+        }
 
 
         document.getElementById('addTruckForm').addEventListener('submit', async function(e) {
@@ -2895,6 +2991,19 @@
                 const token = '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';
                 projectConfig.setGitHubToken(token);
                 console.log('✅ GitHub Token 已自動設定');
+                
+                // 1.6. 測試 Token 是否有效
+                try {
+                    const validation = await githubSync.validateToken();
+                    console.log('🔍 Token 驗證結果:', validation);
+                    if (validation.valid) {
+                        console.log('✅ Token 驗證成功，使用者:', validation.user?.login);
+                    } else {
+                        console.error('❌ Token 驗證失敗:', validation.message);
+                    }
+                } catch (error) {
+                    console.error('❌ Token 驗證過程中發生錯誤:', error);
+                }
                 
                 // 2. 載入餐車資料
                 const loadResult = await loadFoodTruckData();
