@@ -42,15 +42,6 @@
       "isEditing": false
     },
     {
-      "id": "truck_002",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg",
-      "alt": "餐車品牌2",
-      "title": "花生捲冰淇淋",
-      "isActive": true,
-      "priority": 3,
-      "category": "main"
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -71,7 +62,7 @@
         }
       ],
       "isActive": true,
-      "priority": 4,
+      "priority": 3,
       "category": "main"
     },
     {
@@ -80,7 +71,7 @@
       "alt": "餐車品牌7",
       "title": "韓式飯捲",
       "isActive": true,
-      "priority": 5,
+      "priority": 4,
       "category": "main"
     },
     {
@@ -89,7 +80,7 @@
       "alt": "餐車品牌4",
       "title": "蔬孟園",
       "isActive": true,
-      "priority": 6,
+      "priority": 5,
       "category": "main"
     },
     {
@@ -98,7 +89,7 @@
       "alt": "餐車品牌5",
       "title": "台東放山豬",
       "isActive": true,
-      "priority": 7,
+      "priority": 6,
       "category": "main"
     },
     {
@@ -107,7 +98,7 @@
       "alt": "餐車品牌10",
       "title": "滷拉拉",
       "isActive": true,
-      "priority": 8,
+      "priority": 7,
       "category": "main"
     },
     {
@@ -116,7 +107,7 @@
       "alt": "餐車品牌9",
       "title": "向陽坡刈包",
       "isActive": true,
-      "priority": 9,
+      "priority": 8,
       "category": "main"
     },
     {
@@ -125,7 +116,7 @@
       "alt": "餐車品牌11",
       "title": "餓食鬼美味販賣所",
       "isActive": true,
-      "priority": 10,
+      "priority": 9,
       "category": "main"
     },
     {
@@ -134,7 +125,7 @@
       "alt": "餐車品牌6",
       "title": "安德尼斯烘培坊",
       "isActive": true,
-      "priority": 11,
+      "priority": 10,
       "category": "main"
     },
     {
@@ -143,7 +134,7 @@
       "alt": "餐車品牌8",
       "title": "炸蛋𣄃魚黑輪",
       "isActive": true,
-      "priority": 12,
+      "priority": 11,
       "category": "main"
     },
     {
@@ -152,7 +143,7 @@
       "alt": "餐車品牌1",
       "title": "露露姐",
       "isActive": true,
-      "priority": 13,
+      "priority": 12,
       "category": "main",
       "isEditing": false,
       "link": ""
@@ -163,11 +154,20 @@
       "alt": "餐車品牌3",
       "title": "鄭老爹乾麵",
       "isActive": true,
+      "priority": 13,
+      "category": "main"
+    },
+    {
+      "id": "truck_002",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653107_0_igxhgl.jpg",
+      "alt": "餐車品牌2",
+      "title": "花生捲冰淇淋",
+      "isActive": true,
       "priority": 14,
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T09:56:26.836Z",
+  "lastUpdated": "2025-09-21T09:56:29.841Z",
   "version": "1.0",
-  "syncCount": 66
+  "syncCount": 67
 }
