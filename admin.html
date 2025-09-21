@@ -1335,12 +1335,110 @@
         </div>
     </div>
 
-    <!-- 載入專案設定和 GitHub 同步模組 -->
-    <script src="backup_current/project-config.js"></script>
+    <!-- 載入其他模組 -->
     <script src="backup_current/auto-setup-token.js"></script>
     <script src="backup_current/update-checker.js"></script>
     
     <script>
+        // 內建專案設定功能
+        const SimpleProjectConfig = {
+            // 載入專案設定
+            load() {
+                try {
+                    const config = localStorage.getItem('projectConfig');
+                    if (config) {
+                        return JSON.parse(config);
+                    }
+                    
+                    // 預設設定
+                    return {
+                        currentProject: {
+                            name: "餐開月行程表",
+                            username: "sky770825",
+                            email: "sky19880825@gmail.com",
+                            repository: "https://github.com/sky770825/niceshow.git",
+                            website: "https://sky770825.github.io/niceshow",
+                            isDefault: true
+                        },
+                        syncSettings: {
+                            autoCheckUpdates: true,
+                            checkInterval: 5 * 60 * 1000,
+                            enableNotifications: true
+                        },
+                        lastUpdated: new Date().toISOString()
+                    };
+                } catch (error) {
+                    console.error('載入專案設定失敗:', error);
+                    return null;
+                }
+            },
+            
+            // 儲存專案設定
+            save(config) {
+                try {
+                    config.lastUpdated = new Date().toISOString();
+                    localStorage.setItem('projectConfig', JSON.stringify(config));
+                    return true;
+                } catch (error) {
+                    console.error('儲存專案設定失敗:', error);
+                    return false;
+                }
+            },
+            
+            // 取得 GitHub Token
+            getGitHubToken() {
+                try {
+                    return localStorage.getItem('githubToken');
+                } catch (error) {
+                    console.error('取得 GitHub Token 失敗:', error);
+                    return null;
+                }
+            },
+            
+            // 設定 GitHub Token
+            setGitHubToken(token) {
+                try {
+                    if (token && token.trim()) {
+                        localStorage.setItem('githubToken', token.trim());
+                        console.log('✅ GitHub Token 已儲存');
+                    } else {
+                        localStorage.removeItem('githubToken');
+                        console.log('🗑️ GitHub Token 已清除');
+                    }
+                    return true;
+                } catch (error) {
+                    console.error('儲存 GitHub Token 失敗:', error);
+                    return false;
+                }
+            },
+            
+            // 取得當前專案資訊
+            getCurrentProject() {
+                try {
+                    const config = this.load();
+                    return config ? config.currentProject : null;
+                } catch (error) {
+                    console.error('取得當前專案失敗:', error);
+                    return null;
+                }
+            },
+            
+            // 初始化專案設定
+            initialize() {
+                try {
+                    const config = this.load();
+                    if (config) {
+                        console.log('✅ 專案設定已載入:', config.currentProject.name);
+                        return config;
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('初始化專案設定失敗:', error);
+                    return null;
+                }
+            }
+        };
+
         // 簡化版 GitHub 同步功能
         const SimpleGitHubSync = {
             currentProject: {
@@ -1351,7 +1449,7 @@
             },
             
             getProjectStatus() {
-                const token = projectConfig?.getGitHubToken();
+                const token = SimpleProjectConfig?.getGitHubToken();
                 return {
                     hasToken: !!token,
                     hasProject: !!this.currentProject,
@@ -1362,7 +1460,7 @@
             
             async validateToken() {
                 try {
-                    const token = projectConfig?.getGitHubToken();
+                    const token = SimpleProjectConfig?.getGitHubToken();
                     
                     if (!token) {
                         return {
@@ -1402,7 +1500,7 @@
             
             async syncData(data) {
                 try {
-                    const token = projectConfig?.getGitHubToken();
+                    const token = SimpleProjectConfig?.getGitHubToken();
                     if (!token) {
                         throw new Error('未設定 GitHub Token');
                     }
@@ -2625,7 +2723,7 @@
         function setupGitHubToken() {
             // 直接設定提供的 Token
             const token = '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';
-            projectConfig.setGitHubToken(token);
+            SimpleProjectConfig.setGitHubToken(token);
             showAlert('✅ GitHub Token 已設定！同步功能已啟用', 'success');
             
             // 測試 Token 是否有效
@@ -2992,8 +3090,8 @@
                 // 0. 檢查模組是否載入
                 // 使用內建的簡化版同步功能
                 
-                if (typeof projectConfig === 'undefined') {
-                    throw new Error('專案設定模組未載入，請檢查 project-config.js 檔案');
+                if (typeof SimpleProjectConfig === 'undefined') {
+                    throw new Error('專案設定模組未載入，內建功能失敗');
                 }
                 
                 // 1. 檢查專案狀態
@@ -3001,7 +3099,7 @@
                 console.log('📊 專案狀態:', status);
                 
                 // 2. 測試專案設定
-                const project = projectConfig.getCurrentProject();
+                const project = SimpleProjectConfig.getCurrentProject();
                 console.log('📁 當前專案:', project);
                 
                 if (!project || !project.repository) {
@@ -3158,11 +3256,11 @@
             // 檢查模組是否正確載入
             setTimeout(() => {
                 console.log('🔍 檢查模組載入狀態...');
-                console.log('  - projectConfig:', typeof projectConfig !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
+                console.log('  - SimpleProjectConfig:', typeof SimpleProjectConfig !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
                 console.log('  - SimpleGitHubSync:', typeof SimpleGitHubSync !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
                 
-                if (typeof projectConfig === 'undefined') {
-                    console.error('❌ projectConfig 未載入，請檢查 project-config.js 檔案');
+                if (typeof SimpleProjectConfig === 'undefined') {
+                    console.error('❌ SimpleProjectConfig 未載入，內建專案設定功能失敗');
                     showAlert('❌ 專案設定模組載入失敗', 'danger');
                 }
                 
@@ -3196,19 +3294,19 @@
             
             try {
                 // 檢查模組是否載入
-                if (typeof projectConfig === 'undefined') {
-                    throw new Error('projectConfig 模組未載入');
+                if (typeof SimpleProjectConfig === 'undefined') {
+                    throw new Error('SimpleProjectConfig 模組未載入');
                 }
                 
                 // 使用內建的 SimpleGitHubSync
                 
                 // 1. 初始化專案設定
-                projectConfig.initialize();
+                SimpleProjectConfig.initialize();
                 console.log('✅ 專案設定已初始化');
                 
                 // 1.5. 自動設定 GitHub Token
                 const token = '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';
-                projectConfig.setGitHubToken(token);
+                SimpleProjectConfig.setGitHubToken(token);
                 console.log('✅ GitHub Token 已自動設定');
                 
                 // 1.6. 測試 Token 是否有效
