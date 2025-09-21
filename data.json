@@ -85,12 +85,32 @@
       "category": "main"
     },
     {
+      "id": "truck_1758449940935",
+      "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
+      "alt": "急售一天",
+      "title": "急售一天",
+      "imgLink": "https://liny14705.github.io/nicehouse/index1",
+      "link": [
+        {
+          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/",
+          "text": "好房推薦"
+        },
+        {
+          "url": "https://liny14705.github.io/nicehouse/index1",
+          "text": "點我看照"
+        }
+      ],
+      "isActive": true,
+      "priority": 7,
+      "category": "main"
+    },
+    {
       "id": "truck_005",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653103_0_ste4ns.jpg",
       "alt": "餐車品牌5",
       "title": "台東放山豬",
       "isActive": true,
-      "priority": 7,
+      "priority": 8,
       "category": "main"
     },
     {
@@ -99,7 +119,7 @@
       "alt": "餐車品牌6",
       "title": "安德尼斯烘培坊",
       "isActive": true,
-      "priority": 8,
+      "priority": 9,
       "category": "main"
     },
     {
@@ -108,7 +128,7 @@
       "alt": "餐車品牌7",
       "title": "韓式飯捲",
       "isActive": true,
-      "priority": 9,
+      "priority": 10,
       "category": "main"
     },
     {
@@ -117,7 +137,7 @@
       "alt": "餐車品牌8",
       "title": "炸蛋𣄃魚黑輪",
       "isActive": true,
-      "priority": 10,
+      "priority": 11,
       "category": "main"
     },
     {
@@ -126,7 +146,7 @@
       "alt": "餐車品牌9",
       "title": "向陽坡刈包",
       "isActive": true,
-      "priority": 11,
+      "priority": 12,
       "category": "main"
     },
     {
@@ -135,7 +155,7 @@
       "alt": "餐車品牌10",
       "title": "滷拉拉",
       "isActive": true,
-      "priority": 12,
+      "priority": 13,
       "category": "main"
     },
     {
@@ -144,11 +164,11 @@
       "alt": "餐車品牌11",
       "title": "餓食鬼美味販賣所",
       "isActive": true,
-      "priority": 13,
+      "priority": 14,
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T10:12:13.486Z",
+  "lastUpdated": "2025-09-21T10:19:19.515Z",
   "version": "1.0",
-  "syncCount": 70
+  "syncCount": 71
 }
