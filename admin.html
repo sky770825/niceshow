@@ -1294,12 +1294,12 @@
                                 <button type="button" class="btn btn-secondary" onclick="openPostimageUpload()">🖼️ 開啟 Postimage</button>
                                 <button type="button" class="btn btn-success" onclick="manualSaveData()">💾 儲存並同步</button>
                                 <button type="button" class="btn btn-warning" onclick="checkForUpdates()">🔄 檢查更新</button>
-                                <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()">🔑 設定 Token</button>
-                                <button type="button" class="btn btn-info" onclick="openTokenSetup()">🔧 開啟 Token 設定頁</button>
-                                <button type="button" class="btn btn-secondary" onclick="debugDataStatus()">🔍 檢查狀態</button>
-                                <button type="button" class="btn btn-warning" onclick="forceReloadData()">🔄 強制重新載入</button>
-                                <button type="button" class="btn btn-danger" onclick="clearLocalData()">🗑️ 清除本地資料</button>
-                                <button type="button" class="btn btn-info" onclick="testDataJsonLoad()">🧪 測試 data.json 載入</button>
+                                <button type="button" class="btn btn-secondary" onclick="setupGitHubToken()" style="display: none;">🔑 設定 Token</button>
+                                <button type="button" class="btn btn-info" onclick="openTokenSetup()" style="display: none;">🔧 開啟 Token 設定頁</button>
+                                <button type="button" class="btn btn-secondary" onclick="debugDataStatus()" style="display: none;">🔍 檢查狀態</button>
+                                <button type="button" class="btn btn-warning" onclick="forceReloadData()" style="display: none;">🔄 強制重新載入</button>
+                                <button type="button" class="btn btn-danger" onclick="clearLocalData()" style="display: none;">🗑️ 清除本地資料</button>
+                                <button type="button" class="btn btn-info" onclick="testDataJsonLoad()" style="display: none;">🧪 測試 data.json 載入</button>
                                 <button type="button" class="btn btn-secondary" onclick="saveFoodTruckData()">📥 匯出資料</button>
                                 <button type="button" class="btn btn-secondary" onclick="location.reload()">🔄 重新載入</button>
                             </div>
@@ -1793,7 +1793,8 @@
                 const status = githubSync.getProjectStatus();
                 
                 if (!status.hasToken) {
-                        await this.handleTokenSetup(data);
+                        // 靜默處理，不顯示 Token 設定提醒
+                        showSyncStatus('❌ 未設定 Token，僅儲存到本地');
                     } else {
                     await validateAndSync(data);
                 }
@@ -1809,22 +1810,14 @@
                 }, 300);
             },
             
-            // 處理 Token 設定
+            // 處理 Token 設定（靜默模式，不顯示提醒）
             async handleTokenSetup(data) {
-                const setupToken = confirm(
-                    '需要設定 GitHub Token 才能同步到遠端\n\n' +
-                    '是否現在設定？\n\n' +
-                    '點擊「確定」設定 Token\n' +
-                    '點擊「取消」僅儲存到本地'
-                );
-                
-                if (setupToken) {
-                    if (githubSync.showTokenDialog()) {
-                        await validateAndSync(data);
-                    } else {
-                        showSyncStatus('❌ 未設定 Token，僅儲存到本地');
-                    }
-                } else {
+                try {
+                    // 直接嘗試同步，不顯示確認對話框
+                    await validateAndSync(data);
+                } catch (error) {
+                    // 如果同步失敗，僅儲存到本地，不顯示錯誤提醒
+                    console.log('⚠️ 同步失敗，僅儲存到本地:', error.message);
                     showSyncStatus('💾 已儲存到本地（未同步到遠端）');
                 }
             }
@@ -1851,18 +1844,8 @@
                 
                 showSyncStatus('✅ 資料已同步到 GitHub！');
                 
-                // 顯示成功訊息
-                setTimeout(() => {
-                    const message = `同步成功！\n\n` +
-                        `📝 提交訊息：自動同步餐車資料\n` +
-                        `🔗 查看提交：${result.commitUrl}\n` +
-                        `🌐 網站：${githubSync.currentProject.website}\n\n` +
-                        `是否要開啟網站查看更新？`;
-                    
-                    if (confirm(message)) {
-                            window.open(githubSync.currentProject.website, '_blank');
-                    }
-                }, 1000);
+                // 靜默成功，只顯示狀態訊息
+                console.log('✅ 同步成功:', result.commitUrl);
                 
             } catch (error) {
                 console.error('同步失敗:', error);
