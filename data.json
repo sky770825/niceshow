@@ -124,9 +124,33 @@
       "isActive": true,
       "priority": 12,
       "category": "main"
+    },
+    {
+      "id": "truck_1758421647704",
+      "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
+      "alt": "功夫茶闆娘的身心靈瘦身",
+      "title": "功夫茶闆娘的身心靈瘦身",
+      "imgLink": "https://lin.ee/GCNcarT",
+      "link": [
+        {
+          "url": "https://lin.ee/GCNcarT",
+          "text": "官網"
+        },
+        {
+          "url": "https://www.instagram.com/chen.cc126/",
+          "text": "IG"
+        },
+        {
+          "url": "https://www.facebook.com/Chen.cc126/?locale=zh_TW",
+          "text": "FB"
+        }
+      ],
+      "isActive": true,
+      "priority": 13,
+      "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:11:09.461Z",
+  "lastUpdated": "2025-09-21T02:27:27.705Z",
   "version": "1.0",
-  "syncCount": 14
+  "syncCount": 15
 }
