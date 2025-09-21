@@ -1,39 +1,6 @@
 {
   "foodTrucks": [
     {
-      "id": "truck_1758002427365",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png",
-      "alt": "聯絡我",
-      "title": "版主：蔡濬瑒",
-      "link": [
-        {
-          "text": "精選物件",
-          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/"
-        },
-        {
-          "text": "Tiktok",
-          "url": "https://www.tiktok.com/@aihouse168?is_from_webapp=1&sender_device=pc"
-        },
-        {
-          "text": "官方帳號",
-          "url": "https://lin.ee/y81WRoVP"
-        }
-      ],
-      "isActive": true,
-      "priority": 1,
-      "category": "main",
-      "isEditing": false
-    },
-    {
-      "id": "truck_003",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg",
-      "alt": "餐車品牌3",
-      "title": "鄭老爹乾麵",
-      "isActive": true,
-      "priority": 2,
-      "category": "main"
-    },
-    {
       "id": "truck_1758421647704",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "功夫茶闆娘的身心靈瘦身",
@@ -53,6 +20,39 @@
           "text": "FB"
         }
       ],
+      "isActive": true,
+      "priority": 1,
+      "category": "main"
+    },
+    {
+      "id": "truck_1758002427365",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png",
+      "alt": "聯絡我",
+      "title": "版主：蔡濬瑒",
+      "link": [
+        {
+          "text": "精選物件",
+          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/"
+        },
+        {
+          "text": "Tiktok",
+          "url": "https://www.tiktok.com/@aihouse168?is_from_webapp=1&sender_device=pc"
+        },
+        {
+          "text": "官方帳號",
+          "url": "https://lin.ee/y81WRoVP"
+        }
+      ],
+      "isActive": true,
+      "priority": 2,
+      "category": "main",
+      "isEditing": false
+    },
+    {
+      "id": "truck_003",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990540/S__4653105_0_keaqnp.jpg",
+      "alt": "餐車品牌3",
+      "title": "鄭老爹乾麵",
       "isActive": true,
       "priority": 3,
       "category": "main"
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:43:35.393Z",
+  "lastUpdated": "2025-09-21T02:43:39.806Z",
   "version": "1.0",
-  "syncCount": 3
+  "syncCount": 4
 }
