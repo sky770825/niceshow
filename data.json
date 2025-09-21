@@ -25,6 +25,26 @@
       "isEditing": false
     },
     {
+      "id": "truck_1758449940935",
+      "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
+      "alt": "急售一天",
+      "title": "急售一天",
+      "imgLink": "https://liny14705.github.io/nicehouse/index1",
+      "link": [
+        {
+          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/",
+          "text": "好房推薦"
+        },
+        {
+          "url": "https://liny14705.github.io/nicehouse/index1",
+          "text": "點我看照"
+        }
+      ],
+      "isActive": true,
+      "priority": 2,
+      "category": "main"
+    },
+    {
       "id": "truck_1758449491679",
       "src": "https://i.postimg.cc/L6Gszz0v/Lora-gina-beauty-salon.png",
       "alt": "聯絡我",
@@ -45,7 +65,7 @@
         }
       ],
       "isActive": true,
-      "priority": 2,
+      "priority": 3,
       "category": "main"
     },
     {
@@ -54,7 +74,7 @@
       "alt": "餐車品牌1",
       "title": "露露姐",
       "isActive": true,
-      "priority": 3,
+      "priority": 4,
       "category": "main"
     },
     {
@@ -63,7 +83,7 @@
       "alt": "餐車品牌2",
       "title": "花生捲冰淇淋",
       "isActive": true,
-      "priority": 4,
+      "priority": 5,
       "category": "main"
     },
     {
@@ -72,7 +92,7 @@
       "alt": "餐車品牌3",
       "title": "鄭老爹乾麵",
       "isActive": true,
-      "priority": 5,
+      "priority": 6,
       "category": "main"
     },
     {
@@ -80,26 +100,6 @@
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653102_0_iwonvd.jpg",
       "alt": "餐車品牌4",
       "title": "蔬孟園",
-      "isActive": true,
-      "priority": 6,
-      "category": "main"
-    },
-    {
-      "id": "truck_1758449940935",
-      "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
-      "alt": "急售一天",
-      "title": "急售一天",
-      "imgLink": "https://liny14705.github.io/nicehouse/index1",
-      "link": [
-        {
-          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/",
-          "text": "好房推薦"
-        },
-        {
-          "url": "https://liny14705.github.io/nicehouse/index1",
-          "text": "點我看照"
-        }
-      ],
       "isActive": true,
       "priority": 7,
       "category": "main"
@@ -168,7 +168,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T10:19:19.515Z",
+  "lastUpdated": "2025-09-21T10:19:36.990Z",
   "version": "1.0",
-  "syncCount": 71
+  "syncCount": 72
 }
