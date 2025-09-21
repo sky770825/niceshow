@@ -25,15 +25,6 @@
       "category": "main"
     },
     {
-      "id": "truck_006",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
-      "alt": "餐車品牌6",
-      "title": "安德尼斯烘培坊",
-      "isActive": true,
-      "priority": 2,
-      "category": "main"
-    },
-    {
       "id": "truck_1758002427365",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1758002363/%E6%88%91%E7%9A%84dm_mfegnq.png",
       "alt": "聯絡我",
@@ -53,9 +44,18 @@
         }
       ],
       "isActive": true,
-      "priority": 3,
+      "priority": 2,
       "category": "main",
       "isEditing": false
+    },
+    {
+      "id": "truck_006",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653100_0_ono2dd.jpg",
+      "alt": "餐車品牌6",
+      "title": "安德尼斯烘培坊",
+      "isActive": true,
+      "priority": 3,
+      "category": "main"
     },
     {
       "id": "truck_010",
@@ -150,7 +150,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:50:15.588Z",
+  "lastUpdated": "2025-09-21T02:50:17.074Z",
   "version": "1.0",
-  "syncCount": 35
+  "syncCount": 36
 }
