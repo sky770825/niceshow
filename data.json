@@ -87,12 +87,21 @@
       "category": "main"
     },
     {
+      "id": "truck_010",
+      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg",
+      "alt": "餐車品牌10",
+      "title": "滷拉拉",
+      "isActive": true,
+      "priority": 7,
+      "category": "main"
+    },
+    {
       "id": "truck_011",
       "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653095_0_scixck.jpg",
       "alt": "餐車品牌11",
       "title": "餓食鬼美味販賣所",
       "isActive": true,
-      "priority": 7,
+      "priority": 8,
       "category": "main"
     },
     {
@@ -101,7 +110,7 @@
       "alt": "餐車品牌7",
       "title": "韓式飯捲",
       "isActive": true,
-      "priority": 8,
+      "priority": 9,
       "category": "main"
     },
     {
@@ -110,7 +119,7 @@
       "alt": "餐車品牌4",
       "title": "蔬孟園",
       "isActive": true,
-      "priority": 9,
+      "priority": 10,
       "category": "main"
     },
     {
@@ -119,7 +128,7 @@
       "alt": "餐車品牌5",
       "title": "台東放山豬",
       "isActive": true,
-      "priority": 10,
+      "priority": 11,
       "category": "main"
     },
     {
@@ -128,7 +137,7 @@
       "alt": "餐車品牌8",
       "title": "炸蛋𣄃魚黑輪",
       "isActive": true,
-      "priority": 11,
+      "priority": 12,
       "category": "main"
     },
     {
@@ -137,20 +146,11 @@
       "alt": "餐車品牌9",
       "title": "向陽坡刈包",
       "isActive": true,
-      "priority": 12,
-      "category": "main"
-    },
-    {
-      "id": "truck_010",
-      "src": "https://res.cloudinary.com/db0mzs6ps/image/upload/v1757990539/S__4653099_0_sxppso.jpg",
-      "alt": "餐車品牌10",
-      "title": "滷拉拉",
-      "isActive": true,
       "priority": 13,
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-21T02:38:30.661Z",
+  "lastUpdated": "2025-09-21T02:38:34.891Z",
   "version": "1.0",
-  "syncCount": 28
+  "syncCount": 29
 }
