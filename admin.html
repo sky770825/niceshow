@@ -1336,10 +1336,10 @@
     </div>
 
     <!-- 載入專案設定和 GitHub 同步模組 -->
-    <script src="project-config.js"></script>
-    <script src="github-sync.js"></script>
-    <script src="auto-setup-token.js"></script>
-    <script src="update-checker.js"></script>
+    <script src="backup_current/project-config.js"></script>
+    <script src="backup_current/github-sync.js"></script>
+    <script src="backup_current/auto-setup-token.js"></script>
+    <script src="backup_current/update-checker.js"></script>
     
     <script>
         // 餐車資料庫（從 data.json 載入）
@@ -2828,11 +2828,51 @@
             showSyncStatus('🧪 正在測試同步功能...');
             
             try {
+                // 0. 檢查模組是否載入
+                if (typeof githubSync === 'undefined') {
+                    throw new Error('GitHub 同步模組未載入，請檢查 github-sync.js 檔案');
+                }
+                
+                if (typeof projectConfig === 'undefined') {
+                    throw new Error('專案設定模組未載入，請檢查 project-config.js 檔案');
+                }
+                
                 // 1. 檢查專案狀態
                 const status = githubSync.getProjectStatus();
                 console.log('📊 專案狀態:', status);
                 
-                // 2. 測試 Token 驗證
+                // 2. 測試專案設定
+                const project = projectConfig.getCurrentProject();
+                console.log('📁 當前專案:', project);
+                
+                if (!project || !project.repository) {
+                    showSyncStatus('❌ 專案設定不完整');
+                    return;
+                }
+                
+                // 3. 檢查 CORS 問題
+                console.log('🌐 測試 GitHub API 連線...');
+                try {
+                    const testResponse = await fetch('https://api.github.com/zen');
+                    console.log('✅ GitHub API 連線正常');
+                } catch (corsError) {
+                    console.error('❌ CORS 錯誤:', corsError);
+                    showSyncStatus('❌ GitHub API CORS 限制');
+                    
+                    // 提供替代方案
+                    const message = `同步測試失敗：\n\n` +
+                        `❌ GitHub API CORS 限制\n\n` +
+                        `💡 解決方案：\n` +
+                        `1. 使用瀏覽器擴展（如 CORS Unblock）\n` +
+                        `2. 使用代理服務器\n` +
+                        `3. 手動上傳 data.json 到 GitHub\n\n` +
+                        `🔗 您的倉庫：${project.website}`;
+                    
+                    alert(message);
+                    return;
+                }
+                
+                // 4. 測試 Token 驗證
                 console.log('🔍 測試 Token 驗證...');
                 const validation = await githubSync.validateToken();
                 console.log('🔍 Token 驗證結果:', validation);
@@ -2842,16 +2882,7 @@
                     return;
                 }
                 
-                // 3. 測試專案設定
-                const project = projectConfig.getCurrentProject();
-                console.log('📁 當前專案:', project);
-                
-                if (!project || !project.repository) {
-                    showSyncStatus('❌ 專案設定不完整');
-                    return;
-                }
-                
-                // 4. 測試同步（使用當前資料）
+                // 5. 測試同步（使用當前資料）
                 console.log('🔄 測試同步到 GitHub...');
                 const data = DataManager.saveToLocal();
                 const result = await githubSync.syncData(data);
@@ -2884,9 +2915,14 @@
                 } else if (error.message.includes('404')) {
                     diagnosticMessage += '❌ 找不到倉庫或檔案\n';
                     diagnosticMessage += '💡 請檢查專案設定和倉庫 URL\n';
-                } else if (error.message.includes('CORS')) {
-                    diagnosticMessage += '❌ 網路連線問題\n';
-                    diagnosticMessage += '💡 請檢查網路設定和防火牆\n';
+                } else if (error.message.includes('CORS') || error.name === 'TypeError') {
+                    diagnosticMessage += '❌ CORS 跨域限制\n\n';
+                    diagnosticMessage += '💡 解決方案：\n';
+                    diagnosticMessage += '1. 安裝瀏覽器擴展（CORS Unblock）\n';
+                    diagnosticMessage += '2. 使用代理服務器\n';
+                    diagnosticMessage += '3. 手動上傳 data.json\n';
+                    diagnosticMessage += '4. 使用 GitHub CLI 工具\n\n';
+                    diagnosticMessage += '🔗 您的倉庫：https://github.com/sky770825/niceshow';
                 } else {
                     diagnosticMessage += `❌ ${error.message}\n`;
                 }
@@ -2960,6 +2996,23 @@
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 頁面載入完成，開始初始化...');
             
+            // 檢查模組是否正確載入
+            setTimeout(() => {
+                console.log('🔍 檢查模組載入狀態...');
+                console.log('  - projectConfig:', typeof projectConfig !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
+                console.log('  - githubSync:', typeof githubSync !== 'undefined' ? '✅ 已載入' : '❌ 未載入');
+                
+                if (typeof projectConfig === 'undefined') {
+                    console.error('❌ projectConfig 未載入，請檢查 project-config.js 檔案');
+                    showAlert('❌ 專案設定模組載入失敗', 'danger');
+                }
+                
+                if (typeof githubSync === 'undefined') {
+                    console.error('❌ githubSync 未載入，請檢查 github-sync.js 檔案');
+                    showAlert('❌ GitHub 同步模組載入失敗', 'danger');
+                }
+            }, 100);
+            
             // 立即檢查並修復載入問題
             setTimeout(async () => {
                 if (!foodTruckDatabase || foodTruckDatabase.length === 0) {
@@ -2983,6 +3036,15 @@
             }, 500);
             
             try {
+                // 檢查模組是否載入
+                if (typeof projectConfig === 'undefined') {
+                    throw new Error('projectConfig 模組未載入');
+                }
+                
+                if (typeof githubSync === 'undefined') {
+                    throw new Error('githubSync 模組未載入');
+                }
+                
                 // 1. 初始化專案設定
                 projectConfig.initialize();
                 console.log('✅ 專案設定已初始化');
