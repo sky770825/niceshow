@@ -8,7 +8,7 @@
       "link": [
         {
           "text": "精選物件",
-          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/"
+          "url": "https://sky770825.github.io/junyang666/"
         },
         {
           "text": "Tiktok",
@@ -27,22 +27,23 @@
     {
       "id": "truck_1758449940935",
       "src": "https://i.postimg.cc/kXNrQvbF/1758443248239.jpg",
-      "alt": "急售一天",
-      "title": "急售一天",
+      "alt": "要買要快",
+      "title": "4房+平面車位",
       "imgLink": "https://liny14705.github.io/nicehouse/index1",
       "link": [
         {
-          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/",
-          "text": "好房推薦"
+          "text": "好房推薦",
+          "url": "https://realtor.houseprice.tw/agent/buy/0925666597/"
         },
         {
-          "url": "https://liny14705.github.io/nicehouse/index1",
-          "text": "點我看照"
+          "text": "點我看照",
+          "url": "https://sky770825.github.io/junyang666/"
         }
       ],
       "isActive": true,
       "priority": 2,
-      "category": "main"
+      "category": "main",
+      "isEditing": false
     },
     {
       "id": "truck_1758449491679",
@@ -168,7 +169,7 @@
       "category": "main"
     }
   ],
-  "lastUpdated": "2025-09-26T14:26:07.143Z",
+  "lastUpdated": "2025-09-26T14:27:14.171Z",
   "version": "1.0",
-  "syncCount": 73
+  "syncCount": 74
 }
