@@ -353,9 +353,12 @@ function hideMedicalInfo() {
  * 顯示快速使用指南
  */
 function showQuickGuide() {
+    console.log('showQuickGuide function called'); // 調試信息
     const modal = document.getElementById('quickGuideModal');
+    console.log('Modal element:', modal); // 調試信息
     if (modal) {
         modal.classList.add('show');
+        console.log('Modal show class added'); // 調試信息
         // 防止背景滾動
         document.body.style.overflow = 'hidden';
         
@@ -372,6 +375,8 @@ function showQuickGuide() {
                 });
             }
         }, 100);
+    } else {
+        console.error('Modal element not found!'); // 錯誤信息
     }
 }
 
