@@ -3536,19 +3536,21 @@ body.loaded {
 /* 極小螢幕 (320px - 375px) */
 @media (max-width: 375px) {
     .header-stats {
+        grid-template-columns: repeat(3, 1fr);
         gap: 8px;
     }
     
     .header-stats .stat-item {
-        min-width: 60px;
+        white-space: nowrap;
+        overflow: hidden;
     }
     
     .header-stats .stat-number {
-        font-size: 1.4em;
+        font-size: clamp(0.9em, 3.2vw, 1.4em);
     }
     
     .header-stats .stat-label {
-        font-size: 0.7em;
+        font-size: clamp(0.45em, 2.0vw, 0.7em);
     }
     
     .container {
@@ -3633,19 +3635,21 @@ body.loaded {
 
 @media (max-width: 480px) {
     .header-stats {
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
     
     .header-stats .stat-item {
-        min-width: 70px;
+        white-space: nowrap;
+        overflow: hidden;
     }
     
     .header-stats .stat-number {
-        font-size: 1.6em;
+        font-size: clamp(1.0em, 3.5vw, 1.6em);
     }
     
     .header-stats .stat-label {
-        font-size: 0.75em;
+        font-size: clamp(0.5em, 2.2vw, 0.75em);
     }
     
     .sponsor-modal {
@@ -3853,24 +3857,24 @@ body.loaded {
 /* 響應式設計 - 快速使用指南 */
 @media (max-width: 768px) {
     .header-stats {
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 15px;
-        flex-wrap: wrap;
         justify-content: center;
     }
     
     .header-stats .stat-item {
-        flex: 1;
-        min-width: 80px;
         text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
     }
     
     .header-stats .stat-number {
-        font-size: 1.8em;
+        font-size: clamp(1.2em, 4vw, 1.8em);
     }
     
     .header-stats .stat-label {
-        font-size: 0.8em;
+        font-size: clamp(0.6em, 2.5vw, 0.8em);
     }
     
     .header-cta {

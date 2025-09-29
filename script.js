@@ -348,18 +348,6 @@ function hideMedicalInfo() {
     }
 }
 
-/**
- * 滾動到內容區域
- */
-function scrollToContent() {
-    const content = document.querySelector('.content');
-    if (content) {
-        content.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
-}
 
 /**
  * 顯示快速使用指南
