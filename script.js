@@ -349,8 +349,59 @@ function hideMedicalInfo() {
 }
 
 /**
+ * 滾動到內容區域
+ */
+function scrollToContent() {
+    const content = document.querySelector('.content');
+    if (content) {
+        content.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+/**
+ * 顯示快速使用指南
+ */
+function showQuickGuide() {
+    const modal = document.getElementById('quickGuideModal');
+    if (modal) {
+        modal.classList.add('show');
+        // 防止背景滾動
+        document.body.style.overflow = 'hidden';
+        
+        // 確保彈窗在視窗中央
+        setTimeout(() => {
+            modal.scrollTop = 0;
+            // 滾動到彈窗位置
+            const modalContent = modal.querySelector('.sponsor-modal-content');
+            if (modalContent) {
+                modalContent.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'center'
+                });
+            }
+        }, 100);
+    }
+}
+
+/**
+ * 隱藏快速使用指南
+ */
+function hideQuickGuide() {
+    const modal = document.getElementById('quickGuideModal');
+    if (modal) {
+        modal.classList.remove('show');
+        // 恢復背景滾動
+        document.body.style.overflow = '';
+    }
+}
+
+/**
  * 切換顯示的週次
- * @param {number} weekNumber - 週次編號 (0-6)
+ * @param {number} weekNumber - 週次編號 (0-5)
  */
 function showWeek(weekNumber) {
     // 隱藏所有週的內容
@@ -372,11 +423,24 @@ function showWeek(weekNumber) {
     }
     
     // 激活對應的分頁
-    if (allTabs[weekNumber]) {
-        allTabs[weekNumber].classList.add('active');
+    const targetTab = document.querySelector(`[data-week="${weekNumber}"]`);
+    if (targetTab) {
+        targetTab.classList.add('active');
     }
     
-    // 平滑滾動到頂部
+    // 添加切換動畫效果
+    if (targetWeek) {
+        targetWeek.style.opacity = '0';
+        targetWeek.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            targetWeek.style.transition = 'all 0.3s ease';
+            targetWeek.style.opacity = '1';
+            targetWeek.style.transform = 'translateY(0)';
+        }, 50);
+    }
+    
+    // 平滑滾動到內容區域
     const content = document.querySelector('.content');
     if (content) {
         content.scrollIntoView({ 
@@ -384,6 +448,30 @@ function showWeek(weekNumber) {
             block: 'start'
         });
     }
+    
+    // 更新頁面標題
+    updatePageTitle(weekNumber);
+    
+    // 記錄用戶行為（用於分析）
+    console.log(`用戶切換到第${weekNumber + 1}週`);
+}
+
+/**
+ * 更新頁面標題
+ * @param {number} weekNumber - 週次編號
+ */
+function updatePageTitle(weekNumber) {
+    const weekTitles = [
+        '9月22日-9月28日',
+        '9月29日-10月5日', 
+        '10月6日-10月12日',
+        '10月13日-10月19日',
+        '10月20日-10月26日',
+        '10月27日-11月2日'
+    ];
+    
+    const title = weekTitles[weekNumber] || '餐車月行程表';
+    document.title = `四維商圈餐車月行程表 - ${title} | 楊梅美食地圖 | 一鍵導航`;
 }
 
 /**
@@ -436,43 +524,15 @@ function initializeDayCards() {
     });
 }
 
-/**
- * 添加鍵盤導航支援
- */
-function initializeKeyboardNavigation() {
-    document.addEventListener('keydown', function(e) {
-        if (e.key >= '1' && e.key <= '7') {
-            const weekNumber = parseInt(e.key) - 1;
-            if (weekNumber >= 0 && weekNumber <= 6) {
-                showWeek(weekNumber);
-                // 更新分頁狀態
-                const allTabs = document.querySelectorAll('.week-tab');
-                allTabs.forEach(tab => tab.classList.remove('active'));
-                if (allTabs[weekNumber]) {
-                    allTabs[weekNumber].classList.add('active');
-                }
-            }
-        }
-    });
-}
 
 /**
- * 添加週次標籤的鍵盤支援
+ * 初始化週次標籤
  */
 function initializeWeekTabs() {
     const weekTabs = document.querySelectorAll('.week-tab');
     weekTabs.forEach((tab, index) => {
-        tab.setAttribute('tabindex', '0');
         tab.setAttribute('role', 'button');
         tab.setAttribute('aria-label', `切換到第${index + 1}週`);
-        
-        tab.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                showWeek(index);
-                this.classList.add('active');
-            }
-        });
     });
 }
 
@@ -1032,6 +1092,62 @@ function checkDataUpdate() {
 
 
 /**
+ * 根據當前日期自動選擇對應的週次
+ */
+function autoSelectWeekByDate() {
+    const now = new Date();
+    const currentDate = now.getDate();
+    const currentMonth = now.getMonth() + 1; // getMonth() 返回 0-11，需要 +1
+    
+    // 定義各週的日期範圍
+    const weekRanges = [
+        { start: 22, end: 28, month: 9, weekIndex: 0 }, // 第1週：9/22-9/28
+        { start: 29, end: 5, month: 9, weekIndex: 1 },  // 第2週：9/29-10/5 (跨月)
+        { start: 6, end: 12, month: 10, weekIndex: 2 }, // 第3週：10/6-10/12
+        { start: 13, end: 19, month: 10, weekIndex: 3 }, // 第4週：10/13-10/19
+        { start: 20, end: 26, month: 10, weekIndex: 4 }, // 第5週：10/20-10/26
+        { start: 27, end: 2, month: 10, weekIndex: 5 }   // 第6週：10/27-11/2 (跨月)
+    ];
+    
+    let targetWeekIndex = 0; // 預設顯示第1週
+    
+    // 檢查當前日期是否在任一週的範圍內
+    for (const week of weekRanges) {
+        if (week.month === currentMonth) {
+            if (week.start <= week.end) {
+                // 正常範圍（不跨月）
+                if (currentDate >= week.start && currentDate <= week.end) {
+                    targetWeekIndex = week.weekIndex;
+                    break;
+                }
+            } else {
+                // 跨月範圍（如 9/29-10/5）
+                if (currentDate >= week.start) {
+                    targetWeekIndex = week.weekIndex;
+                    break;
+                }
+            }
+        } else if (week.month === currentMonth + 1 || (week.month === 1 && currentMonth === 12)) {
+            // 處理跨月情況
+            if (currentDate <= week.end) {
+                targetWeekIndex = week.weekIndex;
+                break;
+            }
+        }
+    }
+    
+    // 特殊處理：如果當前是9月29日，應該顯示第2週
+    if (currentMonth === 9 && currentDate === 29) {
+        targetWeekIndex = 1;
+    }
+    
+    console.log(`📅 當前日期: ${currentMonth}/${currentDate}，自動選擇第${targetWeekIndex + 1}週`);
+    
+    // 自動切換到對應週次
+    showWeek(targetWeekIndex);
+}
+
+/**
  * 初始化所有功能
  */
 function initializeApp() {
@@ -1045,10 +1161,12 @@ function initializeApp() {
     // 初始化各種功能
     initializeTruckNames();
     initializeDayCards();
-    initializeKeyboardNavigation();
     initializeWeekTabs();
     initializePageAnimation();
     initializeImageMarquee();
+    
+    // 根據當前日期自動選擇週次
+    autoSelectWeekByDate();
     
     // 設定定期檢查資料更新
     setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
