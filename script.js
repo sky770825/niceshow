@@ -1091,6 +1091,14 @@ function autoSelectWeekByDate() {
     const now = new Date();
     const currentDate = now.getDate();
     const currentMonth = now.getMonth() + 1; // getMonth() 返回 0-11，需要 +1
+    const currentYear = now.getFullYear();
+    
+    // 檢查是否在行程表的年份範圍內（2024年）
+    if (currentYear !== 2024) {
+        console.log(`📅 當前年份 ${currentYear} 不在行程表範圍內，預設顯示第2週（9/29-10/5）`);
+        showWeek(1); // 預設顯示第2週
+        return;
+    }
     
     // 定義各週的日期範圍
     const weekRanges = [
@@ -1102,7 +1110,7 @@ function autoSelectWeekByDate() {
         { start: 27, end: 2, month: 10, weekIndex: 5 }   // 第6週：10/27-11/2 (跨月)
     ];
     
-    let targetWeekIndex = 0; // 預設顯示第1週
+    let targetWeekIndex = 1; // 預設顯示第2週（9/29-10/5）
     
     // 檢查當前日期是否在任一週的範圍內
     for (const week of weekRanges) {
@@ -1134,7 +1142,7 @@ function autoSelectWeekByDate() {
         targetWeekIndex = 1;
     }
     
-    console.log(`📅 當前日期: ${currentMonth}/${currentDate}，自動選擇第${targetWeekIndex + 1}週`);
+    console.log(`📅 當前日期: ${currentYear}/${currentMonth}/${currentDate}，自動選擇第${targetWeekIndex + 1}週`);
     
     // 自動切換到對應週次
     showWeek(targetWeekIndex);
@@ -1146,9 +1154,11 @@ function autoSelectWeekByDate() {
 function initializeApp() {
     console.log('🍽️ 四維商圈餐車月行程表已載入完成！');
     
-    // 初始化專案設定
+    // 初始化專案設定（如果模組存在）
     if (typeof projectConfig !== 'undefined') {
         projectConfig.initialize();
+    } else {
+        console.log('ℹ️ 專案設定模組未載入，跳過初始化');
     }
     
     // 初始化各種功能
@@ -1827,13 +1837,13 @@ async function checkForRemoteUpdates() {
     try {
         // 檢查是否有 GitHub 同步模組
         if (typeof githubSync === 'undefined') {
-            console.log('⚠️ GitHub 同步模組未載入，跳過遠端更新檢查');
+            console.log('ℹ️ GitHub 同步模組未載入，跳過遠端更新檢查');
             return;
         }
 
         const status = githubSync.getProjectStatus();
         if (!status.hasProject) {
-            console.log('⚠️ 未設定專案，跳過遠端更新檢查');
+            console.log('ℹ️ 未設定專案，跳過遠端更新檢查');
             return;
         }
 
@@ -1932,6 +1942,13 @@ function showUpdateNotification(updateInfo) {
 async function updateFromRemote() {
     try {
         console.log('🔄 正在從遠端更新資料...');
+        
+        // 檢查是否有 GitHub 同步模組
+        if (typeof githubSync === 'undefined') {
+            console.log('⚠️ GitHub 同步模組未載入，無法更新');
+            alert('GitHub 同步模組未載入，無法更新資料');
+            return;
+        }
         
         const result = await githubSync.pullData('data.json');
         const data = JSON.parse(result.content);
