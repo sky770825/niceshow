@@ -1088,19 +1088,24 @@ function checkDataUpdate() {
  * 根據當前日期自動選擇對應的週次
  */
 function autoSelectWeekByDate() {
+    console.log('🚀 autoSelectWeekByDate 函數開始執行');
+    
     const now = new Date();
     const currentDate = now.getDate();
     const currentMonth = now.getMonth() + 1; // getMonth() 返回 0-11，需要 +1
     const currentYear = now.getFullYear();
     
     console.log(`📅 當前日期: ${currentYear}/${currentMonth}/${currentDate}`);
+    console.log(`🔍 開始檢查週次匹配...`);
     
-    // 檢查是否在行程表的年份範圍內（2024年）
-    if (currentYear !== 2024) {
-        console.log(`📅 當前年份 ${currentYear} 不在行程表範圍內，預設顯示第2週（9/29-10/5）`);
+    // 檢查是否在行程表的年份範圍內（支援2024年和2025年）
+    if (currentYear < 2024 || currentYear > 2025) {
+        console.log(`📅 當前年份 ${currentYear} 不在行程表範圍內（支援2024-2025年），預設顯示第2週（9/29-10/5）`);
         showWeek(1); // 預設顯示第2週
         return;
     }
+    
+    console.log(`📅 當前年份 ${currentYear} 在支援範圍內，繼續執行自動選擇邏輯`);
     
     // 定義各週的日期範圍（更清晰的邏輯）
     const weekRanges = [
@@ -1189,8 +1194,11 @@ function initializeApp() {
     initializePageAnimation();
     initializeImageMarquee();
     
-    // 根據當前日期自動選擇週次
-    autoSelectWeekByDate();
+    // 延遲執行自動選擇週次，確保所有元素都已載入
+    setTimeout(() => {
+        console.log('⏰ 開始執行自動週次選擇...');
+        autoSelectWeekByDate();
+    }, 100);
     
     // 設定定期檢查資料更新
     setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
@@ -1417,6 +1425,18 @@ function startMomentumScroll() {
     };
     
     animate();
+}
+
+// 測試函數 - 可以在控制台手動調用
+function testAutoWeekSelection() {
+    console.log('🧪 開始測試自動週次選擇功能');
+    autoSelectWeekByDate();
+}
+
+// 強制跳轉到特定週次的測試函數
+function forceShowWeek(weekNumber) {
+    console.log(`🔧 強制跳轉到第${weekNumber + 1}週`);
+    showWeek(weekNumber);
 }
 
 // 頁面載入完成後執行初始化
