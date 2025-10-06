@@ -1093,6 +1093,8 @@ function autoSelectWeekByDate() {
     const currentMonth = now.getMonth() + 1; // getMonth() 返回 0-11，需要 +1
     const currentYear = now.getFullYear();
     
+    console.log(`📅 當前日期: ${currentYear}/${currentMonth}/${currentDate}`);
+    
     // 檢查是否在行程表的年份範圍內（2024年）
     if (currentYear !== 2024) {
         console.log(`📅 當前年份 ${currentYear} 不在行程表範圍內，預設顯示第2週（9/29-10/5）`);
@@ -1100,49 +1102,68 @@ function autoSelectWeekByDate() {
         return;
     }
     
-    // 定義各週的日期範圍
+    // 定義各週的日期範圍（更清晰的邏輯）
     const weekRanges = [
-        { start: 22, end: 28, month: 9, weekIndex: 0 }, // 第1週：9/22-9/28
-        { start: 29, end: 5, month: 9, weekIndex: 1 },  // 第2週：9/29-10/5 (跨月)
-        { start: 6, end: 12, month: 10, weekIndex: 2 }, // 第3週：10/6-10/12
-        { start: 13, end: 19, month: 10, weekIndex: 3 }, // 第4週：10/13-10/19
-        { start: 20, end: 26, month: 10, weekIndex: 4 }, // 第5週：10/20-10/26
-        { start: 27, end: 2, month: 10, weekIndex: 5 }   // 第6週：10/27-11/2 (跨月)
+        { start: 22, end: 28, month: 9, weekIndex: 0, name: '第1週：9/22-9/28' },
+        { start: 29, end: 5, month: 9, weekIndex: 1, name: '第2週：9/29-10/5', isCrossMonth: true },
+        { start: 6, end: 12, month: 10, weekIndex: 2, name: '第3週：10/6-10/12' },
+        { start: 13, end: 19, month: 10, weekIndex: 3, name: '第4週：10/13-10/19' },
+        { start: 20, end: 26, month: 10, weekIndex: 4, name: '第5週：10/20-10/26' },
+        { start: 27, end: 2, month: 10, weekIndex: 5, name: '第6週：10/27-11/2', isCrossMonth: true }
     ];
     
     let targetWeekIndex = 1; // 預設顯示第2週（9/29-10/5）
     
     // 檢查當前日期是否在任一週的範圍內
     for (const week of weekRanges) {
-        if (week.month === currentMonth) {
-            if (week.start <= week.end) {
-                // 正常範圍（不跨月）
-                if (currentDate >= week.start && currentDate <= week.end) {
+        console.log(`🔍 檢查 ${week.name}...`);
+        
+        if (week.isCrossMonth) {
+            // 處理跨月情況
+            if (week.month === currentMonth) {
+                // 當前月份是開始月份（如9月29日）
+                if (currentDate >= week.start) {
+                    console.log(`✅ 匹配跨月週期開始部分: ${week.name}`);
                     targetWeekIndex = week.weekIndex;
                     break;
                 }
-            } else {
-                // 跨月範圍（如 9/29-10/5）
-                if (currentDate >= week.start) {
+            } else if (currentMonth === week.month + 1) {
+                // 當前月份是結束月份（如10月5日對於9/29-10/5）
+                if (currentDate <= week.end) {
+                    console.log(`✅ 匹配跨月週期結束部分: ${week.name}`);
                     targetWeekIndex = week.weekIndex;
                     break;
                 }
             }
-        } else if (week.month === currentMonth + 1 || (week.month === 1 && currentMonth === 12)) {
-            // 處理跨月情況
-            if (currentDate <= week.end) {
-                targetWeekIndex = week.weekIndex;
-                break;
+        } else {
+            // 正常範圍（不跨月）
+            if (week.month === currentMonth) {
+                if (currentDate >= week.start && currentDate <= week.end) {
+                    console.log(`✅ 匹配正常週期: ${week.name}`);
+                    targetWeekIndex = week.weekIndex;
+                    break;
+                }
             }
         }
     }
     
-    // 特殊處理：如果當前是9月29日，應該顯示第2週
-    if (currentMonth === 9 && currentDate === 29) {
-        targetWeekIndex = 1;
-    }
+    console.log(`📅 最終選擇: ${weekRanges[targetWeekIndex]?.name || '未知週次'}`);
     
-    console.log(`📅 當前日期: ${currentYear}/${currentMonth}/${currentDate}，自動選擇第${targetWeekIndex + 1}週`);
+    // 額外驗證：確保邏輯正確性
+    const selectedWeek = weekRanges[targetWeekIndex];
+    if (selectedWeek) {
+        console.log(`✅ 選擇的週次: ${selectedWeek.name}`);
+        console.log(`📊 週次索引: ${selectedWeek.weekIndex}`);
+        
+        // 驗證選擇是否合理
+        if (selectedWeek.isCrossMonth) {
+            console.log(`🔄 跨月週期: 從${selectedWeek.month}月${selectedWeek.start}日到${selectedWeek.month + 1}月${selectedWeek.end}日`);
+        } else {
+            console.log(`📅 正常週期: ${selectedWeek.month}月${selectedWeek.start}日到${selectedWeek.end}日`);
+        }
+    } else {
+        console.warn(`⚠️ 未找到匹配的週次，使用預設第2週`);
+    }
     
     // 自動切換到對應週次
     showWeek(targetWeekIndex);
