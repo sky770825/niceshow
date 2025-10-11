@@ -1194,10 +1194,25 @@ function initializeApp() {
     initializePageAnimation();
     initializeImageMarquee();
     
-    // 延遲執行自動選擇週次，確保所有元素都已載入
+    // 延遲執行自動選擇週次或 Google Sheets 整合
     setTimeout(() => {
-        console.log('⏰ 開始執行自動週次選擇...');
-        autoSelectWeekByDate();
+        // 優先檢查餐車報名表整合
+        if (typeof bookingSheetsIntegration !== 'undefined' && 
+            bookingSheetsIntegration.BOOKING_SHEETS_CONFIG.ENABLED) {
+            console.log('🔗 啟用餐車報名表整合模式（從 Google Sheets）');
+            bookingSheetsIntegration.initBookingSheetsIntegration();
+        }
+        // 其次檢查簡易版整合
+        else if (typeof simpleSheetsIntegration !== 'undefined' && 
+            simpleSheetsIntegration.SIMPLE_SHEETS_CONFIG.ENABLED) {
+            console.log('🔗 啟用 Google Sheets 簡易整合模式');
+            simpleSheetsIntegration.initSimpleSheetsIntegration();
+        } 
+        // 最後使用本地資料
+        else {
+            console.log('⏰ 使用本地資料模式，開始執行自動週次選擇...');
+            autoSelectWeekByDate();
+        }
     }, 100);
     
     // 設定定期檢查資料更新

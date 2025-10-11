@@ -724,81 +724,144 @@ body.loaded {
 
 .week-selector {
     background: linear-gradient(135deg, #f8f9fa, #ffffff);
-    padding: 30px;
+    padding: 20px 25px;
     border-bottom: 1px solid #e9ecef;
     position: relative;
 }
 
 .week-selector-header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
 .week-selector-header h3 {
-    font-size: 1.5em;
+    font-size: 1.3em;
     color: #2c3e50;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     font-weight: 700;
 }
 
 .week-selector-desc {
     color: #6c757d;
-    font-size: 0.95em;
+    font-size: 0.9em;
     margin: 0;
 }
 
 .week-tabs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+/* 中等桌面螢幕 (1200px - 1600px) */
+@media (min-width: 1200px) and (max-width: 1600px) {
+    .week-tabs {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+    }
+}
+
+/* 小型桌面螢幕 (1024px - 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .week-tabs {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+}
+
+/* 大型平板 (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .week-tabs {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+}
+
+/* 超大桌面螢幕 (>1600px) */
+@media (min-width: 1601px) {
+    .week-tabs {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+    }
+}
+
+/* 小平板/大手機 (600px - 767px) */
+@media (min-width: 600px) and (max-width: 767px) {
+    .week-tabs {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+}
+
+/* 手機直向 (480px - 599px) */
+@media (min-width: 480px) and (max-width: 599px) {
+    .week-tabs {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+}
+
+/* 小手機 (<480px) */
+@media (max-width: 479px) {
+    .week-tabs {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+    
+    .week-tab-content {
+        padding: 5px 8px;
+    }
+    
+    .week-tab-title {
+        font-size: 0.8em;
+    }
+    
+    .week-tab-dates {
+        font-size: 0.7em;
+    }
+    
+    .week-tab-trucks {
+        font-size: 0.6em;
+    }
 }
 
 .week-tab {
     background: white;
     border: 2px solid #e1e8ed;
-    border-radius: 15px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     padding: 0;
     text-align: left;
 }
 
 .week-tab:hover {
     border-color: #667eea;
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
 }
 
 .week-tab.active {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border-color: #667eea;
-    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    transform: translateY(-1px);
 }
 
 .week-tab-content {
-    padding: 8px 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    text-align: center;
+    padding: 6px 10px;
 }
 
 .week-tab-title {
-    font-size: 0.9em;
+    font-size: 0.85em;
     font-weight: 700;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     color: #2c3e50;
     transition: color 0.3s ease;
-    line-height: 1.2;
-    word-wrap: break-word;
-    hyphens: auto;
 }
 
 .week-tab.active .week-tab-title {
@@ -806,13 +869,11 @@ body.loaded {
 }
 
 .week-tab-dates {
-    font-size: 0.8em;
+    font-size: 0.75em;
     font-weight: 600;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     color: #495057;
     transition: color 0.3s ease;
-    line-height: 1.2;
-    word-wrap: break-word;
 }
 
 .week-tab.active .week-tab-dates {
@@ -820,12 +881,10 @@ body.loaded {
 }
 
 .week-tab-trucks {
-    font-size: 0.7em;
+    font-size: 0.65em;
     color: #6c757d;
     font-weight: 500;
     transition: color 0.3s ease;
-    line-height: 1.2;
-    word-wrap: break-word;
 }
 
 .week-tab.active .week-tab-trucks {
@@ -1900,11 +1959,8 @@ body.loaded {
 /* 大平板/小筆電 (1025px - 1366px) */
 @media (min-width: 1025px) and (max-width: 1200px) {
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 10px;
-        max-height: 160px;
     }
     
     .week-tab {
@@ -1966,13 +2022,13 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        display: flex;
         gap: 8px;
         padding: 0 20px;
-        max-height: 160px;
-        justify-content: center;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
     }
     
     .week-tabs::-webkit-scrollbar {
@@ -1980,21 +2036,18 @@ body.loaded {
     }
     
     .week-tab {
-        padding: 12px 8px;
-        font-size: 13px;
+        flex-shrink: 0;
+        min-width: 80px;
+        padding: 14px 12px;
+        font-size: 14px;
         font-weight: 600;
         text-align: center;
-        white-space: normal;
+        white-space: nowrap;
         border-radius: 12px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         background: white;
         border: 2px solid #e9ecef;
         box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 60px;
     }
     
     .week-tab:hover {
@@ -2272,11 +2325,9 @@ body.loaded {
     
     .week-tabs {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
         justify-content: center;
-        max-height: 140px;
     }
     
     .week-tab {
@@ -2468,11 +2519,9 @@ body.loaded {
     
     .week-tabs {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
         justify-content: center;
-        max-height: 140px;
     }
     
     .week-tab {
@@ -2782,11 +2831,9 @@ body.loaded {
     .week-tabs {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
         gap: 8px;
         padding: 0 10px;
         justify-content: center;
-        max-height: 160px;
     }
     
     .week-tab {
@@ -3293,13 +3340,13 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        display: flex;
         gap: 10px;
         padding: 0 25px;
-        max-height: 180px;
-        justify-content: center;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
     }
     
     .week-tabs::-webkit-scrollbar {
@@ -3307,21 +3354,10 @@ body.loaded {
     }
     
     .week-tab {
-        padding: 14px 10px;
-        font-size: 14px;
-        font-weight: 600;
-        text-align: center;
-        white-space: normal;
-        border-radius: 12px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: white;
-        border: 2px solid #e9ecef;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 70px;
+        flex-shrink: 0;
+        min-width: 90px;
+        padding: 16px 14px;
+        font-size: 15px;
     }
 }
 
@@ -3578,12 +3614,9 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 4px;
         padding: 0 2px;
-        max-height: 140px;
     }
     
     .week-tab {
@@ -3718,12 +3751,9 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 6px;
         padding: 0 5px;
-        max-height: 150px;
     }
     
     .week-tab {
@@ -3910,11 +3940,8 @@ body.loaded {
     }
     
     .week-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: 1fr;
         gap: 8px;
-        max-height: 160px;
     }
     
     .week-tab-content {

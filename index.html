@@ -112,6 +112,12 @@
     <!-- <script src="github-sync.js" defer></script> -->
     <!-- <script src="auto-setup-token.js" defer></script> -->
     <!-- <script src="update-checker.js" defer></script> -->
+    
+    <!-- Google Sheets 簡易整合（免 API Key） -->
+    <!-- <script src="sheets-simple.js" defer></script> -->
+    
+    <!-- Google Sheets 餐車報名表整合（推薦使用） -->
+    <script src="sheets-booking.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -474,16 +480,27 @@
                         </ul>
                     </div>
                     
-                    <div class="day-card">
+                    <div class="day-card has-trucks">
                         <div class="day-number">10/10</div>
                         <div class="day-name">週五</div>
-                        <div class="no-trucks">無餐車</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >阿賢油飯</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >酷媽胖卡</div>
+                            </li>
+                        </ul>
                     </div>
                     
-                    <div class="day-card">
+                    <div class="day-card has-trucks">
                         <div class="day-number">10/11</div>
                         <div class="day-name">週六</div>
-                        <div class="no-trucks">無餐車</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >台東放山豬石板烤肉</div>
+                            </li>
+                        </ul>
                     </div>
                     
                     <div class="day-card">
