@@ -749,7 +749,7 @@ body.loaded {
 
 .week-tabs {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin-bottom: 15px;
 }
@@ -757,7 +757,7 @@ body.loaded {
 /* 中等桌面螢幕 (1200px - 1600px) */
 @media (min-width: 1200px) and (max-width: 1600px) {
     .week-tabs {
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
     }
 }
@@ -781,7 +781,7 @@ body.loaded {
 /* 超大桌面螢幕 (>1600px) */
 @media (min-width: 1601px) {
     .week-tabs {
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 10px;
     }
 }
@@ -1959,7 +1959,7 @@ body.loaded {
 /* 大平板/小筆電 (1025px - 1366px) */
 @media (min-width: 1025px) and (max-width: 1200px) {
     .week-tabs {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 10px;
     }
     
@@ -2022,22 +2022,13 @@ body.loaded {
     }
     
     .week-tabs {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
         padding: 0 20px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        scroll-behavior: smooth;
-    }
-    
-    .week-tabs::-webkit-scrollbar {
-        display: none;
     }
     
     .week-tab {
-        flex-shrink: 0;
-        min-width: 80px;
         padding: 14px 12px;
         font-size: 14px;
         font-weight: 600;
@@ -3073,7 +3064,7 @@ body.loaded {
     
     .week-tabs {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
         justify-content: center;
         padding: 0 15px;
@@ -3340,22 +3331,13 @@ body.loaded {
     }
     
     .week-tabs {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         gap: 10px;
         padding: 0 25px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        scroll-behavior: smooth;
-    }
-    
-    .week-tabs::-webkit-scrollbar {
-        display: none;
     }
     
     .week-tab {
-        flex-shrink: 0;
-        min-width: 90px;
         padding: 16px 14px;
         font-size: 15px;
     }
@@ -3381,7 +3363,7 @@ body.loaded {
     }
     
     .week-tabs {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 12px;
     }
     
