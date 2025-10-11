@@ -414,6 +414,13 @@ function convertBookingToSchedule(bookingData) {
         }
     });
     
+    // 限制只顯示最近的4週
+    const maxWeeks = 4;
+    if (activeWeeks.length > maxWeeks) {
+        console.log(`📌 限制顯示週數：從 ${activeWeeks.length} 週減少到 ${maxWeeks} 週`);
+        activeWeeks.splice(maxWeeks); // 只保留前4週
+    }
+    
     // 重新編號週次 ID（重要！）
     activeWeeks.forEach((week, index) => {
         week.id = `week${index}`;
