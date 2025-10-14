@@ -107,29 +107,40 @@
     <link rel="dns-prefetch" href="//res.cloudinary.com">
     
     <!-- 載入專案設定和 GitHub 同步模組 -->
-    <!-- 注意：以下檔案在當前版本中不存在，已移除引用以避免載入錯誤 -->
-    <!-- <script src="project-config.js" defer></script> -->
-    <!-- <script src="github-sync.js" defer></script> -->
-    <!-- <script src="auto-setup-token.js" defer></script> -->
-    <!-- <script src="update-checker.js" defer></script> -->
-    
-    <!-- Google Sheets 簡易整合（免 API Key） -->
-    <!-- <script src="sheets-simple.js" defer></script> -->
-    
-    <!-- Google Sheets 餐車報名表整合（推薦使用） -->
-    <script src="sheets-booking.js" defer></script>
+    <script src="project-config.js" defer></script>
+    <script src="github-sync.js" defer></script>
+    <script src="auto-setup-token.js" defer></script>
+    <script src="update-checker.js" defer></script>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="header-content">
                 <h1>🍽️ 四維商圈餐車月行程表</h1>
+                <p class="header-subtitle">2024年9-11月完整美食地圖 | 一鍵導航到餐車位置</p>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">30+</span>
+                        <span class="stat-label">熱門餐車</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">個月完整行程</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">📍</span>
+                        <span class="stat-label">一鍵導航</span>
+                    </div>
+                </div>
                 <div class="group-invite">
                     <a href="https://line.me/ti/g2/VXIuR9NyhkWFQPuMeWTUp_RHitaW82_0r8MU1Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="group-link">
                         🎉 歡迎加入四維商圈餐車群 🎉
                     </a>
                 </div>
                 <div class="header-cta">
+                    <button class="cta-button primary" onclick="scrollToContent()">
+                        <span>📅 查看完整行程表</span>
+                    </button>
                     <button class="cta-button secondary" onclick="showQuickGuide()">
                         <span>❓ 如何使用</span>
                     </button>
@@ -152,173 +163,696 @@
                 <p class="week-selector-desc">點擊下方週次標籤查看不同週的餐車安排</p>
             </div>
             <div class="week-tabs">
-                <!-- 週次標籤將由 Google Sheets 動態載入 -->
+                <button class="week-tab" onclick="showWeek(0)" data-week="0" aria-label="第1週：9月22日-9月28日">
+                    <div class="week-tab-content">
+                        <div class="week-tab-title">第1週</div>
+                        <div class="week-tab-dates">9/22-9/28</div>
+                        <div class="week-tab-trucks">3天有餐車</div>
+                    </div>
+                </button>
+                <button class="week-tab active" onclick="showWeek(1)" data-week="1" aria-label="第2週：9月29日-10月5日">
+                    <div class="week-tab-content">
+                        <div class="week-tab-title">第2週</div>
+                        <div class="week-tab-dates">9/29-10/5</div>
+                        <div class="week-tab-trucks">6天有餐車</div>
+                    </div>
+                </button>
+                <button class="week-tab" onclick="showWeek(2)" data-week="2" aria-label="第3週：10月6日-10月12日">
+                    <div class="week-tab-content">
+                        <div class="week-tab-title">第3週</div>
+                        <div class="week-tab-dates">10/6-10/12</div>
+                        <div class="week-tab-trucks">5天有餐車</div>
+                    </div>
+                </button>
+                <button class="week-tab" onclick="showWeek(3)" data-week="3" aria-label="第4週：10月13日-10月19日">
+                    <div class="week-tab-content">
+                        <div class="week-tab-title">第4週</div>
+                        <div class="week-tab-dates">10/13-10/19</div>
+                        <div class="week-tab-trucks">7天有餐車</div>
+                    </div>
+                </button>
+                <button class="week-tab" onclick="showWeek(4)" data-week="4" aria-label="第5週：10月20日-10月26日">
+                    <div class="week-tab-content">
+                        <div class="week-tab-title">第5週</div>
+                        <div class="week-tab-dates">10/20-10/26</div>
+                        <div class="week-tab-trucks">5天有餐車</div>
+                    </div>
+                </button>
+                <button class="week-tab" onclick="showWeek(5)" data-week="5" aria-label="第6週：10月27日-11月2日">
+                    <div class="week-tab-content">
+                        <div class="week-tab-title">第6週</div>
+                        <div class="week-tab-dates">10/27-11/2</div>
+                        <div class="week-tab-trucks">5天有餐車</div>
+                    </div>
+                </button>
             </div>
         </div>
         
         <div class="content">
-            <!-- 週次內容將由 Google Sheets 動態載入 -->
-            <div class="loading-message" style="text-align: center; padding: 3rem; color: #667eea;">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                <h3>正在從 Google Sheets 載入資料...</h3>
-                <p style="margin-top: 1rem; color: #888;">如果長時間未載入，請檢查 Google Sheets 設定</p>
+            <div id="week0" class="week-content">
+                <div class="week-header">
+                    <div class="week-title">9月22日 - 9月28日</div>
                 </div>
+
+                <div class="calendar-grid">
+                    <div class="day-header">週一</div>
+                    <div class="day-header">週二</div>
+                    <div class="day-header">週三</div>
+                    <div class="day-header">週四</div>
+                    <div class="day-header">週五</div>
+                    <div class="day-header">週六</div>
+                    <div class="day-header">週日</div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">9/22</div>
+                        <div class="day-name">週一</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >饞了找我</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >宇宙雞蛋糕</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >起司馬鈴薯</div>
+                            </li>
+                        </ul>
                     </div>
                     
-        <!-- TikTok 影片區域 -->
-        <div class="tiktok-section" style="margin: 2rem 0;">
-            <!-- 標題區域 -->
-            <div class="tiktok-title" style="text-align: center; margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">
-                    🎬 影片觀賞區
-                </h3>
-                <p style="color: #888; font-size: 0.9rem;">精選房地產資訊影片</p>
+                    <div class="day-card has-trucks">
+                        <div class="day-number">9/23</div>
+                        <div class="day-name">週二</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路218號">燻食堂</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >腸新</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >蛋塔村桃園站</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >瑪兒吃炒/鐵板</div>
+                            </li>
+                        </ul>
                     </div>
                     
-            <!-- 影片網格容器 -->
-            <div class="tiktok-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin: 0 auto;">
-                
-                <!-- 影片 1 -->
-                <div class="tiktok-item" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
-                    <div class="tiktok-container" style="height: 680px; overflow: hidden;">
-                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aihouse168/video/7557232980352159032" data-video-id="7557232980352159032" style="max-width: 605px;min-width: 325px; margin: 0;" > 
-                            <section> 
-                                <a target="_blank" title="@aihouse168" href="https://www.tiktok.com/@aihouse168?refer=embed">@aihouse168</a> 
-                                <p>超搶手！振翔富琚🌸埔心車站市中心景觀兩房，四維國小 文化商圈 中興路商圈 👩 劉子菲（菲菲） 🎯 相機達人變身房仲，用專業影像與行銷幫你找到理想家 💡 委賣專屬禮遇｜全方位獨家行銷方案 📊 加值服務｜稅務諮詢、裝潢設計、清潔搬運 🤝 交易保障｜雙方履約，安全放心 📍 經歷亮點 攝影王、金牌銷售業務 5 年 ME 直播平台人氣主播 健行科大活動主持人 專精活動企劃、海報設計、YouTube／抖音影片剪輯 📞 0925-666-597 📱 Line ID：@931aeinu 🔍 FB 搜尋「楊梅住商大順店－子菲＆豪哥 房仲楷模雙人組」 👨 蔡濬瑒（文豪） 🏠 楊梅區房地產專家，以多元職業背景提供全方位服務 現職 住商不動產楊梅大順店 行銷顧問 Polltex 防霾紗窗 店長 功夫茶／團霸兔楊梅四維店 店東長 四維商圈美食餐車 執行總召 五行八字象棋卜卦 師 專業優勢 房地產經驗｜23 歲投入市場，熟悉投資、自住、租賃策略 行銷整合力｜精通 TikTok、影片剪輯、海報設計、網站架設、AI 行銷 在地深耕｜精準掌握楊梅市場脈動 多元資源｜餐車總召、裝潢清潔搬運配合團隊 📞 0928-776-755 📱 Line ID：@931aeinu 🏢 經紀業資訊 常鴻悦豐企業社 營業員：蔡文豪（112）桃市字第432900號 營業員：劉子菲（113）桃市字第467056號 經紀人：葉靜蓉（104）新北經證字第003119號</p> 
-                                <a target="_blank" title="♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店" href="https://www.tiktok.com/music/原聲-楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店-7557233822082173752?refer=embed">♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店</a> 
-                            </section> 
-                        </blockquote>
-                    </div>
+                    <div class="day-card has-trucks">
+                        <div class="day-number">9/24</div>
+                        <div class="day-name">週三</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >台東放山豬石板烤肉</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >👠姐賣開心的~手作涼糕,🍡</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >臧記排骨酥</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >滷拉拉</div>
+                            </li>
+                        </ul>
                     </div>
                     
-                <!-- 影片 2 -->
-                <div class="tiktok-item" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
-                    <div class="tiktok-container" style="height: 680px; overflow: hidden;">
-                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aihouse168/video/7509388926201646392" data-video-id="7509388926201646392" style="max-width: 605px;min-width: 325px; margin: 0;" > 
-                            <section> 
-                                <a target="_blank" title="@aihouse168" href="https://www.tiktok.com/@aihouse168?refer=embed">@aihouse168</a> 
-                                新都悅🌸埔心正式區及龍科旁 超值3+1房➕平面雙車位 近瑞塘國小瑞坪國中、萬大市場 楊梅交流道 國1 省道 交通機能一級棒 埔心火車站 🚄 光輝十月恭賀蔡文豪與劉子菲榮獲 「百萬業績經紀人」與「第一名經紀人」雙重榮耀！ 楊梅常順房地產 地址：桃園市楊梅區梅獅路二段36號 ■ 營業員 蔡文豪 （112）桃市字第432900號 ■ 營業員 劉子菲 （113）桃市字第467056號 ■ 經紀人：葉蘇婷（104）新北經紀字第003119號 
-                                <a title="楊梅房仲" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%88%BF%E4%BB%B2?refer=embed">#楊梅房仲</a> 
-                                <a title="埔心房仲" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E6%88%BF%E4%BB%B2?refer=embed">#埔心房仲</a> 
-                                <a title="桃園買房" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E8%B2%B7%E6%88%BF?refer=embed">#桃園買房</a> 
-                                <a title="楊梅買房" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E8%B2%B7%E6%88%BF?refer=embed">#楊梅買房</a> 
-                                <a title="埔心買房" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E8%B2%B7%E6%88%BF?refer=embed">#埔心買房</a> 
-                                <a title="楊梅房地產" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%88%BF%E5%9C%B0%E7%94%A2?refer=embed">#楊梅房地產</a> 
-                                <a title="埔心房市" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E6%88%BF%E5%B8%82?refer=embed">#埔心房市</a> 
-                                <a title="楊梅透天" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E9%80%8F%E5%A4%A9?refer=embed">#楊梅透天</a> 
-                                <a title="埔心預售屋" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E9%A0%90%E5%94%AE%E5%B1%8B?refer=embed">#埔心預售屋</a> 
-                                <a title="桃園房價" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E6%88%BF%E5%83%B9?refer=embed">#桃園房價</a> 
-                                <a title="楊梅學區宅" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E5%AD%B8%E5%8D%80%E5%AE%85?refer=embed">#楊梅學區宅</a> 
-                                <a title="楊梅投資房" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%8A%95%E8%B3%87%E6%88%BF?refer=embed">#楊梅投資房</a> 
-                                <a title="埔心置產" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E7%BD%AE%E7%94%A2?refer=embed">#埔心置產</a> 
-                                <a title="楊梅房市分析" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%88%BF%E5%B8%82%E5%88%86%E6%9E%90?refer=embed">#楊梅房市分析</a> 
-                                <a title="住商不動產" target="_blank" href="https://www.tiktok.com/tag/%E4%BD%8F%E5%95%86%E4%B8%8D%E5%8B%95%E7%94%A2?refer=embed">#住商不動產</a> 
-                                <a title="楊梅交流道房市" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E4%BA%A4%E6%B5%81%E9%81%93%E6%88%BF%E5%B8%82?refer=embed">#楊梅交流道房市</a> 
-                                <a title="楊梅電梯大樓" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E9%9B%BB%E6%A2%AF%E5%A4%A7%E6%A8%93?refer=embed">#楊梅電梯大樓</a> 
-                                <a title="桃園買房指南" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E8%B2%B7%E6%88%BF%E6%8C%87%E5%8D%97?refer=embed">#桃園買房指南</a> 
-                                <a title="房仲帶看日常" target="_blank" href="https://www.tiktok.com/tag/%E6%88%BF%E4%BB%B2%E5%B8%B6%E7%9C%8B%E6%97%A5%E5%B8%B8?refer=embed">#房仲帶看日常</a> 
-                                <a title="桃園房市趨勢" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E6%88%BF%E5%B8%82%E8%B6%A8%E5%8B%A2?refer=embed">#桃園房市趨勢</a> 
-                                <a target="_blank" title="♬ 原聲 - 楊梅買房找子菲｜住商楊梅大順店 ｜夢想起飛 - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店" href="https://www.tiktok.com/music/原聲-楊梅買房找子菲｜住商楊梅大順店-｜夢想起飛-7509389957670816568?refer=embed">♬ 原聲 - 楊梅買房找子菲｜住商楊梅大順店 ｜夢想起飛 - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店</a> 
-                            </section> 
-                        </blockquote>
+                    <div class="day-card has-trucks">
+                        <div class="day-number">9/25</div>
+                        <div class="day-name">週四</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >艾汭日式生乳酪甜甜圈</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >安德尼斯烘焙坊</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">9/26</div>
+                        <div class="day-name">週五</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >自己人窯烤披薩</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >屋下排骨酥</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">9/27</div>
+                        <div class="day-name">週六</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">9/28</div>
+                        <div class="day-name">週日</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
                 </div>
             </div>
             
-                <!-- 影片 3 -->
-                <div class="tiktok-item" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
-                    <div class="tiktok-container" style="height: 680px; overflow: hidden;">
-                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aihouse168/video/7560186639100775736" data-video-id="7560186639100775736" style="max-width: 605px;min-width: 325px; margin: 0;" > 
-                            <section> 
-                                <a target="_blank" title="@aihouse168" href="https://www.tiktok.com/@aihouse168?refer=embed">@aihouse168</a> 
-                                <p>幸福宣言三房車🌸格局方正 彈性規劃空間｜雙商圈｜雙學區｜埔心火車站｜全聯｜自由聯盟｜萬大市場 👩 劉子菲（菲菲） 🎯 相機達人變身房仲，用專業影像與行銷幫你找到理想家 💡 委賣專屬禮遇｜全方位獨家行銷方案 📊 加值服務｜稅務諮詢、裝潢設計、清潔搬運 🤝 交易保障｜雙方履約，安全放心 📍 經歷亮點 攝影王、金牌銷售業務 5 年 ME 直播平台人氣主播 健行科大活動主持人 專精活動企劃、海報設計、YouTube／抖音影片剪輯 📞 0925-666-597 📱 Line ID：@931aeinu 🔍 FB 搜尋「楊梅住商大順店－子菲＆豪哥 房仲楷模雙人組」 👨 蔡濬瑒（文豪） 🏠 楊梅區房地產專家，以多元職業背景提供全方位服務 現職 住商不動產楊梅大順店 行銷顧問 Polltex 防霾紗窗 店長 功夫茶／團霸兔楊梅四維店 店東長 四維商圈美食餐車 執行總召 五行八字象棋卜卦 師 專業優勢 房地產經驗｜23 歲投入市場，熟悉投資、自住、租賃策略 行銷整合力｜精通 TikTok、影片剪輯、海報設計、網站架設、AI 行銷 在地深耕｜精準掌握楊梅市場脈動 多元資源｜餐車總召、裝潢清潔搬運配合團隊 📞 0928-776-755 📱 Line ID：@931aeinu 🏢 經紀業資訊 常鴻悦豐企業社 營業員：蔡文豪（112）桃市字第432900號 營業員：劉子菲（113）桃市字第467056號 經紀人：葉靜蓉（104）新北經證字第003119號</p> 
-                                <a target="_blank" title="♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店" href="https://www.tiktok.com/music/原聲-楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店-7560186663717194508?refer=embed">♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店</a> 
-                            </section> 
-                        </blockquote>
+            <div id="week1" class="week-content active">
+                <div class="week-header">
+                    <div class="week-title">9月29日 - 10月5日</div>
                 </div>
+
+                <div class="calendar-grid">
+                    <div class="day-header">週一</div>
+                    <div class="day-header">週二</div>
+                    <div class="day-header">週三</div>
+                    <div class="day-header">週四</div>
+                    <div class="day-header">週五</div>
+                    <div class="day-header">週六</div>
+                    <div class="day-header">週日</div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">9/29</div>
+                        <div class="day-name">週一</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >幸胡小餐車</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >寶嘉-烤肉飯/義大利麵</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >Gogo烤飛雞</div>
+                            </li>
+                        </ul>
                     </div>
                     
-                <!-- 影片 4 -->
-                <div class="tiktok-item" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
-                    <div class="tiktok-container" style="height: 680px; overflow: hidden;">
-                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aihouse168/video/7559421876234145080" data-video-id="7559421876234145080" style="max-width: 605px;min-width: 325px; margin: 0;" > 
-                            <section> 
-                                <a target="_blank" title="@aihouse168" href="https://www.tiktok.com/@aihouse168?refer=embed">@aihouse168</a> 
-                                <p>X計劃明日城三房車🌸位於楊梅金山重劃區｜楊梅火車站｜楊明國小｜楊梅夜市 👩 劉子菲（菲菲） 🎯 相機達人變身房仲，用專業影像與行銷幫你找到理想家 💡 委賣專屬禮遇｜全方位獨家行銷方案 📊 加值服務｜稅務諮詢、裝潢設計、清潔搬運 🤝 交易保障｜雙方履約，安全放心 📍 經歷亮點 攝影王、金牌銷售業務 5 年 ME 直播平台人氣主播 健行科大活動主持人 專精活動企劃、海報設計、YouTube／抖音影片剪輯 📞 0925-666-597 📱 Line ID：@931aeinu 🔍 FB 搜尋「楊梅住商大順店－子菲＆豪哥 房仲楷模雙人組」 👨 蔡濬瑒（文豪） 🏠 楊梅區房地產專家，以多元職業背景提供全方位服務 現職 住商不動產楊梅大順店 行銷顧問 Polltex 防霾紗窗 店長 功夫茶／團霸兔楊梅四維店 店東長 四維商圈美食餐車 執行總召 五行八字象棋卜卦 師 專業優勢 房地產經驗｜23 歲投入市場，熟悉投資、自住、租賃策略 行銷整合力｜精通 TikTok、影片剪輯、海報設計、網站架設、AI 行銷 在地深耕｜精準掌握楊梅市場脈動 多元資源｜餐車總召、裝潢清潔搬運配合團隊 📞 0928-776-755 📱 Line ID：@931aeinu 🏢 經紀業資訊 常鴻悦豐企業社 營業員：蔡文豪（112）桃市字第432900號 營業員：劉子菲（113）桃市字第467056號 經紀人：葉靜蓉（104）新北經證字第003119號</p> 
-                                <a target="_blank" title="♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店" href="https://www.tiktok.com/music/原聲-楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店-7559422116367092492?refer=embed">♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店</a> 
-                            </section> 
-                        </blockquote>
-                    </div>
-                    </div>
-                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">9/30</div>
+                        <div class="day-name">週二</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >阿賢油飯</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >諸大爺脆皮烤豬</div>
+                            </li>
+                        </ul>
                     </div>
                     
-            <!-- 滑動提示（僅手機版顯示）-->
-            <div class="tiktok-swipe-hint" style="display: none;">
-                👈 左右滑動查看更多影片 👉
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/1</div>
+                        <div class="day-name">週三</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路72號">Hola Hola 甜點舖</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >向陽坡刈包</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >臧記排骨酥</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >旺喜屋</div>
+                            </li>
+                        </ul>
                     </div>
                     
-            <!-- 滑動指示器（僅手機版顯示）-->
-            <div class="tiktok-dots" style="display: none;">
-                <span class="tiktok-dot active" onclick="scrollToVideo(0)"></span>
-                <span class="tiktok-dot" onclick="scrollToVideo(1)"></span>
-                <span class="tiktok-dot" onclick="scrollToVideo(2)"></span>
-                <span class="tiktok-dot" onclick="scrollToVideo(3)"></span>
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/2</div>
+                        <div class="day-name">週四</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >那個彩色地瓜球</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >餓食鬼美味販売所</div>
+                            </li>
+                        </ul>
                     </div>
                     
-            <script async src="https://www.tiktok.com/embed.js"></script>
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/3</div>
+                        <div class="day-name">週五</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >麥米食小米甜甜圈</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/4</div>
+                        <div class="day-name">週六</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >台東放山豬石板烤肉</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">10/5</div>
+                        <div class="day-name">週日</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
+                </div>
+            </div>
             
-            <!-- 滑動控制腳本 -->
-            <script>
-                // 影片滑動控制
-                function scrollToVideo(index) {
-                    const grid = document.querySelector('.tiktok-grid');
-                    const items = document.querySelectorAll('.tiktok-item');
-                    if (items[index]) {
-                        items[index].scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'nearest', 
-                            inline: 'center' 
-                        });
-                    }
-                }
-                
-                // 更新指示器狀態
-                function updateDots() {
-                    const grid = document.querySelector('.tiktok-grid');
-                    const items = document.querySelectorAll('.tiktok-item');
-                    const dots = document.querySelectorAll('.tiktok-dot');
+            <div id="week2" class="week-content">
+                <div class="week-header">
+                    <div class="week-title">10月6日 - 10月12日</div>
+                </div>
+
+                <div class="calendar-grid">
+                    <div class="day-header">週一</div>
+                    <div class="day-header">週二</div>
+                    <div class="day-header">週三</div>
+                    <div class="day-header">週四</div>
+                    <div class="day-header">週五</div>
+                    <div class="day-header">週六</div>
+                    <div class="day-header">週日</div>
                     
-                    if (!grid || items.length === 0) return;
+                    <div class="day-card">
+                        <div class="day-number">10/6</div>
+                        <div class="day-name">週一</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
                     
-                    const scrollLeft = grid.scrollLeft;
-                    const itemWidth = items[0].offsetWidth;
-                    const currentIndex = Math.round(scrollLeft / itemWidth);
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/7</div>
+                        <div class="day-name">週二</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >腸新</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >三寶爸排骨酥/涼拌海鮮</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >鄭老爹肉燥乾麵</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路218號" >國家雞蜜</div>
+                            </li>
+                        </ul>
+                    </div>
                     
-                    dots.forEach((dot, index) => {
-                        dot.classList.toggle('active', index === currentIndex);
-                    });
-                }
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/8</div>
+                        <div class="day-name">週三</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >台東放山豬石板烤肉</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >眾品餚創意料理</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >臧記排骨酥</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >滷拉拉冷滷味</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/9</div>
+                        <div class="day-name">週四</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >懶貓窯烤披薩</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >極品鹽水雞</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/10</div>
+                        <div class="day-name">週五</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >阿賢油飯</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >酷媽胖卡</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/11</div>
+                        <div class="day-name">週六</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >台東放山豬石板烤肉</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">10/12</div>
+                        <div class="day-name">週日</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="week3" class="week-content">
+                <div class="week-header">
+                    <div class="week-title">10月13日 - 10月19日</div>
+                </div>
                 
-                // 監聽滑動事件
-                document.addEventListener('DOMContentLoaded', function() {
-                    const grid = document.querySelector('.tiktok-grid');
-                    if (grid && window.innerWidth <= 1024) {
-                        grid.addEventListener('scroll', updateDots);
-                        updateDots(); // 初始化
-                    }
-                });
+
+                <div class="calendar-grid">
+                    <div class="day-header">週一</div>
+                    <div class="day-header">週二</div>
+                    <div class="day-header">週三</div>
+                    <div class="day-header">週四</div>
+                    <div class="day-header">週五</div>
+                    <div class="day-header">週六</div>
+                    <div class="day-header">週日</div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/13</div>
+                        <div class="day-name">週一</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >好嗜拾光</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >芙玉軒</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >熊國王滷味</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/14</div>
+                        <div class="day-name">週二</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >小饅魚造型饅頭</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >黃佳香碳烤玉米13車</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >阿騰火烤楓糖甜甜圈</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/15</div>
+                        <div class="day-name">週三</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號">抓餅工程行</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >露露姐水果攤鹹水雞</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >基隆三明治</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >朱記川滷</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/16</div>
+                        <div class="day-name">週四</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >輪見輪愛-旗魚黑輪</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >萬兆香萬巒豬腳</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/17</div>
+                        <div class="day-name">週五</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >阿賢油飯</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >酷媽胖卡</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/18</div>
+                        <div class="day-name">週六</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >台東放山豬石板烤肉</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/19</div>
+                        <div class="day-name">週日</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號">好嗜拾光</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號">芙玉軒</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號">熊國王滷味</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="week4" class="week-content">
+                <div class="week-header">
+                    <div class="week-title">10月20日 - 10月26日</div>
+                </div>
                 
-                // 響應視窗大小變化
-                window.addEventListener('resize', function() {
-                    const grid = document.querySelector('.tiktok-grid');
-                    if (grid) {
-                        if (window.innerWidth <= 1024) {
-                            grid.addEventListener('scroll', updateDots);
-                            updateDots();
-                        }
-                    }
-                });
-            </script>
+
+                <div class="calendar-grid">
+                    <div class="day-header">週一</div>
+                    <div class="day-header">週二</div>
+                    <div class="day-header">週三</div>
+                    <div class="day-header">週四</div>
+                    <div class="day-header">週五</div>
+                    <div class="day-header">週六</div>
+                    <div class="day-header">週日</div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/20</div>
+                        <div class="day-name">週一</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >蔬孟園</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >寶嘉-烤肉飯/義大利麵</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >Gogo烤飛雞</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路190號" >A happiness手作奶酪</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/21</div>
+                        <div class="day-name">週二</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >沖天炮燒烤</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >饞了找我</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >宇宙雞蛋糕</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/22</div>
+                        <div class="day-name">週三</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >台東放山豬石板烤肉</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >露露姐水果攤鹹水雞</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >臧記排骨酥</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >滷拉拉冷滷味</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/23</div>
+                        <div class="day-name">週四</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >安德尼斯烘焙坊</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >法國道地吉拿棒</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/24</div>
+                        <div class="day-name">週五</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >菲揚煙燻滷味</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >起來車輪肉蛋堡</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">10/25</div>
+                        <div class="day-name">週六</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">10/26</div>
+                        <div class="day-name">週日</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="week5" class="week-content">
+                <div class="week-header">
+                    <div class="week-title">10月27日 - 11月2日</div>
+                </div>
+                
+
+                <div class="calendar-grid">
+                    <div class="day-header">週一</div>
+                    <div class="day-header">週二</div>
+                    <div class="day-header">週三</div>
+                    <div class="day-header">週四</div>
+                    <div class="day-header">週五</div>
+                    <div class="day-header">週六</div>
+                    <div class="day-header">週日</div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/27</div>
+                        <div class="day-name">週一</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >麵線杜</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >旺喜屋</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >蒜老爹六蒜包</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/28</div>
+                        <div class="day-name">週二</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >豆豆哥專業毛豆</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >港灣與貓韓式街邊小吃</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/29</div>
+                        <div class="day-name">週三</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >臧記排骨酥</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路216號" >滷拉拉冷滷味</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路60號" >天昱坊_客家蔬食</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/30</div>
+                        <div class="day-name">週四</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >諸大爺脆皮烤豬</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >巧味豆乳雞</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >鄭姐美食</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card has-trucks">
+                        <div class="day-number">10/31</div>
+                        <div class="day-name">週五</div>
+                        <ul class="truck-list">
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路59號" >喵喵雞蛋糕、甘草芭樂、楊桃冰</div>
+                            </li>
+                            <li class="truck-item">
+                                <div class="truck-name" data-address="四維路70號" >羽朵甜小米甜甜圈</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">11/1</div>
+                        <div class="day-name">週六</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
+                    
+                    <div class="day-card">
+                        <div class="day-number">11/2</div>
+                        <div class="day-name">週日</div>
+                        <div class="no-trucks">無餐車</div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- 工具快捷區域 -->

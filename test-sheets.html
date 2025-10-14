@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets 測試工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 5px solid #17a2b8;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 5px solid #ffc107;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .config-info {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #007bff;
+        }
+        
+        .config-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .config-info code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        h3 {
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-size: 1.5rem;
+        }
+        
+        h4 {
+            color: #666;
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+        
+        p {
+            line-height: 1.6;
+            color: #666;
+            margin: 10px 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Google Sheets 測試工具</h1>
+            <p>測試餐車報名表 Google Sheets 連接與資料格式</p>
+        </div>
+        
+        <div class="content">
+            <div class="config-info">
+                <h3>📋 目前設定</h3>
+                <p><strong>Sheet ID:</strong> <code id="displaySheetId">載入中...</code></p>
+                <p><strong>Sheet GID:</strong> <code id="displaySheetGid">載入中...</code></p>
+                <p><strong>CSV URL:</strong> <code id="displayCsvUrl" style="font-size: 12px; word-break: break-all;">載入中...</code></p>
+            </div>
+            
+            <div id="status"></div>
+            
+            <div class="button-group">
+                <button onclick="testSheets()">🔍 測試 Google Sheets 連接</button>
+                <button onclick="showRawData()" class="secondary">📄 顯示原始資料</button>
+                <button onclick="showConvertedData()" class="secondary">🔄 顯示轉換後資料</button>
+                <button onclick="clearResults()" class="secondary">🗑️ 清除結果</button>
+            </div>
+            
+            <div id="result"></div>
+        </div>
+    </div>
+    
+    <script>
+        const SHEET_ID = '1oS9zTU6DL_cCRnOI6A4ffAeXXn7fXkr6URxxMVprlG4';
+        const SHEET_GID = '782323585';
+        
+        let rawData = null;
+        let convertedData = null;
+        
+        // 显示设定
+        document.getElementById('displaySheetId').textContent = SHEET_ID;
+        document.getElementById('displaySheetGid').textContent = SHEET_GID;
+        const csvURL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+        document.getElementById('displayCsvUrl').textContent = csvURL;
+        
+        async function testSheets() {
+            const statusDiv = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+            
+            statusDiv.innerHTML = '<div class="info">🔄 正在連接 Google Sheets...<span class="loading"></span></div>';
+            resultDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch(csvURL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const csvText = await response.text();
+                const lines = csvText.split('\\n');
+                
+                statusDiv.innerHTML = `
+                    <div class="success">
+                        ✅ 連接成功！<span class="badge badge-success">${lines.length} 行資料</span><br>
+                        <small>Google Sheets 公開設定正確，可以正常讀取資料</small>
+                    </div>
+                `;
+                
+                // 解析数据
+                const rows = parseCSV(csvText);
+                rawData = rows;
+                
+                // 统计
+                const scheduledCount = rows.filter(r => r.status === '己排班').length;
+                const totalCount = rows.length;
+                
+                resultDiv.innerHTML = `
+                    <h3>📊 資料概覽</h3>
+                    <div class="config-info">
+                        <p><strong>總資料筆數:</strong> ${totalCount}</p>
+                        <p><strong>己排班數量:</strong> ${scheduledCount} <span class="badge badge-success">${Math.round(scheduledCount/totalCount*100)}%</span></p>
+                        <p><strong>待排/其他:</strong> ${totalCount - scheduledCount}</p>
+                    </div>
+                    <h4>表頭:</h4>
+                    <pre>${lines[0]}</pre>
+                    <h4>前 3 筆資料預覽:</h4>
+                    <pre>${JSON.stringify(rows.slice(0, 3), null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="error">
+                        ❌ 連接失敗: ${error.message}<br><br>
+                        <strong>可能原因:</strong><br>
+                        1. ❌ Google Sheets 未設為公開（應該設為「知道連結的任何人」可檢視）<br>
+                        2. ❌ Sheet ID 或 GID 設定錯誤<br>
+                        3. ❌ 網路連接問題<br>
+                        4. ❌ 瀏覽器阻擋了跨域請求（請停用廣告攔截器）
+                    </div>
+                `;
+            }
+        }
+        
+        function parseCSV(csvText) {
+            const rows = [];
+            const lines = csvText.split('\\n');
+            
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const cells = parseCSVLine(line);
+                
+                if (cells.length >= 5 && cells[1] && cells[4]) {
+                    rows.push({
+                        timestamp: cells[0],
+                        storeName: cells[1].trim(),
+                        type: cells[2] ? cells[2].trim() : '',
+                        venue: cells[3] ? cells[3].trim() : '',
+                        bookingDate: cells[4].trim(),
+                        status: cells[5] ? cells[5].trim() : '',
+                        fee: cells[6] ? cells[6].trim() : '',
+                        paid: cells[7] ? cells[7].trim() : '',
+                        note: cells[8] ? cells[8].trim() : ''
+                    });
+                }
+            }
+            
+            return rows;
+        }
+        
+        function parseCSVLine(line) {
+            const cells = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    cells.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            cells.push(current);
+            
+            return cells.map(cell => cell.replace(/^"|"$/g, '').trim());
+        }
+        
+        function showRawData() {
+            const resultDiv = document.getElementById('result');
+            if (!rawData) {
+                resultDiv.innerHTML = '<div class="warning">⚠️ 請先點擊「測試 Google Sheets 連接」</div>';
+                return;
+            }
+            
+            let html = '<h3>📄 原始資料</h3>';
+            html += '<table>';
+            html += '<tr><th>#</th><th>店名</th><th>餐車類型</th><th>預約場地</th><th>預約日期</th><th>己排</th><th>狀態</th></tr>';
+            
+            rawData.forEach((row, index) => {
+                const statusBadge = row.status === '己排班' 
+                    ? '<span class="badge badge-success">✓ 會顯示</span>' 
+                    : '<span class="badge badge-error">✗ 不顯示</span>';
+                    
+                html += `<tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${row.storeName}</strong></td>
+                    <td>${row.type}</td>
+                    <td>${row.venue}</td>
+                    <td>${row.bookingDate}</td>
+                    <td>${row.status}</td>
+                    <td>${statusBadge}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            html += `
+                <div class="config-info" style="margin-top: 20px;">
+                    <h4>💡 重要提示：</h4>
+                    <p>只有「己排」欄位填寫 <code>己排班</code>（包含「班」字）的餐車才會顯示在行程表上！</p>
+                </div>
+            `;
+            resultDiv.innerHTML = html;
+        }
+        
+        function showConvertedData() {
+            const resultDiv = document.getElementById('result');
+            if (!rawData) {
+                resultDiv.innerHTML = '<div class="warning">⚠️ 請先點擊「測試 Google Sheets 連接」</div>';
+                return;
+            }
+            
+            // 按日期分组
+            const dateMap = new Map();
+            let dateErrorCount = 0;
+            let statusErrorCount = 0;
+            
+            rawData.forEach(booking => {
+                const dateInfo = parseBookingDate(booking.bookingDate);
+                if (!dateInfo) {
+                    dateErrorCount++;
+                    return;
+                }
+                
+                const dateKey = `${dateInfo.month}-${dateInfo.day}`;
+                
+                if (!dateMap.has(dateKey)) {
+                    dateMap.set(dateKey, {
+                        date: dateInfo.date,
+                        dayName: dateInfo.dayName,
+                        month: dateInfo.month,
+                        day: dateInfo.day,
+                        trucks: []
+                    });
+                }
+                
+                if (booking.status === '己排班') {
+                    const address = extractAddress(booking.venue);
+                    dateMap.get(dateKey).trucks.push({
+                        name: booking.storeName,
+                        venue: booking.venue,
+                        address: address
+                    });
+                } else {
+                    statusErrorCount++;
+                }
+            });
+            
+            const sortedDates = Array.from(dateMap.values()).sort((a, b) => {
+                if (a.month !== b.month) return a.month - b.month;
+                return a.day - b.day;
+            });
+            
+            let html = '<h3>🔄 轉換後資料（按日期分組）</h3>';
+            
+            if (dateErrorCount > 0 || statusErrorCount > 0) {
+                html += '<div class="warning">';
+                if (dateErrorCount > 0) {
+                    html += `⚠️ ${dateErrorCount} 筆資料因日期格式錯誤被跳過<br>`;
+                    html += '<small>正確格式：10月21日(星期一) 或 10月21日（星期一）</small><br><br>';
+                }
+                if (statusErrorCount > 0) {
+                    html += `⚠️ ${statusErrorCount} 筆資料因「己排」欄位不是「己排班」而不會顯示<br>`;
+                    html += '<small>請確認「己排」欄位填寫「己排班」（包含「班」字）</small>';
+                }
+                html += '</div>';
+            }
+            
+            html += `
+                <div class="success" style="margin: 20px 0;">
+                    ✅ 成功轉換 ${sortedDates.length} 天的餐車資料<br>
+                    <small>共 ${sortedDates.reduce((sum, day) => sum + day.trucks.length, 0)} 個餐車會顯示在行程表上</small>
+                </div>
+            `;
+            
+            html += '<table>';
+            html += '<tr><th>日期</th><th>星期</th><th>餐車數量</th><th>餐車列表</th></tr>';
+            
+            sortedDates.forEach(day => {
+                const truckNames = day.trucks.map(t => `${t.name} (${t.address})`).join('<br>');
+                html += `<tr>
+                    <td><strong>${day.date}</strong></td>
+                    <td>${day.dayName}</td>
+                    <td><span class="badge badge-success">${day.trucks.length}</span></td>
+                    <td>${truckNames || '<em>無餐車</em>'}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            resultDiv.innerHTML = html;
+        }
+        
+        function extractAddress(venue) {
+            if (!venue) return '';
+            
+            const addresses = [
+                '四維路70號', '四維路60號', '四維路59號', '四維路190號',
+                '四維路216號', '四維路218號', '四維路72號', '四維路77號'
+            ];
+            
+            for (const address of addresses) {
+                if (venue.includes(address)) {
+                    return address;
+                }
+            }
+            
+            return venue;
+        }
+        
+        function parseBookingDate(bookingDate) {
+            if (!bookingDate) return null;
+            
+            const match = bookingDate.match(/(\\d+)月(\\d+)日[\\(（]星期([一二三四五六日])[\\)）]/);
+            
+            if (match) {
+                const month = parseInt(match[1]);
+                const day = parseInt(match[2]);
+                const dayNameMap = {
+                    '一': '週一', '二': '週二', '三': '週三', '四': '週四',
+                    '五': '週五', '六': '週六', '日': '週日'
+                };
+                const dayName = dayNameMap[match[3]] || '';
+                
+                return {
+                    date: `${month}/${day}`,
+                    dayName: dayName,
+                    month: month,
+                    day: day
+                };
+            }
+            
+            return null;
+        }
+        
+        function clearResults() {
+            document.getElementById('status').innerHTML = '';
+            document.getElementById('result').innerHTML = '';
+            rawData = null;
+            convertedData = null;
+        }
+    </script>
+</body>
+</html>
+

@@ -348,9 +348,53 @@ function hideMedicalInfo() {
     }
 }
 
+
+/**
+ * 顯示快速使用指南
+ */
+function showQuickGuide() {
+    console.log('showQuickGuide function called'); // 調試信息
+    const modal = document.getElementById('quickGuideModal');
+    console.log('Modal element:', modal); // 調試信息
+    if (modal) {
+        modal.classList.add('show');
+        console.log('Modal show class added'); // 調試信息
+        // 防止背景滾動
+        document.body.style.overflow = 'hidden';
+        
+        // 確保彈窗在視窗中央
+        setTimeout(() => {
+            modal.scrollTop = 0;
+            // 滾動到彈窗位置
+            const modalContent = modal.querySelector('.sponsor-modal-content');
+            if (modalContent) {
+                modalContent.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'center'
+                });
+            }
+        }, 100);
+    } else {
+        console.error('Modal element not found!'); // 錯誤信息
+    }
+}
+
+/**
+ * 隱藏快速使用指南
+ */
+function hideQuickGuide() {
+    const modal = document.getElementById('quickGuideModal');
+    if (modal) {
+        modal.classList.remove('show');
+        // 恢復背景滾動
+        document.body.style.overflow = '';
+    }
+}
+
 /**
  * 切換顯示的週次
- * @param {number} weekNumber - 週次編號 (0-6)
+ * @param {number} weekNumber - 週次編號 (0-5)
  */
 function showWeek(weekNumber) {
     // 隱藏所有週的內容
@@ -372,11 +416,24 @@ function showWeek(weekNumber) {
     }
     
     // 激活對應的分頁
-    if (allTabs[weekNumber]) {
-        allTabs[weekNumber].classList.add('active');
+    const targetTab = document.querySelector(`[data-week="${weekNumber}"]`);
+    if (targetTab) {
+        targetTab.classList.add('active');
     }
     
-    // 平滑滾動到頂部
+    // 添加切換動畫效果
+    if (targetWeek) {
+        targetWeek.style.opacity = '0';
+        targetWeek.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            targetWeek.style.transition = 'all 0.3s ease';
+            targetWeek.style.opacity = '1';
+            targetWeek.style.transform = 'translateY(0)';
+        }, 50);
+    }
+    
+    // 平滑滾動到內容區域
     const content = document.querySelector('.content');
     if (content) {
         content.scrollIntoView({ 
@@ -384,6 +441,30 @@ function showWeek(weekNumber) {
             block: 'start'
         });
     }
+    
+    // 更新頁面標題
+    updatePageTitle(weekNumber);
+    
+    // 記錄用戶行為（用於分析）
+    console.log(`用戶切換到第${weekNumber + 1}週`);
+}
+
+/**
+ * 更新頁面標題
+ * @param {number} weekNumber - 週次編號
+ */
+function updatePageTitle(weekNumber) {
+    const weekTitles = [
+        '9月22日-9月28日',
+        '9月29日-10月5日', 
+        '10月6日-10月12日',
+        '10月13日-10月19日',
+        '10月20日-10月26日',
+        '10月27日-11月2日'
+    ];
+    
+    const title = weekTitles[weekNumber] || '餐車月行程表';
+    document.title = `四維商圈餐車月行程表 - ${title} | 楊梅美食地圖 | 一鍵導航`;
 }
 
 /**
@@ -436,43 +517,15 @@ function initializeDayCards() {
     });
 }
 
-/**
- * 添加鍵盤導航支援
- */
-function initializeKeyboardNavigation() {
-    document.addEventListener('keydown', function(e) {
-        if (e.key >= '1' && e.key <= '7') {
-            const weekNumber = parseInt(e.key) - 1;
-            if (weekNumber >= 0 && weekNumber <= 6) {
-                showWeek(weekNumber);
-                // 更新分頁狀態
-                const allTabs = document.querySelectorAll('.week-tab');
-                allTabs.forEach(tab => tab.classList.remove('active'));
-                if (allTabs[weekNumber]) {
-                    allTabs[weekNumber].classList.add('active');
-                }
-            }
-        }
-    });
-}
 
 /**
- * 添加週次標籤的鍵盤支援
+ * 初始化週次標籤
  */
 function initializeWeekTabs() {
     const weekTabs = document.querySelectorAll('.week-tab');
     weekTabs.forEach((tab, index) => {
-        tab.setAttribute('tabindex', '0');
         tab.setAttribute('role', 'button');
         tab.setAttribute('aria-label', `切換到第${index + 1}週`);
-        
-        tab.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                showWeek(index);
-                this.classList.add('active');
-            }
-        });
     });
 }
 
@@ -1032,23 +1085,135 @@ function checkDataUpdate() {
 
 
 /**
+ * 根據當前日期自動選擇對應的週次
+ */
+function autoSelectWeekByDate() {
+    console.log('🚀 autoSelectWeekByDate 函數開始執行');
+    
+    const now = new Date();
+    const currentDate = now.getDate();
+    const currentMonth = now.getMonth() + 1; // getMonth() 返回 0-11，需要 +1
+    const currentYear = now.getFullYear();
+    
+    console.log(`📅 當前日期: ${currentYear}/${currentMonth}/${currentDate}`);
+    console.log(`🔍 開始檢查週次匹配...`);
+    
+    // 檢查是否在行程表的年份範圍內（支援2024年和2025年）
+    if (currentYear < 2024 || currentYear > 2025) {
+        console.log(`📅 當前年份 ${currentYear} 不在行程表範圍內（支援2024-2025年），預設顯示第2週（9/29-10/5）`);
+        showWeek(1); // 預設顯示第2週
+        return;
+    }
+    
+    console.log(`📅 當前年份 ${currentYear} 在支援範圍內，繼續執行自動選擇邏輯`);
+    
+    // 定義各週的日期範圍（更清晰的邏輯）
+    const weekRanges = [
+        { start: 22, end: 28, month: 9, weekIndex: 0, name: '第1週：9/22-9/28' },
+        { start: 29, end: 5, month: 9, weekIndex: 1, name: '第2週：9/29-10/5', isCrossMonth: true },
+        { start: 6, end: 12, month: 10, weekIndex: 2, name: '第3週：10/6-10/12' },
+        { start: 13, end: 19, month: 10, weekIndex: 3, name: '第4週：10/13-10/19' },
+        { start: 20, end: 26, month: 10, weekIndex: 4, name: '第5週：10/20-10/26' },
+        { start: 27, end: 2, month: 10, weekIndex: 5, name: '第6週：10/27-11/2', isCrossMonth: true }
+    ];
+    
+    let targetWeekIndex = 1; // 預設顯示第2週（9/29-10/5）
+    
+    // 檢查當前日期是否在任一週的範圍內
+    for (const week of weekRanges) {
+        console.log(`🔍 檢查 ${week.name}...`);
+        
+        if (week.isCrossMonth) {
+            // 處理跨月情況
+            if (week.month === currentMonth) {
+                // 當前月份是開始月份（如9月29日）
+                if (currentDate >= week.start) {
+                    console.log(`✅ 匹配跨月週期開始部分: ${week.name}`);
+                    targetWeekIndex = week.weekIndex;
+                    break;
+                }
+            } else if (currentMonth === week.month + 1) {
+                // 當前月份是結束月份（如10月5日對於9/29-10/5）
+                if (currentDate <= week.end) {
+                    console.log(`✅ 匹配跨月週期結束部分: ${week.name}`);
+                    targetWeekIndex = week.weekIndex;
+                    break;
+                }
+            }
+        } else {
+            // 正常範圍（不跨月）
+            if (week.month === currentMonth) {
+                if (currentDate >= week.start && currentDate <= week.end) {
+                    console.log(`✅ 匹配正常週期: ${week.name}`);
+                    targetWeekIndex = week.weekIndex;
+                    break;
+                }
+            }
+        }
+    }
+    
+    console.log(`📅 最終選擇: ${weekRanges[targetWeekIndex]?.name || '未知週次'}`);
+    
+    // 額外驗證：確保邏輯正確性
+    const selectedWeek = weekRanges[targetWeekIndex];
+    if (selectedWeek) {
+        console.log(`✅ 選擇的週次: ${selectedWeek.name}`);
+        console.log(`📊 週次索引: ${selectedWeek.weekIndex}`);
+        
+        // 驗證選擇是否合理
+        if (selectedWeek.isCrossMonth) {
+            console.log(`🔄 跨月週期: 從${selectedWeek.month}月${selectedWeek.start}日到${selectedWeek.month + 1}月${selectedWeek.end}日`);
+        } else {
+            console.log(`📅 正常週期: ${selectedWeek.month}月${selectedWeek.start}日到${selectedWeek.end}日`);
+        }
+    } else {
+        console.warn(`⚠️ 未找到匹配的週次，使用預設第2週`);
+    }
+    
+    // 自動切換到對應週次
+    showWeek(targetWeekIndex);
+}
+
+/**
  * 初始化所有功能
  */
 function initializeApp() {
     console.log('🍽️ 四維商圈餐車月行程表已載入完成！');
     
-    // 初始化專案設定
+    // 初始化專案設定（如果模組存在）
     if (typeof projectConfig !== 'undefined') {
         projectConfig.initialize();
+    } else {
+        console.log('ℹ️ 專案設定模組未載入，跳過初始化');
     }
     
     // 初始化各種功能
     initializeTruckNames();
     initializeDayCards();
-    initializeKeyboardNavigation();
     initializeWeekTabs();
     initializePageAnimation();
     initializeImageMarquee();
+    
+    // 延遲執行自動選擇週次或 Google Sheets 整合
+    setTimeout(() => {
+        // 優先檢查餐車報名表整合
+        if (typeof bookingSheetsIntegration !== 'undefined' && 
+            bookingSheetsIntegration.BOOKING_SHEETS_CONFIG.ENABLED) {
+            console.log('🔗 啟用餐車報名表整合模式（從 Google Sheets）');
+            bookingSheetsIntegration.initBookingSheetsIntegration();
+        }
+        // 其次檢查簡易版整合
+        else if (typeof simpleSheetsIntegration !== 'undefined' && 
+            simpleSheetsIntegration.SIMPLE_SHEETS_CONFIG.ENABLED) {
+            console.log('🔗 啟用 Google Sheets 簡易整合模式');
+            simpleSheetsIntegration.initSimpleSheetsIntegration();
+        } 
+        // 最後使用本地資料
+        else {
+            console.log('⏰ 使用本地資料模式，開始執行自動週次選擇...');
+            autoSelectWeekByDate();
+        }
+    }, 100);
     
     // 設定定期檢查資料更新
     setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
@@ -1275,6 +1440,18 @@ function startMomentumScroll() {
     };
     
     animate();
+}
+
+// 測試函數 - 可以在控制台手動調用
+function testAutoWeekSelection() {
+    console.log('🧪 開始測試自動週次選擇功能');
+    autoSelectWeekByDate();
+}
+
+// 強制跳轉到特定週次的測試函數
+function forceShowWeek(weekNumber) {
+    console.log(`🔧 強制跳轉到第${weekNumber + 1}週`);
+    showWeek(weekNumber);
 }
 
 // 頁面載入完成後執行初始化
@@ -1716,13 +1893,13 @@ async function checkForRemoteUpdates() {
     try {
         // 檢查是否有 GitHub 同步模組
         if (typeof githubSync === 'undefined') {
-            console.log('⚠️ GitHub 同步模組未載入，跳過遠端更新檢查');
+            console.log('ℹ️ GitHub 同步模組未載入，跳過遠端更新檢查');
             return;
         }
 
         const status = githubSync.getProjectStatus();
         if (!status.hasProject) {
-            console.log('⚠️ 未設定專案，跳過遠端更新檢查');
+            console.log('ℹ️ 未設定專案，跳過遠端更新檢查');
             return;
         }
 
@@ -1821,6 +1998,13 @@ function showUpdateNotification(updateInfo) {
 async function updateFromRemote() {
     try {
         console.log('🔄 正在從遠端更新資料...');
+        
+        // 檢查是否有 GitHub 同步模組
+        if (typeof githubSync === 'undefined') {
+            console.log('⚠️ GitHub 同步模組未載入，無法更新');
+            alert('GitHub 同步模組未載入，無法更新資料');
+            return;
+        }
         
         const result = await githubSync.pullData('data.json');
         const data = JSON.parse(result.content);
