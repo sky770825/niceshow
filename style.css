@@ -4073,8 +4073,12 @@ body.loaded {
 
 /* ==================== TikTok 影片輪播（手機版滑軌）==================== */
 
-/* 基礎網格設定 - 電腦版並排 */
+/* 基礎網格設定 - 電腦版並排（默認四欄）*/
 .tiktok-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin: 0 auto;
     position: relative;
 }
 
