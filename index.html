@@ -174,6 +174,67 @@
                 </h3>
                 <p style="color: #888; font-size: 0.9rem;">精選房地產資訊影片</p>
                     </div>
+            
+            <!-- TikTok 載入前隱藏文字內容的樣式 -->
+            <style>
+                /* 隱藏 TikTok blockquote 的文字內容 */
+                .tiktok-embed {
+                    position: relative;
+                    background: #f8f9fa;
+                    border-radius: 12px;
+                    overflow: hidden;
+                }
+                
+                /* 隱藏所有文字內容 */
+                .tiktok-embed section,
+                .tiktok-embed p,
+                .tiktok-embed a {
+                    display: none !important;
+                }
+                
+                /* 載入動畫 */
+                .tiktok-embed::before {
+                    content: '📺 影片載入中...';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    color: #667eea;
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    z-index: 1;
+                }
+                
+                /* 載入動畫 - 旋轉圈 */
+                .tiktok-embed::after {
+                    content: '';
+                    position: absolute;
+                    top: calc(50% + 40px);
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 40px;
+                    height: 40px;
+                    border: 4px solid #f3f3f3;
+                    border-top: 4px solid #667eea;
+                    border-radius: 50%;
+                    animation: tiktok-spin 1s linear infinite;
+                    z-index: 1;
+                }
+                
+                @keyframes tiktok-spin {
+                    0% { transform: translate(-50%, -50%) rotate(0deg); }
+                    100% { transform: translate(-50%, -50%) rotate(360deg); }
+                }
+                
+                /* TikTok iframe 載入後，隱藏載入動畫 */
+                .tiktok-embed iframe {
+                    position: relative;
+                    z-index: 2;
+                }
+                
+                /* 當 TikTok embed.js 載入後，會自動將 blockquote 轉換成 iframe */
+                /* 這時載入動畫會被 iframe 覆蓋 */
+            </style>
                     
             <!-- 影片網格容器 -->
             <div class="tiktok-grid">

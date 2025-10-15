@@ -472,11 +472,38 @@ async function loadBookingSchedule() {
             return null;
         }
         
-        // 從 Google Sheets 讀取餐車報名表資料
+        // ==================== 優先使用快取 ====================
+        const cachedData = localStorage.getItem('scheduleData_booking');
+        const cachedTimestamp = localStorage.getItem('scheduleData_booking_timestamp');
+        const CACHE_DURATION = 5 * 60 * 1000; // 5分鐘快取時間
+        
+        if (cachedData && cachedTimestamp) {
+            const cacheAge = Date.now() - parseInt(cachedTimestamp);
+            
+            if (cacheAge < CACHE_DURATION) {
+                const remainingTime = Math.round((CACHE_DURATION - cacheAge) / 1000);
+                console.log(`💾 使用快取資料（快取剩餘時間: ${remainingTime}秒）`);
+                console.log('⚡ 載入速度: < 0.1秒（使用快取）');
+                return JSON.parse(cachedData);
+            } else {
+                console.log('⏰ 快取已過期，重新載入資料...');
+            }
+        } else {
+            console.log('📥 首次載入，從 Google Sheets 讀取資料...');
+        }
+        
+        // ==================== 從 Google Sheets 載入新資料 ====================
         const bookingData = await fetchBookingData();
         
         if (!bookingData) {
             console.warn('⚠️ 無法讀取餐車報名表資料');
+            
+            // 如果載入失敗但有舊快取，使用舊快取
+            if (cachedData) {
+                console.log('📱 使用舊快取資料（因為網路載入失敗）');
+                return JSON.parse(cachedData);
+            }
+            
             return null;
         }
         
@@ -485,22 +512,30 @@ async function loadBookingSchedule() {
         
         if (!scheduleData) {
             console.warn('⚠️ 餐車報名表資料轉換失敗');
+            
+            // 如果轉換失敗但有舊快取，使用舊快取
+            if (cachedData) {
+                console.log('📱 使用舊快取資料（因為資料轉換失敗）');
+                return JSON.parse(cachedData);
+            }
+            
             return null;
         }
         
         // 儲存到 localStorage（快取）
         localStorage.setItem('scheduleData_booking', JSON.stringify(scheduleData));
         localStorage.setItem('scheduleData_booking_timestamp', Date.now().toString());
+        console.log('💾 資料已儲存到快取（5分鐘內不會重新載入）');
         
         return scheduleData;
         
     } catch (error) {
         console.error('❌ 載入餐車報名表資料失敗:', error);
         
-        // 嘗試使用快取資料
+        // 嘗試使用快取資料（緊急備援）
         const cachedData = localStorage.getItem('scheduleData_booking');
         if (cachedData) {
-            console.log('📱 使用本地快取資料（因為網路載入失敗）');
+            console.log('📱 使用本地快取資料（因為發生錯誤）');
             return JSON.parse(cachedData);
         }
         
