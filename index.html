@@ -265,7 +265,18 @@
                 <span class="tiktok-dot" onclick="scrollToVideo(3)"></span>
                     </div>
                     
-            <script async src="https://www.tiktok.com/embed.js"></script>
+            <script>
+                // 延遲載入 TikTok embed.js，減少初始載入時間
+                window.addEventListener('load', function() {
+                    setTimeout(function() {
+                        const script = document.createElement('script');
+                        script.src = 'https://www.tiktok.com/embed.js';
+                        script.async = true;
+                        document.body.appendChild(script);
+                        console.log('📺 TikTok embed.js 延遲載入完成');
+                    }, 2000); // 2秒後才載入 TikTok
+                });
+            </script>
             
             <!-- 滑動控制腳本 -->
             <script>

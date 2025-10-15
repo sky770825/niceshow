@@ -47,6 +47,7 @@ async function fetchBookingData() {
         const csvURL = `https://docs.google.com/spreadsheets/d/${BOOKING_SHEETS_CONFIG.SHEET_ID}/export?format=csv&gid=${BOOKING_SHEETS_CONFIG.SHEET_GID}`;
         
         console.log('🌐 正在從 Google Sheets 讀取餐車報名表資料...');
+        console.time('⏱️ Google Sheets 載入時間');
         
         const response = await fetch(csvURL);
         if (!response.ok) {
@@ -54,6 +55,7 @@ async function fetchBookingData() {
         }
         
         const csvText = await response.text();
+        console.timeEnd('⏱️ Google Sheets 載入時間');
         
         // 解析 CSV
         const rows = parseBookingCSV(csvText);
