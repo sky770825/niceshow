@@ -1,2628 +1,922 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="楊梅人在地生活集 - 提供房產工具、生活服務、補助優惠等一站式服務">
-<meta name="keywords" content="房產,房貸,裝潢,補助,生活服務,房產計算器,房貸試算,裝潢估價">
-<meta name="author" content="楊梅人在地生活集">
-<meta name="robots" content="index, follow">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<!-- PWA相關 -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#6366f1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="楊梅人在地生活">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%238b5cf6;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='32' fill='url(%23grad1)'/%3E%3Ctext x='96' y='110' font-family='Arial, sans-serif' font-size='80' font-weight='bold' text-anchor='middle' fill='white'%3E🏠%3C/text%3E%3C/svg%3E">
-
-<!-- 結構化數據 -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "楊梅人在地生活集",
-  "url": "https://realtor-platform.com",
-  "description": "提供房產工具、生活服務、補助優惠等一站式服務",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://realtor-platform.com/search?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
-
-<title>楊梅人在地生活集 - 房產工具、生活服務一站式平台</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-<link rel="preload" href="https://cdn.tailwindcss.com" as="script">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" as="style">
-<style>
-:root{
-  --grad:linear-gradient(135deg,#6366f1,#8b5cf6);
-  --grad-secondary:linear-gradient(135deg,#f59e0b,#ef4444);
-  --grad-success:linear-gradient(135deg,#10b981,#059669);
-  --grad-warning:linear-gradient(135deg,#f59e0b,#d97706);
-  --grad-info:linear-gradient(135deg,#3b82f6,#1d4ed8);
-  --grad-worship:linear-gradient(135deg,#8b5cf6,#a855f7,#c084fc);
-  --glass-bg:rgba(255,255,255,0.7);
-  --glass-dark:rgba(30,30,30,0.7);
-  --glass-worship:rgba(139,92,246,0.15);
-  --shadow-light:0 4px 20px rgba(0,0,0,.08);
-  --shadow-hover:0 8px 30px rgba(0,0,0,.12);
-  --shadow-glow:0 0 30px rgba(99,102,241,0.4);
-  --shadow-worship:0 0 25px rgba(139,92,246,0.3);
-  --border-radius:1.25rem;
-  --transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --bounce:all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  --backdrop-blur:blur(20px);
-}
-
-/* 基礎樣式 */
-body{
-  background:linear-gradient(135deg,#f0f4ff 0%,#e0e7ff 50%,#fff 100%);
-  background-attachment:fixed;
-  transition:var(--transition);
-  font-family:system-ui,-apple-system,sans-serif;
-  line-height:1.6;
-  position:relative;
-}
-body::before{
-  content:'';
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:radial-gradient(circle at 20% 80%,rgba(99,102,241,0.1) 0%,transparent 50%),
-              radial-gradient(circle at 80% 20%,rgba(139,92,246,0.1) 0%,transparent 50%),
-              radial-gradient(circle at 40% 40%,rgba(59,130,246,0.05) 0%,transparent 50%);
-  pointer-events:none;
-  z-index:-1;
-}
-body.dark{
-  background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#334155 100%);
-  color:#e2e8f0;
-}
-body.dark::before{
-  background:radial-gradient(circle at 20% 80%,rgba(99,102,241,0.15) 0%,transparent 50%),
-              radial-gradient(circle at 80% 20%,rgba(139,92,246,0.15) 0%,transparent 50%),
-              radial-gradient(circle at 40% 40%,rgba(59,130,246,0.1) 0%,transparent 50%);
-}
-
-/* 玻璃擬態效果 */
-.glass-card{
-  background:var(--glass-bg);
-  backdrop-filter:var(--backdrop-blur);
-  -webkit-backdrop-filter:var(--backdrop-blur);
-  border-radius:var(--border-radius);
-  border:1px solid rgba(255,255,255,0.3);
-  box-shadow:var(--shadow-light);
-  transition:var(--transition);
-}
-body.dark .glass-card{
-  background:var(--glass-dark);
-  border:1px solid rgba(255,255,255,0.15);
-}
-.glass-card:hover{
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-hover);
-}
-
-/* 應用卡片 */
-.app-card{
-  text-align:center;
-  padding:1rem;
-  border-radius:var(--border-radius);
-  box-shadow:var(--shadow-light);
-  cursor:pointer;
-  transition:var(--bounce);
-  min-height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:600;
-  font-size:0.9rem;
-  position:relative;
-  overflow:hidden;
-}
-.app-card::before{
-  content:'';
-  position:absolute;
-  top:0;
-  left:-100%;
-  width:100%;
-  height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
-  transition:left 0.5s;
-}
-.app-card:hover::before{
-  left:100%;
-}
-.app-card:hover{
-  transform:translateY(-6px) scale(1.02);
-  box-shadow:var(--shadow-hover);
-}
-.app-card:focus{
-  outline:3px solid #6366f1;
-  outline-offset:3px;
-}
-
-/* 特殊卡片樣式 */
-.app-card.property{background:var(--grad);color:#fff;box-shadow:0 4px 20px rgba(99,102,241,0.3);}
-.app-card.life{background:var(--grad-success);color:#fff;box-shadow:0 4px 20px rgba(16,185,129,0.3);}
-.app-card.fun{background:var(--grad-warning);color:#fff;box-shadow:0 4px 20px rgba(245,158,11,0.3);}
-.app-card.tool{background:var(--grad-info);color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.3);}
-.app-card.investment{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;box-shadow:0 4px 20px rgba(102,126,234,0.3);}
-.app-card.renovation{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:#fff;box-shadow:0 4px 20px rgba(67,233,123,0.3);}
-.app-card.subsidy{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;box-shadow:0 4px 20px rgba(250,112,154,0.3);}
-.app-card.local{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:#fff;box-shadow:0 4px 20px rgba(79,172,254,0.3);}
-.app-card.food{background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);color:#fff;box-shadow:0 4px 20px rgba(245,158,11,0.3);}
-.app-card.assistant{background:linear-gradient(135deg,#06b6d4 0%,#3b82f6 100%);color:#fff;box-shadow:0 4px 20px rgba(6,182,212,0.3);}
-.app-card.worship{
-  background:var(--grad-worship);
-  color:#fff;
-  box-shadow:var(--shadow-worship);
-  position:relative;
-  animation:worshipGlow 3s ease-in-out infinite;
-}
-.app-card.worship::after{
-  content:'✨';
-  position:absolute;
-  top:5px;
-  right:5px;
-  font-size:0.8rem;
-  animation:sparkle 2s ease-in-out infinite;
-}
-
-/* 趣味互動主題樣式 */
-.fun-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.fun-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-body.dark .fun-card {
-  background: rgba(30, 30, 30, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* 輕鬆時光 - 簡潔現代風格 */
-.relaxed-card {
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  position: relative;
-  overflow: hidden;
-}
-
-.relaxed-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.relaxed-card:hover::before {
-  opacity: 1;
-}
-
-.relaxed-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.relaxed-card.games {
-  border-color: #6366f1;
-  background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%);
-}
-
-.relaxed-card.games:hover {
-  border-color: #4f46e5;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  color: white;
-}
-
-.relaxed-card.fortune {
-  border-color: #ec4899;
-  background: linear-gradient(135deg, #fdf2f8 0%, #ffffff 100%);
-}
-
-.relaxed-card.fortune:hover {
-  border-color: #db2777;
-  background: linear-gradient(135deg, #ec4899 0%, #f59e0b 100%);
-  color: white;
-}
-
-.relaxed-card.mbti {
-  border-color: #06b6d4;
-  background: linear-gradient(135deg, #f0fdff 0%, #ffffff 100%);
-}
-
-.relaxed-card.mbti:hover {
-  border-color: #0891b2;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  color: white;
-}
-
-.relaxed-card.quote {
-  border-color: #10b981;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-}
-
-.relaxed-card.quote:hover {
-  border-color: #059669;
-  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-  color: white;
-}
-
-.relaxed-card .card-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.relaxed-card:hover .card-icon {
-  transform: scale(1.1);
-}
-
-.relaxed-card .card-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #374151;
-  transition: color 0.3s ease;
-}
-
-.relaxed-card:hover .card-title {
-  color: white;
-}
-
-/* 深色模式 */
-body.dark .relaxed-card {
-  background: #1f2937;
-  border-color: #374151;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-body.dark .relaxed-card .card-title {
-  color: #f9fafb;
-}
-
-body.dark .relaxed-card.games {
-  background: linear-gradient(135deg, #1e1b4b 0%, #1f2937 100%);
-}
-
-body.dark .relaxed-card.fortune {
-  background: linear-gradient(135deg, #451a03 0%, #1f2937 100%);
-}
-
-body.dark .relaxed-card.mbti {
-  background: linear-gradient(135deg, #164e63 0%, #1f2937 100%);
-}
-
-body.dark .relaxed-card.quote {
-  background: linear-gradient(135deg, #064e3b 0%, #1f2937 100%);
-}
-
-/* 響應式 */
-@media (max-width: 640px) {
-  .relaxed-card {
-    padding: 1rem;
-  }
-  
-  .relaxed-card .card-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .relaxed-card .card-title {
-    font-size: 0.875rem;
-  }
-}
-
-.fortune-card {
-  background: linear-gradient(135deg, #8b5cf6, #a855f7);
-  color: white;
-}
-
-.mbti-card {
-  background: linear-gradient(135deg, #f59e0b, #f97316);
-  color: white;
-}
-
-.mini-fun-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.mini-fun-card:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
-
-body.dark .mini-fun-card {
-  background: rgba(30, 30, 30, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-
-/* 載入動畫 */
-.loading{
-  opacity:0;
-  transform:translateY(20px);
-  transition:var(--transition);
-}
-.loading.loaded{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* 圖片載入錯誤處理 */
-.image-error{
-  background:linear-gradient(45deg,#f3f4f6,#e5e7eb);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#6b7280;
-  font-size:0.875rem;
-}
-
-/* RWD 響應式設計 */
-@media (max-width: 640px) {
-  .grid-cols-3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .grid-cols-4 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .app-card {
-    min-height: 70px;
-    padding: 0.5rem;
-    font-size: 0.75rem;
-  }
-  /* 手機版圖標大小調整 */
-  .app-card .text-3xl {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
-  }
-  .app-card .text-2xl {
-    font-size: 1.25rem;
-    margin-bottom: 0.25rem;
-  }
-  /* 手機版標籤位置調整 - 避免與圖標重疊 */
-  .app-card .absolute.top-2.right-2 {
-    top: 0.25rem;
-    right: 0.25rem;
-    font-size: 0.625rem;
-    padding: 0.125rem 0.375rem;
-    line-height: 1.2;
-    z-index: 20;
-  }
-  /* 手機版底部標籤調整 */
-  .app-card .absolute.bottom-2.right-2 {
-    bottom: 0.25rem;
-    right: 0.25rem;
-    font-size: 0.625rem;
-    padding: 0.125rem 0.375rem;
-    line-height: 1.2;
-  }
-  /* 手機版卡片內容區域調整 */
-  .app-card.text-center {
-    padding-top: 0.75rem;
-    padding-bottom: 0.5rem;
-  }
-  /* 手機版卡片文字調整 */
-  .app-card .text-sm {
-    font-size: 0.7rem;
-  }
-  .app-card .text-xs {
-    font-size: 0.6rem;
-  }
-  /* 確保圖標和標籤有足夠空間 */
-  .app-card .relative.z-10 {
-    padding-top: 0.5rem;
-  }
-}
-
-@media (min-width: 641px) and (max-width: 1024px) {
-  .grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .app-card {
-    min-height: 60px;
-  }
-}
-
-@media (min-width: 1025px) {
-  .grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .app-card {
-    min-height: 60px;
-  }
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-}
-
-/* 底部導航優化 */
-.bottom-nav {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-/* 無障礙設計 */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* 動畫效果 */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
-    transform: translate3d(0,0,0);
-  }
-  40%, 43% {
-    transform: translate3d(0, -30px, 0);
-  }
-  70% {
-    transform: translate3d(0, -15px, 0);
-  }
-  90% {
-    transform: translate3d(0, -4px, 0);
-  }
-}
-
-/* 浮動動畫 */
-.float-animation {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* 脈衝動畫 */
-.pulse-animation {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* 滑入動畫 */
-.slide-in {
-  animation: slideInUp 0.6s ease-out;
-}
-
-/* 彈跳動畫 */
-.bounce-animation {
-  animation: bounce 1s ease-in-out;
-}
-
-/* 拜拜專區特殊動畫 */
-@keyframes worshipGlow {
-  0%, 100% { 
-    box-shadow: 0 0 25px rgba(139,92,246,0.3);
-    transform: scale(1);
-  }
-  50% { 
-    box-shadow: 0 0 35px rgba(139,92,246,0.5);
-    transform: scale(1.02);
-  }
-}
-
-@keyframes sparkle {
-  0%, 100% { 
-    opacity: 0.7;
-    transform: scale(1) rotate(0deg);
-  }
-  50% { 
-    opacity: 1;
-    transform: scale(1.2) rotate(180deg);
-  }
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* 通用動畫效果 */
-@keyframes homeGlow {
-  0%, 100% { 
-    transform: scale(1);
-    filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
-  }
-  50% { 
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.8));
-  }
-}
-
-@keyframes lightBounce {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-10px) rotate(5deg); }
-  50% { transform: translateY(-5px) rotate(0deg); }
-  75% { transform: translateY(-8px) rotate(-5deg); }
-}
-
-@keyframes starTwinkle {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(90deg) scale(1.1); }
-  50% { transform: rotate(180deg) scale(1); }
-  75% { transform: rotate(270deg) scale(1.1); }
-}
-
-.home-glow {
-  animation: homeGlow 3s ease-in-out infinite;
-}
-
-.light-bounce {
-  animation: lightBounce 2s ease-in-out infinite;
-}
-
-.star-twinkle {
-  animation: starTwinkle 4s ease-in-out infinite;
-}
-
-/* 媒體展示區樣式 */
-.media-thumbnail {
-  transition: all 0.3s ease;
-  border-radius: 0.75rem;
-  overflow: hidden;
-}
-
-.media-thumbnail:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.media-thumbnail.active {
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 2px #ec4899, 0 8px 25px rgba(236, 72, 153, 0.3);
-}
-
-.media-thumbnail.active::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(236, 72, 153, 0.1) 50%, transparent 70%);
-  animation: shimmer 2s ease-in-out infinite;
-}
-
-/* 媒體播放器樣式 */
-.media-player {
-  position: relative;
-  background: #000;
-  border-radius: 1rem;
-  overflow: hidden;
-}
-
-.media-controls {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  padding: 1rem;
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
-}
-
-.media-player:hover .media-controls {
-  transform: translateY(0);
-}
-
-/* 響應式媒體展示 */
-@media (max-width: 640px) {
-  .media-thumbnail {
-    border-radius: 0.5rem;
-  }
-  
-  .media-thumbnail .text-2xl {
-    font-size: 1.5rem;
-  }
-  
-  .media-thumbnail .text-xs {
-    font-size: 0.625rem;
-  }
-}
-
-
-/* 按鈕點擊修復 */
-.cta-button {
-  pointer-events: auto !important;
-  position: relative !important;
-  z-index: 9999 !important;
-}
-
-.cta-button:hover {
-  pointer-events: auto !important;
-}
-
-.cta-button:active {
-  pointer-events: auto !important;
-}
-
-/* 動畫優化 */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四維商圈餐車月行程表 - 2024年9-11月 | 楊梅美食地圖 | 一鍵導航</title>
+    <meta name="description" content="🍽️ 四維商圈餐車月行程表 - 2024年9-11月完整美食地圖！提供楊梅四維路餐車營業時間、地點資訊，一鍵開啟Google Maps導航。包含饞了找我、宇宙雞蛋糕、台東放山豬等熱門餐車，美食愛好者必收藏！">
+    <meta name="keywords" content="四維商圈,餐車,行程表,美食,導航,四維路,楊梅,桃園,美食地圖,餐車推薦,2024,9月,10月,11月,Google Maps,一鍵導航,美食推薦,楊梅美食">
+    <meta name="author" content="四維商圈餐車月行程表">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <link rel="canonical" href="https://your-domain.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain.com/">
+    <meta property="og:title" content="四維商圈餐車月行程表 - 2024年9-11月 | 楊梅美食地圖">
+    <meta property="og:description" content="🍽️ 四維商圈餐車月行程表 - 2024年9-11月完整美食地圖！提供楊梅四維路餐車營業時間、地點資訊，一鍵開啟Google Maps導航。">
+    <meta property="og:image" content="https://your-domain.com/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="四維商圈餐車月行程表">
+    <meta property="og:locale" content="zh_TW">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-domain.com/">
+    <meta property="twitter:title" content="四維商圈餐車月行程表 - 2024年9-11月 | 楊梅美食地圖">
+    <meta property="twitter:description" content="🍽️ 四維商圈餐車月行程表 - 2024年9-11月完整美食地圖！提供楊梅四維路餐車營業時間、地點資訊，一鍵開啟Google Maps導航。">
+    <meta property="twitter:image" content="https://your-domain.com/og-image.jpg">
+    
+    <!-- 額外的 SEO 標籤 -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="四維商圈餐車">
+    
+    <!-- 結構化資料 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "四維商圈餐車月行程表",
+        "description": "四維商圈餐車月行程表，提供完整的9-11月份餐車營業時間和地點資訊，包含Google Maps導航功能",
+        "url": "https://your-domain.com/",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://your-domain.com/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "四維商圈餐車月行程表",
+            "url": "https://your-domain.com/"
+        },
+        "mainEntity": {
+            "@type": "ItemList",
+            "name": "四維商圈餐車清單",
+            "description": "2024年9-11月四維商圈餐車營業時間表",
+            "itemListElement": [
+                {
+                    "@type": "FoodEstablishment",
+                    "name": "饞了找我",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": "四維路70號",
+                        "addressLocality": "楊梅區",
+                        "addressRegion": "桃園市",
+                        "addressCountry": "TW"
+                    }
+                },
+                {
+                    "@type": "FoodEstablishment", 
+                    "name": "宇宙雞蛋糕",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": "四維路60號",
+                        "addressLocality": "楊梅區",
+                        "addressRegion": "桃園市",
+                        "addressCountry": "TW"
+                    }
+                },
+                {
+                    "@type": "FoodEstablishment",
+                    "name": "台東放山豬石板烤肉",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": "四維路216號",
+                        "addressLocality": "楊梅區",
+                        "addressRegion": "桃園市",
+                        "addressCountry": "TW"
+                    }
+                }
+            ]
+        }
+    }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- 預載入關鍵資源 -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    
+    <!-- DNS 預解析 -->
+    <link rel="dns-prefetch" href="//maps.app.goo.gl">
+    <link rel="dns-prefetch" href="//res.cloudinary.com">
+    
+    <!-- 載入專案設定和 GitHub 同步模組 -->
+    <!-- 注意：以下檔案在當前版本中不存在，已移除引用以避免載入錯誤 -->
+    <!-- <script src="project-config.js" defer></script> -->
+    <!-- <script src="github-sync.js" defer></script> -->
+    <!-- <script src="auto-setup-token.js" defer></script> -->
+    <!-- <script src="update-checker.js" defer></script> -->
+    
+    <!-- Google Sheets 簡易整合（免 API Key） -->
+    <!-- <script src="sheets-simple.js" defer></script> -->
+    
+    <!-- Google Sheets 餐車報名表整合（推薦使用） -->
+    <script src="sheets-booking.js" defer></script>
 </head>
 <body>
-
-
-<!-- 🌈 Hero 區 - 增強版 -->
-<header class="text-white text-center py-8 shadow-lg relative overflow-hidden" style="background:linear-gradient(135deg, #1e3a8a, #7c3aed, #ec4899);">
-  <!-- 動態背景裝飾 -->
-  <div class="absolute inset-0 opacity-30">
-    <div class="absolute top-4 left-4 text-4xl animate-pulse">🏠</div>
-    <div class="absolute top-8 right-8 text-3xl animate-bounce" style="animation-delay: 0.5s;">💡</div>
-    <div class="absolute bottom-6 left-12 text-2xl animate-pulse" style="animation-delay: 1s;">🌟</div>
-    <div class="absolute bottom-4 right-4 text-3xl animate-pulse" style="animation-delay: 1.5s;">✨</div>
-    <!-- 新增浮動元素 -->
-    <div class="absolute top-1/4 left-1/4 text-2xl animate-float" style="animation-delay: 2s;">⭐</div>
-    <div class="absolute top-1/3 right-1/3 text-xl animate-float" style="animation-delay: 2.5s;">🎯</div>
-    <div class="absolute bottom-1/3 left-1/3 text-lg animate-float" style="animation-delay: 3s;">💫</div>
-  </div>
-  
-  <!-- 動態粒子效果 -->
-  <div class="absolute inset-0" id="particles"></div>
-  
-  <div class="relative z-10">
-    <h1 class="text-4xl font-bold mb-2 animate-slide-in">快樂楊梅人在地生活集</h1>
-    <p class="text-lg opacity-90 mb-4 animate-slide-in" style="animation-delay: 0.2s;">房產工具｜生活服務｜補助優惠｜輕鬆時光</p>
-    
-    <!-- 動態問候語 -->
-    <div class="mt-4 mb-6">
-      <div id="dynamicGreeting" class="text-yellow-200 text-lg font-semibold animate-pulse">
-        <span id="greetingText">🌟 歡迎來到楊梅人在地生活集！</span>
-      </div>
-    </div>
-    
-    <!-- 快速統計 -->
-    <div class="flex justify-center gap-6 mb-6 text-sm">
-      <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 animate-slide-in" style="animation-delay: 0.4s;">
-        <span class="font-bold" id="userCount">12,345</span> 位用戶
-      </div>
-      <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 animate-slide-in" style="animation-delay: 0.6s;">
-        <span class="font-bold">50+</span> 實用工具
-      </div>
-      <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 animate-slide-in" style="animation-delay: 0.8s;">
-        <span class="font-bold">24/7</span> 服務
-      </div>
-    </div>
-  </div>
-  
-  <!-- 增強搜尋框 -->
-  <div class="max-w-md mx-auto mt-6 relative animate-slide-in z-20" style="animation-delay: 1s;">
-    <div class="relative">
-      <input 
-        type="text" 
-        id="mainSearchInput" 
-        class="w-full px-6 py-3 rounded-full text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-indigo-600 shadow-lg transform transition-all duration-300 hover:scale-105" 
-        placeholder="🔍 搜尋功能、服務或工具..."
-        onkeypress="handleSearchEnter(event)"
-        onfocus="this.parentElement.classList.add('search-focused')"
-        onblur="this.parentElement.classList.remove('search-focused')"
-      >
-      <button onclick="openSearch()" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl">
-        <span class="hidden sm:inline">搜尋</span>
-        <span class="sm:hidden">🔍</span>
-      </button>
-    </div>
-    
-    <!-- 搜尋建議 -->
-    <div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl hidden z-20">
-      <div class="p-2">
-        <div class="text-xs text-gray-500 px-3 py-1">熱門搜尋</div>
-        <div class="suggestion-item px-3 py-2 hover:bg-indigo-50 rounded-lg cursor-pointer text-gray-700" onclick="quickSearch('房貸試算')">💰 房貸試算</div>
-        <div class="suggestion-item px-3 py-2 hover:bg-indigo-50 rounded-lg cursor-pointer text-gray-700" onclick="quickSearch('天氣預報')">🌦 天氣預報</div>
-        <div class="suggestion-item px-3 py-2 hover:bg-indigo-50 rounded-lg cursor-pointer text-gray-700" onclick="quickSearch('垃圾車時間')">🗑 垃圾車時間</div>
-        <div class="suggestion-item px-3 py-2 hover:bg-indigo-50 rounded-lg cursor-pointer text-gray-700" onclick="quickSearch('發票對獎')">🧾 發票對獎</div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- 增強CTA按鈕 -->
-  <div class="flex justify-center gap-4 mt-6 animate-slide-in relative z-40" style="animation-delay: 1.2s;">
-    <button onclick="openTool('https://lin.ee/Ij6z94H')" class="cta-button bg-gradient-to-r from-white to-yellow-100 text-indigo-600 font-bold px-8 py-3 rounded-full shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/50 relative z-50 cursor-pointer" aria-label="前往LINE客服估價">
-      <span class="flex items-center gap-2">
-        <span>房屋估價</span>
-        <span class="text-xs bg-indigo-100 px-2 py-1 rounded-full">免費</span>
-      </span>
-    </button>
-    <button onclick="showVendorPopup()" class="cta-button bg-gradient-to-r from-white to-pink-100 text-indigo-600 font-bold px-8 py-3 rounded-full shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/50 relative z-50 cursor-pointer" aria-label="廠商進駐曝光">
-      <span class="flex items-center gap-2">
-        <span>廠商進駐</span>
-        <span class="text-xs bg-pink-200 px-2 py-1 rounded-full">曝光</span>
-      </span>
-    </button>
-  </div>
-  
-</header>
-
-<main class="px-3 py-2 pb-16 space-y-4">
-
-<!-- 🎮 輕鬆時光 - 增強互動版 -->
-<section class="glass-card p-4 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-      <span class="text-2xl animate-bounce">🎮</span>
-      <span>輕鬆時光</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-orange-500 to-red-500 ml-2"></div>
-    </h2>
-    <div class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
-      <span id="funStats">今日已有 <span class="font-bold text-orange-600">1,234</span> 人使用</span>
-    </div>
-  </div>
-  
-  <div class="grid grid-cols-4 gap-3">
-    <div class="relaxed-card games group relative overflow-hidden" onclick="openTool('games.html')" onmouseenter="showCardPreview('games')" onmouseleave="hideCardPreview()">
-      <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <span class="card-icon group-hover:animate-spin">🎮</span>
-      <span class="card-title">遊戲</span>
-      <div class="absolute bottom-2 right-2 text-xs bg-blue-500 text-white px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        熱門
-      </div>
-    </div>
-    <div class="relaxed-card fortune group relative overflow-hidden" onclick="openTool('fortune.html')" onmouseenter="showCardPreview('fortune')" onmouseleave="hideCardPreview()">
-      <div class="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <span class="card-icon group-hover:animate-pulse">🔮</span>
-      <span class="card-title">運勢</span>
-      <div class="absolute bottom-2 right-2 text-xs bg-pink-500 text-white px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        每日更新
-      </div>
-    </div>
-    <div class="relaxed-card mbti group relative overflow-hidden" onclick="openTool('mbti.html')" onmouseenter="showCardPreview('mbti')" onmouseleave="hideCardPreview()">
-      <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <span class="card-icon group-hover:animate-bounce">🧩</span>
-      <span class="card-title">MBTI</span>
-      <div class="absolute bottom-2 right-2 text-xs bg-cyan-500 text-white px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        心理測驗
-      </div>
-    </div>
-    <div class="relaxed-card quote group relative overflow-hidden" onclick="openTool('daily-quote.html')" onmouseenter="showCardPreview('quote')" onmouseleave="hideCardPreview()">
-      <div class="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <span class="card-icon group-hover:animate-pulse">📝</span>
-      <span class="card-title">金句</span>
-      <div class="absolute bottom-2 right-2 text-xs bg-green-500 text-white px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        每日一句
-      </div>
-    </div>
-  </div>
-  
-  <!-- 卡片預覽浮層 -->
-  <div id="cardPreview" class="absolute bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl shadow-xl p-4 z-30 hidden transform transition-all duration-300">
-    <div id="previewContent"></div>
-  </div>
-</section>
-
-<!-- 🏠 熱門服務 - 房產相關主要功能 -->
-<section class="glass-card p-6 shadow-lg hover:shadow-xl transition-all duration-500">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <span class="text-3xl animate-pulse">🏠</span>
-      <span>熱門服務</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-indigo-500 to-purple-500 ml-2"></div>
-    </h2>
-    <div class="text-sm text-gray-500 bg-indigo-100 dark:bg-indigo-900 px-3 py-1 rounded-full">
-      <span class="font-bold text-indigo-600 dark:text-indigo-400">專業服務</span>
-    </div>
-  </div>
-  
-  <div class="grid grid-cols-4 gap-4">
-    <div class="app-card glass-card property group relative overflow-hidden" onclick="openTool('https://housepice.pages.dev/%E4%B8%89%E5%90%88%E4%B8%80%E6%88%BF%E5%83%B9%E6%99%AE%E7%89%B9%E7%B5%B2')">
-      <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://www.money168.com.tw/photos/shares/blog/houseloan-rating1.png" 
-               alt="房貸試算" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-indigo-400 to-purple-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">💰</div>
-        </div>
-        <div class="font-bold">房貸試算</div>
-        <div class="text-xs opacity-75 mt-1">智慧估算</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-yellow-500 text-white px-2 py-1 rounded-full animate-pulse">
-        熱門
-      </div>
-    </div>
-    
-    <div class="app-card glass-card property group relative overflow-hidden" onclick="openTool('https://www.crowncare.tw/')">
-      <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/19854504/345351_267395.png" 
-               alt="冠冕居服" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">🏥</div>
-        </div>
-        <div class="font-bold">冠冕居服</div>
-        <div class="text-xs opacity-75 mt-1">長照機構</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-emerald-500 text-white px-2 py-1 rounded-full">
-        專業
-      </div>
-    </div>
-    
-    <div class="app-card glass-card property group relative overflow-hidden" onclick="openTool('https://flyjung168.pages.dev/')">
-      <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://i.postimg.cc/HsdVnbxd/305309079-589778059610822-6846629891160327258-n.jpg" 
-               alt="精選物件" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">🌟</div>
-        </div>
-        <div class="font-bold">精選物件</div>
-        <div class="text-xs opacity-75 mt-1">優質房源</div>
-      </div>
-    </div>
-    
-    <div class="app-card glass-card worship group relative overflow-hidden" onclick="openTool('worship.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://hips.hearstapps.com/hmg-prod/images/incense-burning-at-chinese-taoism-mazu-temple-royalty-free-image-1739334450.pjpeg?crop=1xw:1xh;center,top&resize=1200:*" 
-               alt="拜拜專區" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">🙏</div>
-        </div>
-        <div class="font-bold">拜拜專區</div>
-        <div class="text-xs opacity-75 mt-1">心靈寄託</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-purple-500 text-white px-2 py-1 rounded-full">
-        特殊
-      </div>
-    </div>
-    
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('renovation.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://da-interior.com/wp-content/uploads/2022/11/1-2-1-768x512.jpg.webp" 
-               alt="裝潢設計" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">設</div>
-        </div>
-        <div class="font-bold">裝潢設計</div>
-        <div class="text-xs opacity-75 mt-1">設計規劃</div>
-      </div>
-    </div>
-    
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('tax-calc.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="text-3xl mb-2 group-hover:animate-bounce">📄</div>
-        <div class="font-bold">稅費試算</div>
-        <div class="text-xs opacity-75 mt-1">精確計算</div>
-      </div>
-    </div>
-    
-    <div class="app-card glass-card investment group relative overflow-hidden" onclick="openTool('https://salersteam.pages.dev/junyang')">
-      <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://p1-news.hfcdn.com/p1-news/MTAxNDI2NG5ld3M,/7195593be74e0322.jpg/qs/w=600&h=600&r=16888" 
-               alt="新案預售" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-indigo-400 to-blue-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">🏘️</div>
-        </div>
-        <div class="font-bold">新案預售</div>
-        <div class="text-xs opacity-75 mt-1">限額參加</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-red-500 text-white px-2 py-1 rounded-full animate-pulse">
-        熱門
-      </div>
-    </div>
-
-    <!-- 計程車行 -->
-    <div class="app-card glass-card life group relative overflow-hidden" onclick="openTool('taxi.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=100&h=100&fit=crop&crop=center" 
-               alt="計程車行" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-yellow-400 to-amber-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">🚕</div>
-        </div>
-        <div class="font-bold">計程車行</div>
-        <div class="text-xs opacity-75 mt-1">叫車服務</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-yellow-500 text-white px-2 py-1 rounded-full">
-        新增
-      </div>
-    </div>
-    
-    <div class="app-card glass-card subsidy group relative overflow-hidden col-span-2" onclick="openTool('subsidy.html')">
-      <div class="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-rose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://s.yimg.com/ny/api/res/1.2/X4DeSN.iSc_r8JgoM5gF7w--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtoPTEyMDA7Y2Y9d2VicA--/https://s.yimg.com/os/creatr-uploaded-images/2025-10/88c16540-b4c8-11f0-b2da-09c48e3693e6" 
-               alt="補助優惠" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-pink-400 to-rose-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">💸</div>
-        </div>
-        <div class="font-bold text-lg">補助優惠</div>
-        <div class="text-sm opacity-75 mt-1">政府補助、優惠資訊一網打盡</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-red-500 text-white px-2 py-1 rounded-full animate-pulse">
-        限時優惠
-      </div>
-    </div>
-    
-    <!-- 二手交易 -->
-    <div class="app-card glass-card life group relative overflow-hidden col-span-2" onclick="openTool('second-hand.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="text-3xl mb-2 group-hover:animate-bounce">♻️</div>
-        <div class="font-bold text-lg">二手交易</div>
-        <div class="text-sm opacity-75 mt-1">刊登物品、照片與聯絡方式</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-emerald-500 text-white px-2 py-1 rounded-full">
-        新區塊
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 🛠️ 生活服務推薦 -->
-<section class="glass-card p-4 shadow-lg hover:shadow-xl transition-all duration-500">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <span class="text-3xl animate-pulse">🛠️</span>
-      <span>生活服務推薦</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-orange-500 to-red-500 ml-2"></div>
-    </h2>
-    <div class="text-sm text-gray-500 bg-orange-100 dark:bg-orange-900 px-3 py-1 rounded-full">
-      <span class="font-bold text-orange-600 dark:text-orange-400">在地服務</span>
-    </div>
-  </div>
-  
-  <div class="grid grid-cols-4 gap-4">
-    <!-- 水電修繕 -->
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('water-electric.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=100&h=100&fit=crop&crop=center" 
-               alt="水電修繕" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">水</div>
-        </div>
-        <div class="font-bold text-sm">水電修繕</div>
-        <div class="text-xs opacity-75 mt-1">待新增</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-gray-500 text-white px-2 py-1 rounded-full">
-        待新增
-      </div>
-    </div>
-    
-    <!-- 驗屋公司 -->
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('inspection-company.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://i.postimg.cc/3xmFgXhD/1761779534302.jpg" 
-               alt="驗屋公司" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">驗</div>
-        </div>
-        <div class="font-bold text-sm">驗屋公司</div>
-        <div class="text-xs opacity-75 mt-1">專業檢查</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-green-500 text-white px-2 py-1 rounded-full">
-        專業
-      </div>
-    </div>
-    
-    <!-- 防霾紗網 -->
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('anti-dust-screen.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://www.cikai.com.tw/images/firm/polltex-a/01.jpg" 
-               alt="防霾紗網" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">紗</div>
-        </div>
-        <div class="font-bold text-sm">防霾紗網</div>
-        <div class="text-xs opacity-75 mt-1">空氣淨化</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-purple-500 text-white px-2 py-1 rounded-full">
-        健康
-      </div>
-    </div>
-    
-    <!-- 油漆粉刷 -->
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('paint-service.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://i.postimg.cc/j2HFgp0Q/you-qi.jpg" 
-               alt="油漆粉刷" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">漆</div>
-        </div>
-        <div class="font-bold text-sm">油漆粉刷</div>
-        <div class="text-xs opacity-75 mt-1">批土噴漆</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-gray-500 text-white px-2 py-1 rounded-full">
-        服務
-      </div>
-    </div>
-    
-    <!-- 白蟻除蟲 -->
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('pest-control.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-red-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://img.shoplineapp.com/media/image_clips/688b6f561934ef000a42e98f/original.png?1753968469" 
-               alt="白蟻除蟲" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">蟲</div>
-        </div>
-        <div class="font-bold text-sm">白蟻除蟲</div>
-        <div class="text-xs opacity-75 mt-1">待新增</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-gray-500 text-white px-2 py-1 rounded-full">
-        待新增
-      </div>
-    </div>
-    
-    <!-- 搬家公司 -->
-    <div class="app-card glass-card life group relative overflow-hidden" onclick="openTool('moving-company.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=100&h=100&fit=crop&crop=center" 
-               alt="搬家公司" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-teal-400 to-cyan-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">搬</div>
-        </div>
-        <div class="font-bold text-sm">搬家公司</div>
-        <div class="text-xs opacity-75 mt-1">待新增</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-gray-500 text-white px-2 py-1 rounded-full">
-        待新增
-      </div>
-    </div>
-    
-    <!-- 冷氣維修 -->
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('air-conditioning.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-sky-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=100&h=100&fit=crop&crop=center" 
-               alt="冷氣服務" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-sky-400 to-blue-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">冷</div>
-        </div>
-        <div class="font-bold text-sm">冷氣服務</div>
-        <div class="text-xs opacity-75 mt-1">清洗維修</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-green-500 text-white px-2 py-1 rounded-full">
-        多家
-      </div>
-    </div>
-    
-    <!-- 包租代管 -->
-    <div class="app-card glass-card investment group relative overflow-hidden" onclick="openTool('rental-management.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=100&h=100&fit=crop&crop=center" 
-               alt="包租代管" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-indigo-400 to-blue-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">管</div>
-        </div>
-        <div class="font-bold text-sm">包租代管</div>
-        <div class="text-xs opacity-75 mt-1">租賃管理</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-indigo-500 text-white px-2 py-1 rounded-full">
-        管理
-      </div>
-    </div>
-    
-    
-  </div>
-</section>
-
-<!-- 🍽️ 美食餐飲專區 -->
-<section class="glass-card p-4 shadow-lg hover:shadow-xl transition-all duration-500">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <span class="text-3xl animate-pulse">🍽️</span>
-      <span>美食餐飲專區</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-red-500 to-orange-500 ml-2"></div>
-    </h2>
-    <div class="text-sm text-gray-500 bg-red-100 dark:bg-red-900 px-3 py-1 rounded-full">
-      <span class="font-bold text-red-600 dark:text-red-400">在地美食</span>
-    </div>
-  </div>
-  
-  <div class="grid grid-cols-4 gap-4">
-    <!-- 功夫茶 -->
-    <div class="app-card glass-card food group relative overflow-hidden" onclick="openTool('https://sky770825.github.io/kungfuteahtml/')">
-      <div class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://i.postimg.cc/FRny97rm/kungfutea.jpg" 
-               alt="功夫茶" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">茶</div>
-        </div>
-        <div class="font-bold text-sm">功夫茶</div>
-        <div class="text-xs opacity-75 mt-1">飲品專賣</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-amber-500 text-white px-2 py-1 rounded-full">
-        熱門
-      </div>
-    </div>
-    
-    <!-- 餐車追蹤 -->
-    <div class="app-card glass-card food group relative overflow-hidden" onclick="openTool('https://siwei.pages.dev/')">
-      <div class="absolute inset-0 bg-gradient-to-br from-red-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="text-3xl mb-2 group-hover:animate-bounce">🚚</div>
-        <div class="font-bold text-sm">餐車</div>
-        <div class="text-xs opacity-75 mt-1">位置追蹤</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-red-500 text-white px-2 py-1 rounded-full">
-        即時
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 💄 美容美體專區 -->
-<section class="glass-card p-4 shadow-lg hover:shadow-xl transition-all duration-500">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <span class="text-3xl animate-pulse">💄</span>
-      <span>美容美體專區</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-pink-500 to-purple-500 ml-2"></div>
-    </h2>
-    <div class="text-sm text-gray-500 bg-pink-100 dark:bg-pink-900 px-3 py-1 rounded-full">
-      <span class="font-bold text-pink-600 dark:text-pink-400">美麗服務</span>
-    </div>
-  </div>
-  
-  <div class="grid grid-cols-4 gap-4">
-    <!-- 美容護膚 -->
-    <div class="app-card glass-card fun group relative overflow-hidden" onclick="openTool('beauty-skin.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-rose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=100&h=100&fit=crop&crop=center" 
-               alt="美容護膚" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-pink-400 to-rose-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">美</div>
-        </div>
-        <div class="font-bold text-sm">美容護膚</div>
-        <div class="text-xs opacity-75 mt-1">專業護理</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-pink-500 text-white px-2 py-1 rounded-full">
-        熱門
-      </div>
-    </div>
-    
-    <!-- 美髮造型 -->
-    <div class="app-card glass-card fun group relative overflow-hidden" onclick="openTool('hair-salon.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=100&h=100&fit=crop&crop=center" 
-               alt="美髮造型" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">髮</div>
-        </div>
-        <div class="font-bold text-sm">美髮造型</div>
-        <div class="text-xs opacity-75 mt-1">專業設計</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-purple-500 text-white px-2 py-1 rounded-full">
-        專業
-      </div>
-    </div>
-    
-    <!-- 美睫服務 -->
-    <div class="app-card glass-card fun group relative overflow-hidden" onclick="openTool('eyelash-service.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=100&h=100&fit=crop&crop=center" 
-               alt="美睫服務" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">睫</div>
-        </div>
-        <div class="font-bold text-sm">美睫服務</div>
-        <div class="text-xs opacity-75 mt-1">睫毛美化</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-amber-500 text-white px-2 py-1 rounded-full">
-        精緻
-      </div>
-    </div>
-    
-    <!-- 美甲服務 -->
-    <div class="app-card glass-card fun group relative overflow-hidden" onclick="openTool('nail-service.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-red-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=100&h=100&fit=crop&crop=center" 
-               alt="美甲服務" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">甲</div>
-        </div>
-        <div class="font-bold text-sm">美甲服務</div>
-        <div class="text-xs opacity-75 mt-1">指甲藝術</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-red-500 text-white px-2 py-1 rounded-full">
-        藝術
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 💆‍♀️ 按摩舒壓專區 -->
-<section class="glass-card p-4 shadow-lg hover:shadow-xl transition-all duration-500">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <span class="text-3xl animate-pulse">💆‍♀️</span>
-      <span>按摩舒壓專區</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-green-500 to-teal-500 ml-2"></div>
-    </h2>
-    <div class="text-sm text-gray-500 bg-green-100 dark:bg-green-900 px-3 py-1 rounded-full">
-      <span class="font-bold text-green-600 dark:text-green-400">舒壓服務</span>
-    </div>
-  </div>
-  
-  <div class="grid grid-cols-4 gap-4">
-    <!-- 泰式按摩 -->
-    <div class="app-card glass-card life group relative overflow-hidden" onclick="openTool('thai-massage.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=100&h=100&fit=crop&crop=center" 
-               alt="泰式按摩" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-orange-400 to-yellow-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">泰</div>
-        </div>
-        <div class="font-bold text-sm">泰式按摩</div>
-        <div class="text-xs opacity-75 mt-1">傳統技法</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-orange-500 text-white px-2 py-1 rounded-full">
-        熱門
-      </div>
-    </div>
-    
-    <!-- 越式按摩 -->
-    <div class="app-card glass-card life group relative overflow-hidden" onclick="openTool('vietnamese-massage.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-red-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://kaikk.tw/wp-content/uploads/2024/07/20240728_120146.jpg" 
-               alt="越式按摩" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">越</div>
-        </div>
-        <div class="font-bold text-sm">越式按摩</div>
-        <div class="text-xs opacity-75 mt-1">溫和舒壓</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-red-500 text-white px-2 py-1 rounded-full">
-        舒緩
-      </div>
-    </div>
-    
-    <!-- 美式整復 -->
-    <div class="app-card glass-card tool group relative overflow-hidden" onclick="openTool('american-chiropractic.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://www.tuina.tw/ixyngeeb/2024/03/%E9%AB%98%E9%9B%84%E6%95%B4%E8%84%8A-1-1536x1022.jpeg.webp" 
-               alt="美式整復" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">美</div>
-        </div>
-        <div class="font-bold text-sm">美式整復</div>
-        <div class="text-xs opacity-75 mt-1">專業整脊</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
-        專業
-      </div>
-    </div>
-    
-    <!-- 台式按摩 -->
-    <div class="app-card glass-card life group relative overflow-hidden" onclick="openTool('taiwanese-massage.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 text-center">
-        <div class="w-12 h-12 mx-auto mb-2 group-hover:animate-bounce">
-          <img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=100&h=100&fit=crop&crop=center" 
-               alt="台式按摩" 
-               class="w-full h-full object-cover rounded-lg shadow-md"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold" style="display:none;">台</div>
-        </div>
-        <div class="font-bold text-sm">台式按摩</div>
-        <div class="text-xs opacity-75 mt-1">在地手法</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-green-500 text-white px-2 py-1 rounded-full">
-        在地
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 🌟 生活助手 - 動態實用功能 -->
-<section class="glass-card p-6 shadow-lg hover:shadow-xl transition-all duration-500">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <span class="text-3xl animate-pulse">🌟</span>
-      <span>生活助手</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-emerald-500 to-teal-500 ml-2"></div>
-    </h2>
-    <div class="flex items-center gap-2 text-sm text-gray-500">
-      <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-      <span>即時更新</span>
-    </div>
-  </div>
-  
-  
-  <div class="grid grid-cols-4 gap-3">
-    <div class="app-card glass-card assistant group relative overflow-hidden" onclick="openTool('weather.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10">
-        <div class="text-2xl mb-1 group-hover:animate-bounce">🌦</div>
-        <div class="text-sm font-semibold">天氣</div>
-        <div class="text-xs opacity-75 mt-1" id="weatherStatus">載入中...</div>
-      </div>
-      <div class="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-    </div>
-    
-    <div class="app-card glass-card assistant group relative overflow-hidden" onclick="openTool('garbage.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10">
-        <div class="text-2xl mb-1 group-hover:animate-bounce">🗑</div>
-        <div class="text-sm font-semibold">垃圾車</div>
-        <div class="text-xs opacity-75 mt-1" id="garbageStatus">即時查詢</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-orange-500 text-white px-1 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        熱門
-      </div>
-    </div>
-    
-    <div class="app-card glass-card assistant group relative overflow-hidden" onclick="openTool('receipt.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-pink-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10">
-        <div class="text-2xl mb-1 group-hover:animate-bounce">🧾</div>
-        <div class="text-sm font-semibold">發票</div>
-        <div class="text-xs opacity-75 mt-1" id="receiptStatus">對獎中</div>
-      </div>
-      <div class="absolute top-2 right-2 text-xs bg-red-500 text-white px-1 py-0.5 rounded-full animate-pulse">
-        新
-      </div>
-    </div>
-    
-    <div class="app-card glass-card assistant group relative overflow-hidden" onclick="openTool('bus.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10">
-        <div class="text-2xl mb-1 group-hover:animate-bounce">🚌</div>
-        <div class="text-sm font-semibold">公車</div>
-        <div class="text-xs opacity-75 mt-1" id="busStatus">即時動態</div>
-      </div>
-    </div>
-    
-    <div class="app-card glass-card assistant group relative overflow-hidden" onclick="openTool('inspection.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-gray-400/20 to-slate-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10">
-        <div class="text-2xl mb-1 group-hover:animate-bounce">🔎</div>
-        <div class="text-sm font-semibold">驗屋</div>
-        <div class="text-xs opacity-75 mt-1">專業檢查</div>
-      </div>
-    </div>
-    
-    <div class="app-card glass-card assistant group relative overflow-hidden" onclick="openTool('rate.html')">
-      <div class="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10">
-        <div class="text-2xl mb-1 group-hover:animate-bounce">🏦</div>
-        <div class="text-sm font-semibold">利率</div>
-        <div class="text-xs opacity-75 mt-1" id="rateStatus">即時更新</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 📸 精選媒體展示區 -->
-<section class="glass-card p-4 shadow-lg hover:shadow-xl transition-all duration-500">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-      <span class="text-3xl animate-pulse">📸</span>
-      <span>精選展示</span>
-      <div class="flex-1 h-px bg-gradient-to-r from-pink-500 to-purple-500 ml-2"></div>
-    </h2>
-    <div class="text-sm text-gray-500 bg-pink-100 dark:bg-pink-900 px-3 py-1 rounded-full">
-      <span class="font-bold text-pink-600 dark:text-pink-400">精彩內容</span>
-    </div>
-  </div>
-  
-  <!-- 主要媒體展示區 -->
-  <div class="relative mb-4">
-    <div class="relative bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-2xl overflow-hidden shadow-lg">
-      <!-- 主要展示區域 -->
-      <div id="mainMediaDisplay" class="aspect-video bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 flex items-center justify-center relative overflow-hidden">
-        <!-- 預設內容 -->
-        <div class="text-center text-gray-500 dark:text-gray-400">
-          <div class="text-6xl mb-4 opacity-50">🎬</div>
-          <div class="text-xl font-semibold mb-2">精選內容展示</div>
-          <div class="text-sm">點擊下方縮圖開始播放</div>
-        </div>
-        
-        <!-- 播放按鈕 -->
-        <button onclick="playMainMedia()" class="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-all duration-300">
-          <div class="bg-white/90 dark:bg-gray-800/90 rounded-full p-4 shadow-lg hover:scale-110 transition-transform duration-300">
-            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400 ml-1" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </button>
-        
-        <!-- 媒體元素容器 -->
-        <video id="mainVideo" class="absolute inset-0 w-full h-full object-cover hidden" controls>
-          <source src="" type="video/mp4">
-          您的瀏覽器不支援影片播放。
-        </video>
-        <img id="mainImage" class="absolute inset-0 w-full h-full object-cover hidden" alt="展示圖片">
-      </div>
-      
-      <!-- 媒體資訊 -->
-      <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-        <div class="text-white">
-          <div id="mediaTitle" class="font-bold text-lg mb-1">歡迎來到楊梅人在地生活集</div>
-          <div id="mediaDescription" class="text-sm opacity-90">探索更多精彩內容和實用工具</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- 縮圖網格 -->
-  <div class="grid grid-cols-4 gap-3">
-    <!-- 影片縮圖 -->
-    <div class="media-thumbnail active" onclick="showMedia('video1', 'video', '房產投資秘訣', '了解如何聰明投資房地產')">
-      <div class="aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg overflow-hidden relative cursor-pointer group">
-        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="bg-white/20 rounded-full p-2 group-hover:scale-110 transition-transform duration-300">
-            <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </div>
-        <div class="absolute bottom-1 left-1 text-xs bg-black/70 text-white px-1 py-0.5 rounded">2:30</div>
-        <div class="absolute top-1 right-1 text-xs bg-red-500 text-white px-1 py-0.5 rounded">HOT</div>
-      </div>
-    </div>
-    
-    <!-- 圖片縮圖 -->
-    <div class="media-thumbnail" onclick="showMedia('image1', 'image', '楊梅在地生活', '探索楊梅的美好生活')">
-      <div class="aspect-video bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg overflow-hidden relative cursor-pointer group">
-        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="text-2xl group-hover:scale-110 transition-transform duration-300">🏞️</div>
-        </div>
-        <div class="absolute bottom-1 left-1 text-xs bg-black/70 text-white px-1 py-0.5 rounded">相片</div>
-      </div>
-    </div>
-    
-    <!-- 影片縮圖 -->
-    <div class="media-thumbnail" onclick="showMedia('video2', 'video', '裝潢設計靈感', '現代居家裝潢設計分享')">
-      <div class="aspect-video bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg overflow-hidden relative cursor-pointer group">
-        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="bg-white/20 rounded-full p-2 group-hover:scale-110 transition-transform duration-300">
-            <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </div>
-        <div class="absolute bottom-1 left-1 text-xs bg-black/70 text-white px-1 py-0.5 rounded">4:15</div>
-        <div class="absolute top-1 right-1 text-xs bg-blue-500 text-white px-1 py-0.5 rounded">NEW</div>
-      </div>
-    </div>
-    
-    <!-- 圖片縮圖 -->
-    <div class="media-thumbnail" onclick="showMedia('image2', 'image', '社區活動', '參與社區活動，建立鄰里關係')">
-      <div class="aspect-video bg-gradient-to-br from-orange-500 to-red-600 rounded-lg overflow-hidden relative cursor-pointer group">
-        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="text-2xl group-hover:scale-110 transition-transform duration-300">🎉</div>
-        </div>
-        <div class="absolute bottom-1 left-1 text-xs bg-black/70 text-white px-1 py-0.5 rounded">相片</div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- 查看更多按鈕 -->
-  <div class="mt-4 text-center">
-    <button onclick="showAllMedia()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-      <span class="flex items-center gap-2">
-        <span>📺</span>
-        <span>查看更多精彩內容</span>
-        <span class="text-xs bg-white/20 px-2 py-1 rounded-full">50+</span>
-      </span>
-    </button>
-  </div>
-</section>
-
-<!-- 圖片放大模態框 -->
-<div id="imageModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-  <div class="relative max-w-4xl max-h-[90vh] w-full">
-    <button onclick="closeImageModal()" class="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors duration-200">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-    </button>
-    <img id="modalImage" src="" alt="放大圖片" class="w-full h-full object-contain rounded-lg">
-  </div>
-</div>
-
-<!-- 廠商進駐彈窗 -->
-<div id="vendorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-  <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95" style="animation: slideInUp 0.3s ease-out;">
-    <!-- 關閉按鈕 -->
-    <button onclick="closeVendorModal()" class="absolute top-4 right-4 z-10 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full p-2 transition-colors duration-200">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-    </button>
-    
-    <!-- 內容區域 -->
-    <div class="p-8">
-      <!-- 標題圖標 -->
-      <div class="text-center mb-6">
-        <div class="inline-block bg-gradient-to-br from-pink-500 to-rose-600 rounded-full p-4 shadow-lg mb-4">
-          <span class="text-4xl">🤝</span>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">歡迎廠商進駐！</h2>
-        <p class="text-gray-600 dark:text-gray-300">讓我們一起打造更好的服務</p>
-      </div>
-      
-      <!-- 說明內容 -->
-      <div class="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-xl p-4 mb-6">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">💡</span>
-          <div>
-            <h3 class="font-semibold text-gray-800 dark:text-white mb-1">優質曝光機會</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-              加入我們的平台，獲得更多曝光機會，提升品牌知名度，擴大客戶群體。
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 特色列表 -->
-      <div class="space-y-3 mb-6">
-        <div class="flex items-center gap-3">
-          <div class="bg-blue-100 dark:bg-blue-900 rounded-full p-2">
-            <span class="text-lg">⭐</span>
-          </div>
-          <span class="text-gray-700 dark:text-gray-300">專業品牌形象展示</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="bg-green-100 dark:bg-green-900 rounded-full p-2">
-            <span class="text-lg">📢</span>
-          </div>
-          <span class="text-gray-700 dark:text-gray-300">免費曝光機會</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="bg-purple-100 dark:bg-purple-900 rounded-full p-2">
-            <span class="text-lg">👥</span>
-          </div>
-          <span class="text-gray-700 dark:text-gray-300">接觸更多潛在客戶</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="bg-orange-100 dark:bg-orange-900 rounded-full p-2">
-            <span class="text-lg">🎯</span>
-          </div>
-          <span class="text-gray-700 dark:text-gray-300">精準目標客群</span>
-        </div>
-      </div>
-      
-      <!-- 聯絡按鈕 -->
-      <div class="space-y-3">
-        <button onclick="contactOfficialAccount()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3">
-          <span class="text-2xl">💬</span>
-          <span>洽詢網站店長</span>
-          <span class="text-lg">→</span>
-        </button>
-        <button onclick="closeVendorModal()" class="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold py-3 px-6 rounded-xl transition-all duration-300">
-          稍後再說
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 📍 底部導航 -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-200 flex justify-around py-2 bottom-nav" role="navigation" aria-label="主要導航">
-  <button onclick="scrollTo(0,0)" class="flex flex-col items-center text-indigo-600 text-xs hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="回到首頁">
-    <span>🏠</span><span>首頁</span>
-  </button>
-  <button onclick="openTool('expense-tracker.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="記帳">
-    <span>📝</span><span>記帳</span>
-  </button>
-  <button onclick="openTool('games.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="遊戲大廳">
-    <span>🎮</span><span>遊戲</span>
-  </button>
-  <button onclick="window.location.href='https://flyjung168.pages.dev/'" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="房訊">
-    <span>🍹</span><span>房訊</span>
-  </button>
-  <button onclick="openTool('worship.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="拜拜專區">
-    <span>🙏</span><span>拜拜</span>
-  </button>
-</nav>
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-// 應用程式主要功能 - 增強版
-class PropertyApp {
-  constructor() {
-    this.init();
-    this.setupDynamicContent();
-    this.setupParticleEffect();
-  }
-
-  init() {
-    this.setupSwiper();
-    this.setupLoadingAnimation();
-    this.setupKeyboardNavigation();
-    this.setupSearchSuggestions();
-    this.setupCardPreviews();
-  }
-
-  // 動態內容設定
-  setupDynamicContent() {
-    this.updateGreeting();
-    this.updateUserCount();
-    this.updateFunStats();
-    this.updateRecommendations();
-    this.updateWeatherStatus();
-    
-    // 定期更新
-    setInterval(() => {
-      this.updateUserCount();
-      this.updateFunStats();
-      this.updateWeatherStatus();
-    }, 30000); // 每30秒更新一次
-  }
-
-  // 粒子效果
-  setupParticleEffect() {
-    const particlesContainer = document.getElementById('particles');
-    if (!particlesContainer) return;
-
-    for (let i = 0; i < 20; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'absolute w-1 h-1 bg-white/30 rounded-full';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 3 + 's';
-      particle.style.animation = `float ${3 + Math.random() * 2}s ease-in-out infinite`;
-      particlesContainer.appendChild(particle);
-    }
-  }
-
-
-  // 搜尋建議功能
-  setupSearchSuggestions() {
-    const searchInput = document.getElementById('mainSearchInput');
-    const suggestions = document.getElementById('searchSuggestions');
-    
-    if (!searchInput || !suggestions) return;
-
-    searchInput.addEventListener('focus', () => {
-      suggestions.classList.remove('hidden');
-    });
-
-    searchInput.addEventListener('blur', (e) => {
-      // 延遲隱藏，讓用戶可以點擊建議
-      setTimeout(() => {
-        if (!suggestions.contains(e.relatedTarget)) {
-          suggestions.classList.add('hidden');
-        }
-      }, 200);
-    });
-
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      if (query.length > 0) {
-        this.filterSuggestions(query);
-      }
-    });
-  }
-
-  // 卡片預覽功能
-  setupCardPreviews() {
-    const previews = {
-      games: {
-        title: '🎮 遊戲大廳',
-        description: '多款小遊戲，放鬆心情',
-        features: ['益智遊戲', '休閒娛樂', '排行榜']
-      },
-      fortune: {
-        title: '🔮 每日運勢',
-        description: '了解今日運勢，把握機會',
-        features: ['星座運勢', '幸運數字', '開運顏色']
-      },
-      mbti: {
-        title: '🧩 MBTI測驗',
-        description: '探索你的性格類型',
-        features: ['16型人格', '詳細分析', '職業建議']
-      },
-      quote: {
-        title: '📝 每日金句',
-        description: '正能量語錄，激勵每一天',
-        features: ['勵志語錄', '名人名言', '心靈雞湯']
-      }
-    };
-
-    window.showCardPreview = (type) => {
-      const preview = document.getElementById('cardPreview');
-      const content = document.getElementById('previewContent');
-      const data = previews[type];
-      
-      if (data && preview && content) {
-        content.innerHTML = `
-          <div class="text-center">
-            <div class="text-2xl mb-2">${data.title}</div>
-            <div class="text-sm text-gray-600 dark:text-gray-300 mb-3">${data.description}</div>
-            <div class="flex flex-wrap gap-1 justify-center">
-              ${data.features.map(feature => 
-                `<span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs">${feature}</span>`
-              ).join('')}
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🍽️ 四維商圈餐車月行程表</h1>
+                <div class="group-invite">
+                    <a href="https://line.me/ti/g2/VXIuR9NyhkWFQPuMeWTUp_RHitaW82_0r8MU1Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="group-link">
+                        🎉 歡迎加入四維商圈餐車群 🎉
+                    </a>
+                </div>
+                <div class="header-cta">
+                    <button class="cta-button secondary" onclick="showQuickGuide()">
+                        <span>❓ 如何使用</span>
+                    </button>
+                </div>
             </div>
-          </div>
-        `;
-        preview.classList.remove('hidden');
-      }
-    };
-
-    window.hideCardPreview = () => {
-      const preview = document.getElementById('cardPreview');
-      if (preview) {
-        preview.classList.add('hidden');
-      }
-    };
-  }
-
-  // 更新問候語
-  updateGreeting() {
-    const greetings = [
-      '🌟 歡迎來到楊梅人在地生活集！',
-      '💫 讓生活更美好，從這裡開始',
-      '🎯 發現更多實用工具和服務',
-      '✨ 一站式生活服務平台',
-      '🎊 享受便利的在地生活',
-      '💡 智慧生活，從楊梅開始',
-      '🌈 探索楊梅的美好生活'
-    ];
-    
-    const greetingElement = document.getElementById('greetingText');
-    if (greetingElement) {
-      const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
-      greetingElement.textContent = randomGreeting;
-    }
-  }
-
-  
-
-  // 更新用戶數量
-  updateUserCount() {
-    const userCountElement = document.getElementById('userCount');
-    if (userCountElement) {
-      const baseCount = 12345;
-      const randomIncrement = Math.floor(Math.random() * 100);
-      userCountElement.textContent = (baseCount + randomIncrement).toLocaleString();
-    }
-  }
-
-  // 更新趣味統計
-  updateFunStats() {
-    const funStatsElement = document.getElementById('funStats');
-    if (funStatsElement) {
-      const baseCount = 1234;
-      const randomIncrement = Math.floor(Math.random() * 200);
-      funStatsElement.innerHTML = `今日已有 <span class="font-bold text-orange-600">${(baseCount + randomIncrement).toLocaleString()}</span> 人使用`;
-    }
-  }
-
-  // 更新推薦內容
-  updateRecommendations() {
-    // 這裡可以添加更多動態推薦邏輯
-    console.log('推薦內容已更新');
-  }
-
-  // 更新天氣狀態
-  updateWeatherStatus() {
-    const weatherStatusElement = document.getElementById('weatherStatus');
-    if (weatherStatusElement) {
-      const weatherStatuses = [
-        '多雲時晴',
-        '晴朗',
-        '陰天',
-        '小雨',
-        '多雲',
-        '即時查詢'
-      ];
-      const randomStatus = weatherStatuses[Math.floor(Math.random() * weatherStatuses.length)];
-      weatherStatusElement.textContent = randomStatus;
-    }
-  }
-
-
-  // 過濾搜尋建議
-  filterSuggestions(query) {
-    const suggestions = document.querySelectorAll('.suggestion-item');
-    suggestions.forEach(item => {
-      const text = item.textContent.toLowerCase();
-      if (text.includes(query)) {
-        item.style.display = 'block';
-      } else {
-        item.style.display = 'none';
-      }
-    });
-  }
-
-  // 工具開啟功能
-  openTool(url) {
-    if (url.startsWith('http')) {
-      // 外部連結在新視窗打開，保持主頁在原視窗
-      window.open(url, '_blank', 'noopener,noreferrer');
-    } else {
-      // 內部連結在原視窗打開
-      window.location.href = url;
-    }
-  }
-
-
-
-  // Swiper 輪播設定
-  setupSwiper() {
-    if (document.querySelector('.mySwiper')) {
-      new Swiper('.mySwiper', {
-        loop: true,
-        pagination: {
-          el: '.swiper-pagination',
-          clickable: true,
-          dynamicBullets: true
-        },
-        autoplay: {
-          delay: 4000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true
-        },
-        effect: 'slide',
-        speed: 600,
-        breakpoints: {
-          640: {
-            slidesPerView: 1,
-            spaceBetween: 20
-          },
-          768: {
-            slidesPerView: 1,
-            spaceBetween: 30
-          }
-        }
-      });
-    }
-  }
-
-  // 載入動畫
-  setupLoadingAnimation() {
-    // 簡化載入動畫，只在需要時使用
-    window.addEventListener('load', () => {
-      // 移除複雜的動畫邏輯
-    });
-  }
-
-  // 鍵盤導航支援
-  setupKeyboardNavigation() {
-    document.addEventListener('keydown', (e) => {
-      // ESC 鍵關閉任何彈窗
-      if (e.key === 'Escape') {
-        this.closeAllModals();
-      }
-    });
-  }
-
-  // 顯示通知
-  showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `fixed top-20 right-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // 顯示動畫
-    setTimeout(() => {
-      notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // 自動隱藏
-    setTimeout(() => {
-      notification.style.transform = 'translateX(full)';
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 300);
-    }, 3000);
-  }
-
-  // 關閉所有彈窗
-  closeAllModals() {
-    // 這裡可以添加關閉彈窗的邏輯
-  }
-}
-
-// 全域函數（向後兼容）
-function openTool(url) {
-  app.openTool(url);
-}
-
-// 媒體展示功能
-class MediaGallery {
-  constructor() {
-    this.currentMedia = null;
-    this.mediaData = {
-      video1: {
-        type: 'video',
-        src: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-        title: '房產投資秘訣',
-        description: '了解如何聰明投資房地產，掌握市場趨勢',
-        thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjExMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM0NjY2ZjE7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNzI2NmY3O3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTEzIiBmaWxsPSJ1cmwoI2dyYWQpIi8+PHRleHQgeD0iMTAwIiB5PSI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPvCfkI48L3RleHQ+PC9zdmc+'
-      },
-      image1: {
-        type: 'image',
-        src: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop',
-        title: '楊梅在地生活',
-        description: '探索楊梅的美好生活，感受在地文化',
-        thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjExMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGJjODE7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTRiMDg4O3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTEzIiBmaWxsPSJ1cmwoI2dyYWQpIi8+PHRleHQgeD0iMTAwIiB5PSI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPuafkO+4jzwvdGV4dD48L3N2Zz4='
-      },
-      video2: {
-        type: 'video',
-        src: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
-        title: '裝潢設計靈感',
-        description: '現代居家裝潢設計分享，打造理想家居',
-        thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjExMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNhODU1Zjc7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZWM0ODk5O3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTEzIiBmaWxsPSJ1cmwoI2dyYWQpIi8+PHRleHQgeD0iMTAwIiB5PSI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPuCfkI48L3RleHQ+PC9zdmc+'
-      },
-      image2: {
-        type: 'image',
-        src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&h=450&fit=crop',
-        title: '社區活動',
-        description: '參與社區活動，建立鄰里關係',
-        thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjExMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmNTlkMGI7c3RvcC1vcGFjaXR5OjEiIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZWM0NDQ0O3N0b3Atb3BhY2l0eToxIiAvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTEzIiBmaWxsPSJ1cmwoI2dyYWQpIi8+PHRleHQgeD0iMTAwIiB5PSI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPuKamPCfpo48L3RleHQ+PC9zdmc+'
-      }
-    };
-  }
-
-  // 顯示媒體內容
-  showMedia(mediaId, type, title, description) {
-    this.currentMedia = mediaId;
-    
-    // 更新縮圖狀態
-    document.querySelectorAll('.media-thumbnail').forEach(thumb => {
-      thumb.classList.remove('active');
-    });
-    event.currentTarget.classList.add('active');
-    
-    // 隱藏所有媒體元素
-    const mainVideo = document.getElementById('mainVideo');
-    const mainImage = document.getElementById('mainImage');
-    const defaultContent = document.querySelector('#mainMediaDisplay > .text-center');
-    
-    if (mainVideo) mainVideo.classList.add('hidden');
-    if (mainImage) mainImage.classList.add('hidden');
-    if (defaultContent) defaultContent.style.display = 'none';
-    
-    // 更新標題和描述
-    const mediaTitle = document.getElementById('mediaTitle');
-    const mediaDescription = document.getElementById('mediaDescription');
-    
-    if (mediaTitle) mediaTitle.textContent = title;
-    if (mediaDescription) mediaDescription.textContent = description;
-    
-    // 顯示對應的媒體類型
-    if (type === 'video') {
-      if (mainVideo) {
-        const mediaData = this.mediaData[mediaId];
-        if (mediaData && mediaData.src) {
-          mainVideo.src = mediaData.src;
-          mainVideo.classList.remove('hidden');
-        } else {
-          // 如果沒有實際影片，顯示佔位內容
-          this.showPlaceholder('video', title);
-        }
-      }
-    } else if (type === 'image') {
-      if (mainImage) {
-        const mediaData = this.mediaData[mediaId];
-        if (mediaData && mediaData.src) {
-          mainImage.src = mediaData.src;
-          mainImage.classList.remove('hidden');
-        } else {
-          // 如果沒有實際圖片，顯示佔位內容
-          this.showPlaceholder('image', title);
-        }
-      }
-    }
-  }
-
-  // 顯示佔位內容
-  showPlaceholder(type, title) {
-    const mainDisplay = document.getElementById('mainMediaDisplay');
-    if (mainDisplay) {
-      const placeholder = document.createElement('div');
-      placeholder.className = 'absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800';
-      placeholder.innerHTML = `
-        <div class="text-center text-gray-500 dark:text-gray-400">
-          <div class="text-6xl mb-4 opacity-50">${type === 'video' ? '🎬' : '📸'}</div>
-          <div class="text-xl font-semibold mb-2">${title}</div>
-          <div class="text-sm">${type === 'video' ? '影片內容' : '圖片內容'}</div>
-          <div class="mt-4 text-xs opacity-75">實際內容將在此處顯示</div>
         </div>
-      `;
-      
-      // 移除舊的佔位內容
-      const oldPlaceholder = mainDisplay.querySelector('.absolute.inset-0.flex.items-center.justify-center');
-      if (oldPlaceholder) {
-        oldPlaceholder.remove();
-      }
-      
-      mainDisplay.appendChild(placeholder);
-    }
-  }
+        
+        <!-- 圖片跑碼燈區域 -->
+        <div class="image-marquee-container">
+            <div class="marquee-wrapper">
+                <div class="marquee-track" id="marqueeTrack">
+                    <!-- 圖片將通過JavaScript動態添加 -->
+                </div>
+            </div>
+        </div>
 
-  // 播放主要媒體
-  playMainMedia() {
-    const mainVideo = document.getElementById('mainVideo');
-    if (mainVideo && !mainVideo.classList.contains('hidden')) {
-      mainVideo.play();
-    } else {
-      // 如果沒有影片，顯示提示
-      this.showNotification('請先選擇一個影片內容', 'info');
-    }
-  }
+        <div class="week-selector">
+            <div class="week-selector-header">
+                <h3>📅 選擇週次查看餐車安排</h3>
+                <p class="week-selector-desc">點擊下方週次標籤查看不同週的餐車安排</p>
+            </div>
+            <div class="week-tabs">
+                <!-- 週次標籤將由 Google Sheets 動態載入 -->
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- 週次內容將由 Google Sheets 動態載入 -->
+            <div class="loading-message" style="text-align: center; padding: 3rem; color: #667eea;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <h3>正在從 Google Sheets 載入資料...</h3>
+                <p style="margin-top: 1rem; color: #888;">如果長時間未載入，請檢查 Google Sheets 設定</p>
+                </div>
+                    </div>
+                    
+        <!-- TikTok 影片區域 -->
+        <div class="tiktok-section" style="margin: 2rem 0;">
+            <!-- 標題區域 -->
+            <div class="tiktok-title" style="text-align: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">
+                    🎬 影片觀賞區
+                </h3>
+                <p style="color: #888; font-size: 0.9rem;">精選房地產資訊影片</p>
+                    </div>
+            
+            <!-- TikTok 載入前隱藏文字內容的樣式 -->
+            <style>
+                /* 隱藏 TikTok blockquote 的文字內容 */
+                .tiktok-embed {
+                    position: relative;
+                    background: #f8f9fa;
+                    border-radius: 12px;
+                    overflow: hidden;
+                }
+                
+                /* 隱藏所有文字內容 */
+                .tiktok-embed section,
+                .tiktok-embed p,
+                .tiktok-embed a {
+                    display: none !important;
+                }
+                
+                /* 載入動畫 */
+                .tiktok-embed::before {
+                    content: '📺 影片載入中...';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    color: #667eea;
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    z-index: 1;
+                }
+                
+                /* 載入動畫 - 旋轉圈 */
+                .tiktok-embed::after {
+                    content: '';
+                    position: absolute;
+                    top: calc(50% + 40px);
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 40px;
+                    height: 40px;
+                    border: 4px solid #f3f3f3;
+                    border-top: 4px solid #667eea;
+                    border-radius: 50%;
+                    animation: tiktok-spin 1s linear infinite;
+                    z-index: 1;
+                }
+                
+                @keyframes tiktok-spin {
+                    0% { transform: translate(-50%, -50%) rotate(0deg); }
+                    100% { transform: translate(-50%, -50%) rotate(360deg); }
+                }
+                
+                /* TikTok iframe 載入後，隱藏載入動畫 */
+                .tiktok-embed iframe {
+                    position: relative;
+                    z-index: 2;
+                }
+                
+                /* 當 TikTok embed.js 載入後，會自動將 blockquote 轉換成 iframe */
+                /* 這時載入動畫會被 iframe 覆蓋 */
+            </style>
+                    
+            <!-- 影片網格容器 -->
+            <div class="tiktok-grid">
+                
+                <!-- 影片 1 -->
+                <div class="tiktok-item" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+                    <div class="tiktok-container" style="height: 680px; overflow: hidden;">
+                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aihouse168/video/7557232980352159032" data-video-id="7557232980352159032" style="max-width: 605px;min-width: 325px; margin: 0;" > 
+                            <section> 
+                                <a target="_blank" title="@aihouse168" href="https://www.tiktok.com/@aihouse168?refer=embed">@aihouse168</a> 
+                                <p>超搶手！振翔富琚🌸埔心車站市中心景觀兩房，四維國小 文化商圈 中興路商圈 👩 劉子菲（菲菲） 🎯 相機達人變身房仲，用專業影像與行銷幫你找到理想家 💡 委賣專屬禮遇｜全方位獨家行銷方案 📊 加值服務｜稅務諮詢、裝潢設計、清潔搬運 🤝 交易保障｜雙方履約，安全放心 📍 經歷亮點 攝影王、金牌銷售業務 5 年 ME 直播平台人氣主播 健行科大活動主持人 專精活動企劃、海報設計、YouTube／抖音影片剪輯 📞 0925-666-597 📱 Line ID：@931aeinu 🔍 FB 搜尋「楊梅住商大順店－子菲＆豪哥 房仲楷模雙人組」 👨 蔡濬瑒（文豪） 🏠 楊梅區房地產專家，以多元職業背景提供全方位服務 現職 住商不動產楊梅大順店 行銷顧問 Polltex 防霾紗窗 店長 功夫茶／團霸兔楊梅四維店 店東長 四維商圈美食餐車 執行總召 五行八字象棋卜卦 師 專業優勢 房地產經驗｜23 歲投入市場，熟悉投資、自住、租賃策略 行銷整合力｜精通 TikTok、影片剪輯、海報設計、網站架設、AI 行銷 在地深耕｜精準掌握楊梅市場脈動 多元資源｜餐車總召、裝潢清潔搬運配合團隊 📞 0928-776-755 📱 Line ID：@931aeinu 🏢 經紀業資訊 常鴻悦豐企業社 營業員：蔡文豪（112）桃市字第432900號 營業員：劉子菲（113）桃市字第467056號 經紀人：葉靜蓉（104）新北經證字第003119號</p> 
+                                <a target="_blank" title="♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店" href="https://www.tiktok.com/music/原聲-楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店-7557233822082173752?refer=embed">♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店</a> 
+                            </section> 
+                        </blockquote>
+                    </div>
+                    </div>
+                    
+                <!-- 影片 2 -->
+                <div class="tiktok-item" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+                    <div class="tiktok-container" style="height: 680px; overflow: hidden;">
+                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aihouse168/video/7509388926201646392" data-video-id="7509388926201646392" style="max-width: 605px;min-width: 325px; margin: 0;" > 
+                            <section> 
+                                <a target="_blank" title="@aihouse168" href="https://www.tiktok.com/@aihouse168?refer=embed">@aihouse168</a> 
+                                新都悅🌸埔心正式區及龍科旁 超值3+1房➕平面雙車位 近瑞塘國小瑞坪國中、萬大市場 楊梅交流道 國1 省道 交通機能一級棒 埔心火車站 🚄 光輝十月恭賀蔡文豪與劉子菲榮獲 「百萬業績經紀人」與「第一名經紀人」雙重榮耀！ 楊梅常順房地產 地址：桃園市楊梅區梅獅路二段36號 ■ 營業員 蔡文豪 （112）桃市字第432900號 ■ 營業員 劉子菲 （113）桃市字第467056號 ■ 經紀人：葉蘇婷（104）新北經紀字第003119號 
+                                <a title="楊梅房仲" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%88%BF%E4%BB%B2?refer=embed">#楊梅房仲</a> 
+                                <a title="埔心房仲" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E6%88%BF%E4%BB%B2?refer=embed">#埔心房仲</a> 
+                                <a title="桃園買房" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E8%B2%B7%E6%88%BF?refer=embed">#桃園買房</a> 
+                                <a title="楊梅買房" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E8%B2%B7%E6%88%BF?refer=embed">#楊梅買房</a> 
+                                <a title="埔心買房" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E8%B2%B7%E6%88%BF?refer=embed">#埔心買房</a> 
+                                <a title="楊梅房地產" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%88%BF%E5%9C%B0%E7%94%A2?refer=embed">#楊梅房地產</a> 
+                                <a title="埔心房市" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E6%88%BF%E5%B8%82?refer=embed">#埔心房市</a> 
+                                <a title="楊梅透天" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E9%80%8F%E5%A4%A9?refer=embed">#楊梅透天</a> 
+                                <a title="埔心預售屋" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E9%A0%90%E5%94%AE%E5%B1%8B?refer=embed">#埔心預售屋</a> 
+                                <a title="桃園房價" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E6%88%BF%E5%83%B9?refer=embed">#桃園房價</a> 
+                                <a title="楊梅學區宅" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E5%AD%B8%E5%8D%80%E5%AE%85?refer=embed">#楊梅學區宅</a> 
+                                <a title="楊梅投資房" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%8A%95%E8%B3%87%E6%88%BF?refer=embed">#楊梅投資房</a> 
+                                <a title="埔心置產" target="_blank" href="https://www.tiktok.com/tag/%E5%9F%94%E5%BF%83%E7%BD%AE%E7%94%A2?refer=embed">#埔心置產</a> 
+                                <a title="楊梅房市分析" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E6%88%BF%E5%B8%82%E5%88%86%E6%9E%90?refer=embed">#楊梅房市分析</a> 
+                                <a title="住商不動產" target="_blank" href="https://www.tiktok.com/tag/%E4%BD%8F%E5%95%86%E4%B8%8D%E5%8B%95%E7%94%A2?refer=embed">#住商不動產</a> 
+                                <a title="楊梅交流道房市" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E4%BA%A4%E6%B5%81%E9%81%93%E6%88%BF%E5%B8%82?refer=embed">#楊梅交流道房市</a> 
+                                <a title="楊梅電梯大樓" target="_blank" href="https://www.tiktok.com/tag/%E6%A5%8A%E6%A2%85%E9%9B%BB%E6%A2%AF%E5%A4%A7%E6%A8%93?refer=embed">#楊梅電梯大樓</a> 
+                                <a title="桃園買房指南" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E8%B2%B7%E6%88%BF%E6%8C%87%E5%8D%97?refer=embed">#桃園買房指南</a> 
+                                <a title="房仲帶看日常" target="_blank" href="https://www.tiktok.com/tag/%E6%88%BF%E4%BB%B2%E5%B8%B6%E7%9C%8B%E6%97%A5%E5%B8%B8?refer=embed">#房仲帶看日常</a> 
+                                <a title="桃園房市趨勢" target="_blank" href="https://www.tiktok.com/tag/%E6%A1%83%E5%9C%92%E6%88%BF%E5%B8%82%E8%B6%A8%E5%8B%A2?refer=embed">#桃園房市趨勢</a> 
+                                <a target="_blank" title="♬ 原聲 - 楊梅買房找子菲｜住商楊梅大順店 ｜夢想起飛 - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店" href="https://www.tiktok.com/music/原聲-楊梅買房找子菲｜住商楊梅大順店-｜夢想起飛-7509389957670816568?refer=embed">♬ 原聲 - 楊梅買房找子菲｜住商楊梅大順店 ｜夢想起飛 - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店</a> 
+                            </section> 
+                        </blockquote>
+                    </div>
+                </div>
+                
+                <!-- 影片 3 -->
+                <div class="tiktok-item" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+                    <div class="tiktok-container" style="height: 680px; overflow: hidden;">
+                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aihouse168/video/7559421876234145080" data-video-id="7559421876234145080" style="max-width: 605px;min-width: 325px; margin: 0;" > 
+                            <section> 
+                                <a target="_blank" title="@aihouse168" href="https://www.tiktok.com/@aihouse168?refer=embed">@aihouse168</a> 
+                                <p>X計劃明日城三房車🌸位於楊梅金山重劃區｜楊梅火車站｜楊明國小｜楊梅夜市 👩 劉子菲（菲菲） 🎯 相機達人變身房仲，用專業影像與行銷幫你找到理想家 💡 委賣專屬禮遇｜全方位獨家行銷方案 📊 加值服務｜稅務諮詢、裝潢設計、清潔搬運 🤝 交易保障｜雙方履約，安全放心 📍 經歷亮點 攝影王、金牌銷售業務 5 年 ME 直播平台人氣主播 健行科大活動主持人 專精活動企劃、海報設計、YouTube／抖音影片剪輯 📞 0925-666-597 📱 Line ID：@931aeinu 🔍 FB 搜尋「楊梅住商大順店－子菲＆豪哥 房仲楷模雙人組」 👨 蔡濬瑒（文豪） 🏠 楊梅區房地產專家，以多元職業背景提供全方位服務 現職 住商不動產楊梅大順店 行銷顧問 Polltex 防霾紗窗 店長 功夫茶／團霸兔楊梅四維店 店東長 四維商圈美食餐車 執行總召 五行八字象棋卜卦 師 專業優勢 房地產經驗｜23 歲投入市場，熟悉投資、自住、租賃策略 行銷整合力｜精通 TikTok、影片剪輯、海報設計、網站架設、AI 行銷 在地深耕｜精準掌握楊梅市場脈動 多元資源｜餐車總召、裝潢清潔搬運配合團隊 📞 0928-776-755 📱 Line ID：@931aeinu 🏢 經紀業資訊 常鴻悦豐企業社 營業員：蔡文豪（112）桃市字第432900號 營業員：劉子菲（113）桃市字第467056號 經紀人：葉靜蓉（104）新北經證字第003119號</p> 
+                                <a target="_blank" title="♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店" href="https://www.tiktok.com/music/原聲-楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店-7559422116367092492?refer=embed">♬ 原聲  - 楊梅買房找子菲夢想起飛🛫｜住商楊梅大順店</a> 
+                            </section> 
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+                    
+            <!-- 滑動提示（僅手機版顯示）-->
+            <div class="tiktok-swipe-hint" style="display: none;">
+                👈 左右滑動查看更多影片 👉
+                    </div>
+                    
+            <!-- 滑動指示器（僅手機版顯示）-->
+            <div class="tiktok-dots" style="display: none;">
+                <span class="tiktok-dot active" onclick="scrollToVideo(0)"></span>
+                <span class="tiktok-dot" onclick="scrollToVideo(1)"></span>
+                <span class="tiktok-dot" onclick="scrollToVideo(2)"></span>
+                    </div>
+                    
+            <script>
+                // 延遲載入 TikTok embed.js，減少初始載入時間
+                window.addEventListener('load', function() {
+                    setTimeout(function() {
+                        const script = document.createElement('script');
+                        script.src = 'https://www.tiktok.com/embed.js';
+                        script.async = true;
+                        document.body.appendChild(script);
+                        console.log('📺 TikTok embed.js 延遲載入完成');
+                    }, 2000); // 2秒後才載入 TikTok
+                });
+            </script>
+            
+            <!-- 滑動控制腳本 -->
+            <script>
+                // 影片滑動控制
+                function scrollToVideo(index) {
+                    const grid = document.querySelector('.tiktok-grid');
+                    const items = document.querySelectorAll('.tiktok-item');
+                    if (items[index]) {
+                        items[index].scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'nearest', 
+                            inline: 'center' 
+                        });
+                    }
+                }
+                
+                // 更新指示器狀態
+                function updateDots() {
+                    const grid = document.querySelector('.tiktok-grid');
+                    const items = document.querySelectorAll('.tiktok-item');
+                    const dots = document.querySelectorAll('.tiktok-dot');
+                    
+                    if (!grid || items.length === 0) return;
+                    
+                    const scrollLeft = grid.scrollLeft;
+                    const itemWidth = items[0].offsetWidth;
+                    const currentIndex = Math.round(scrollLeft / itemWidth);
+                    
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === currentIndex);
+                    });
+                }
+                
+                // 監聽滑動事件
+                document.addEventListener('DOMContentLoaded', function() {
+                    const grid = document.querySelector('.tiktok-grid');
+                    if (grid && window.innerWidth <= 1024) {
+                        grid.addEventListener('scroll', updateDots);
+                        updateDots(); // 初始化
+                    }
+                });
+                
+                // 響應視窗大小變化
+                window.addEventListener('resize', function() {
+                    const grid = document.querySelector('.tiktok-grid');
+                    if (grid) {
+                        if (window.innerWidth <= 1024) {
+                            grid.addEventListener('scroll', updateDots);
+                            updateDots();
+                        }
+                    }
+                });
+            </script>
+        </div>
+        
+        <!-- 工具快捷區域 -->
+        <div class="ad-section">
+            <div class="ad-container">
+                <div class="ad-section-header">
+                    <h3 class="ad-title">🛠️ 實用工具推薦</h3>
+                    <p class="ad-section-desc">精選實用工具，讓您的生活更便利</p>
+                </div>
+                <div class="ad-grid">
+                    <div class="ad-item featured">
+                        <div class="ad-badge">熱門</div>
+                        <div class="ad-content">
+                            <div class="ad-icon">💰</div>
+                            <div class="ad-text">
+                                <div class="ad-name">買賣試算系統</div>
+                                <div class="ad-desc">房貸試算工具</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://property-rr6ksz.manus.space/" target="_blank" class="cta-link primary">
+                                <span>立即試算</span>
+                                <span class="link-arrow">→</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">💬</div>
+                            <div class="ad-text">
+                                <div class="ad-name">房地產諮詢</div>
+                                <div class="ad-desc">免費諮詢</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://line.me/R/ti/p/@931aeinu" target="_blank">立即諮詢</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">🏠</div>
+                            <div class="ad-text">
+                                <div class="ad-name">房屋物件精選</div>
+                                <div class="ad-desc">優質物件</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://realtor.houseprice.tw/agent/buy/0925666597/" target="_blank">查看物件</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">📊</div>
+                            <div class="ad-text">
+                                <div class="ad-name">實價登錄查詢</div>
+                                <div class="ad-desc">房價查詢</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://lvr.land.moi.gov.tw/" target="_blank">查詢房價</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">🗺️</div>
+                            <div class="ad-text">
+                                <div class="ad-name">地圖找房</div>
+                                <div class="ad-desc">地圖找房</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://sky770825.github.io/junyang666/" target="_blank">開啟地圖</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- 廣告區域 -->
+        <div class="ad-section">
+            <div class="ad-container">
+                <h3 class="ad-title">🍽️ 相關推薦</h3>
+                <div class="ad-grid">
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">🧋</div>
+                            <div class="ad-text">
+                                <div class="ad-name">功夫茶四維店</div>
+                                <div class="ad-desc">飲料訂購</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://sky770825.github.io/kungfuteahtml/" target="_blank">立即訂購</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">🚗</div>
+                            <div class="ad-text">
+                                <div class="ad-name">四維停車場</div>
+                                <div class="ad-desc">停車場</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://maps.app.goo.gl/gQRVJ4c9MJePNSJ48" target="_blank">查看位置</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">📞</div>
+                            <div class="ad-text">
+                                <div class="ad-name">里長聯絡資訊</div>
+                                <div class="ad-desc">里長資訊</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="tel:0933965385" target="_blank">0933-965385</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">🍽️</div>
+                            <div class="ad-text">
+                                <div class="ad-name">四維餐車社群</div>
+                                <div class="ad-desc">餐車群組</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://line.me/ti/g2/VXIuR9NyhkWFQPuMeWTUp_RHitaW82_0r8MU1Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank">立即加入</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item">
+                        <div class="ad-content">
+                            <div class="ad-icon">🚌</div>
+                            <div class="ad-text">
+                                <div class="ad-name">楊梅免費公車</div>
+                                <div class="ad-desc">免費公車</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="https://www.yangmei.tycg.gov.tw/News_Content.aspx?n=9055&s=910871" target="_blank">查看班次</a>
+                        </div>
+                    </div>
+                    
+                    <div class="ad-item" onclick="showMedicalInfo()">
+                        <div class="ad-content">
+                            <div class="ad-icon">🏥</div>
+                            <div class="ad-text">
+                                <div class="ad-name">楊梅醫療服務</div>
+                                <div class="ad-desc">醫療資訊</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="#" onclick="event.preventDefault(); showMedicalInfo();">查看資訊</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 廠商進駐區域 -->
+                <div class="ad-section">
+                    <div class="ad-container">
+                        <h3 class="ad-title">🏢 廠商進駐</h3>
+                        <div class="ad-grid">
+                    <div class="ad-item" onclick="showSponsorContact()">
+                        <div class="ad-content">
+                            <div class="ad-icon">📢</div>
+                            <div class="ad-text">
+                                <div class="ad-name">我要進駐</div>
+                                <div class="ad-desc">聯絡資訊</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="#" onclick="event.preventDefault(); showSponsorContact();">立即洽詢</a>
+                        </div>
+                    </div>
 
-  // 顯示所有媒體
-  showAllMedia() {
-    this.showNotification('正在載入更多精彩內容...', 'info');
-    
-    // 這裡可以導航到專門的媒體頁面或顯示更多內容
-    setTimeout(() => {
-      this.showNotification('媒體庫功能開發中，敬請期待！', 'info');
-    }, 1500);
-  }
+                    <div class="ad-item" onclick="showSponsorContact()">
+                        <div class="ad-content">
+                            <div class="ad-icon">🎯</div>
+                            <div class="ad-text">
+                                <div class="ad-name">精準客群</div>
+                                <div class="ad-desc">精準行銷</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="#" onclick="event.preventDefault(); showSponsorContact();">了解詳情</a>
+                        </div>
+                    </div>
 
-  // 顯示通知
-  showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    const colors = {
-      success: 'bg-green-500',
-      error: 'bg-red-500',
-      warning: 'bg-yellow-500',
-      info: 'bg-blue-500'
-    };
-    
-    notification.className = `fixed top-20 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300 max-w-sm`;
-    notification.innerHTML = `
-      <div class="flex items-center gap-2">
-        <span class="text-lg">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
-        <span>${message}</span>
-      </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // 顯示動畫
-    setTimeout(() => {
-      notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // 自動隱藏
-    setTimeout(() => {
-      notification.style.transform = 'translateX(100%)';
-      setTimeout(() => {
-        if (document.body.contains(notification)) {
-          document.body.removeChild(notification);
-        }
-      }, 300);
-    }, 3000);
-  }
-}
+                    <div class="ad-item" onclick="showSponsorContact()">
+                        <div class="ad-content">
+                            <div class="ad-icon">📈</div>
+                            <div class="ad-text">
+                                <div class="ad-name">高曝光度</div>
+                                <div class="ad-desc">品牌曝光</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="#" onclick="event.preventDefault(); showSponsorContact();">立即合作</a>
+                        </div>
+                    </div>
 
-// 全域函數
-function showMedia(mediaId, type, title, description) {
-  mediaGallery.showMedia(mediaId, type, title, description);
-}
+                    <div class="ad-item" onclick="showSponsorContact()">
+                        <div class="ad-content">
+                            <div class="ad-icon">💼</div>
+                            <div class="ad-text">
+                                <div class="ad-name">進駐方案</div>
+                                <div class="ad-desc">合作方案</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="#" onclick="event.preventDefault(); showSponsorContact();">查看方案</a>
+                        </div>
+                    </div>
 
-function playMainMedia() {
-  mediaGallery.playMainMedia();
-}
+                    <div class="ad-item" onclick="showSponsorContact()">
+                        <div class="ad-content">
+                            <div class="ad-icon">⭐</div>
+                            <div class="ad-text">
+                                <div class="ad-name">成功案例</div>
+                                <div class="ad-desc">成功案例</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="#" onclick="event.preventDefault(); showSponsorContact();">查看案例</a>
+                        </div>
+                    </div>
 
-function showAllMedia() {
-  mediaGallery.showAllMedia();
-}
+                    <div class="ad-item" onclick="showSponsorContact()">
+                        <div class="ad-content">
+                            <div class="ad-icon">🤝</div>
+                            <div class="ad-text">
+                                <div class="ad-name">長期合作</div>
+                                <div class="ad-desc">長期合作</div>
+                            </div>
+                        </div>
+                        <div class="ad-link">
+                            <a href="#" onclick="event.preventDefault(); showSponsorContact();">開始合作</a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
 
-// 初始化媒體展示
-const mediaGallery = new MediaGallery();
+                <!-- 聯絡資訊彈窗 -->
+                <div id="sponsorModal" class="sponsor-modal" onclick="hideSponsorContact()">
+                    <div class="sponsor-modal-content" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3>🏢 廠商進駐聯絡資訊</h3>
+                            <span class="close-btn" onclick="hideSponsorContact()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <div class="contact-icon">📞</div>
+                                    <div class="contact-info">
+                                        <div class="contact-name">蔡先生</div>
+                                        <a href="tel:0928776755" class="contact-phone">0928-776755</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item">
+                                    <div class="contact-icon">💬</div>
+                                    <div class="contact-info">
+                                        <div class="contact-name">官方LINE</div>
+                                        <a href="https://lin.ee/dmM2ROH" target="_blank" class="contact-line">立即加入LINE</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-// 初始化應用
-const app = new PropertyApp();
-
-// 性能監控
-if ('performance' in window) {
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const perfData = performance.getEntriesByType('navigation')[0];
-      console.log('頁面載入時間:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
-    }, 0);
-  });
-}
-
-// PWA安裝提示
-let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  console.log('PWA安裝提示觸發');
-  e.preventDefault();
-  deferredPrompt = e;
-  
-  // 顯示安裝按鈕
-  if (installBtn) {
-    installBtn.style.display = 'block';
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`用戶選擇: ${outcome}`);
-        deferredPrompt = null;
-        installBtn.style.display = 'none';
-      }
-    });
-  }
-});
-
-// 檢查是否已安裝
-window.addEventListener('appinstalled', (evt) => {
-  console.log('PWA已安裝');
-  if (installBtn) {
-    installBtn.style.display = 'none';
-  }
-});
-
-// Service Worker註冊
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      console.log('Service Worker註冊成功:', registration.scope);
-      
-      // 檢查更新
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // 有新版本可用
-            if (confirm('發現新版本，是否立即更新？')) {
-              newWorker.postMessage({ action: 'skipWaiting' });
-              window.location.reload();
-            }
-          }
-        });
-      });
-    } catch (error) {
-      console.log('Service Worker註冊失敗:', error);
-    }
-  });
-}
-
-
-// 社交分享功能
-function shareContent(title, text, url) {
-  if (navigator.share) {
-    navigator.share({
-      title: title,
-      text: text,
-      url: url
-    }).then(() => {
-      console.log('分享成功');
-    }).catch((error) => {
-      console.log('分享失敗:', error);
-    });
-  } else {
-    // 降級到複製連結
-    navigator.clipboard.writeText(url).then(() => {
-      alert('連結已複製到剪貼板！');
-    });
-  }
-}
-
-// 搜尋功能
-function openSearch() {
-  window.location.href = 'search.html';
-}
-
-function handleSearchEnter(event) {
-  if (event.key === 'Enter') {
-    const query = document.getElementById('mainSearchInput').value.trim();
-    if (query) {
-      // 儲存搜尋關鍵字
-      localStorage.setItem('searchQuery', query);
-      // 跳轉到搜尋頁面
-      window.location.href = 'search.html';
-    }
-  }
-}
-
-// 在地生活相關功能
-function showLocalRecommendations() {
-  const recommendations = [
-    "🏠 楊梅優質房產 - 精選物件推薦",
-    "🛠️ 在地服務商 - 水電、裝潢、維修",
-    "🍽️ 在地美食 - 楊梅特色餐廳",
-    "🚌 交通資訊 - 公車路線、時刻表",
-    "🏪 生活便利 - 超市、銀行、郵局"
-  ];
-  
-  const message = "🌟 楊梅在地推薦：\n\n" + recommendations.join("\n");
-  alert(message);
-}
-
-function showLocalServices() {
-  const services = [
-    "🔧 水電維修 - 24小時服務",
-    "🎨 裝潢設計 - 專業團隊",
-    "🚚 搬家服務 - 安全可靠",
-    "🧹 清潔服務 - 定期維護",
-    "🌱 園藝服務 - 美化環境"
-  ];
-  
-  const message = "🛠️ 在地服務推薦：\n\n" + services.join("\n");
-  alert(message);
-}
-
-function showLocalActivities() {
-  const activities = [
-    "🏃‍♂️ 楊梅運動公園 - 休閒運動",
-    "📚 楊梅圖書館 - 閱讀學習",
-    "🎭 文化活動 - 藝文展演",
-    "🍃 自然步道 - 親近自然",
-    "🎪 節慶活動 - 社區參與"
-  ];
-  
-  const message = "🎊 楊梅在地活動：\n\n" + activities.join("\n");
-  alert(message);
-}
-
-function showLocalFood() {
-  const food = [
-    "🍜 楊梅麵店 - 傳統好味道",
-    "🥟 在地小吃 - 特色美食",
-    "☕ 咖啡廳 - 休閒時光",
-    "🍰 甜點店 - 下午茶選擇",
-    "🍱 便當店 - 經濟實惠"
-  ];
-  
-  const message = "🍽️ 楊梅在地美食：\n\n" + food.join("\n");
-  alert(message);
-}
-
-function shareLocalGreeting() {
-  const greetings = [
-    "🌟 歡迎來到楊梅人在地生活集！",
-    "💫 讓生活更美好，從這裡開始",
-    "🎯 發現更多實用工具和服務",
-    "✨ 一站式生活服務平台"
-  ];
-  
-  const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
-  
-  if (navigator.share) {
-    navigator.share({
-      title: '楊梅在地生活',
-      text: randomGreeting,
-      url: window.location.href
-    });
-  } else {
-    navigator.clipboard.writeText(randomGreeting).then(() => {
-      alert('楊梅在地生活資訊已複製到剪貼板！\n\n' + randomGreeting);
-    });
-  }
-}
-
-function showLocalEvents() {
-  const events = [
-    "🎪 楊梅文化節 - 在地文化展示",
-    "🎭 社區音樂會 - 藝文表演",
-    "🏮 節慶市集 - 在地特產",
-    "🎊 親子活動 - 家庭同樂",
-    "🌙 夜間活動 - 夜生活體驗"
-  ];
-  
-  const message = "🎪 楊梅在地活動：\n\n" + events.join("\n");
-  alert(message);
-}
-
-function showLocalBusinesses() {
-  const businesses = [
-    "🏪 楊梅市場 - 新鮮蔬果",
-    "🏦 銀行服務 - 金融便利",
-    "📮 郵局服務 - 郵務處理",
-    "🏥 醫療服務 - 健康照護",
-    "🎓 教育機構 - 學習資源"
-  ];
-  
-  const message = "🏪 楊梅在地商家：\n\n" + businesses.join("\n");
-  alert(message);
-}
-
-// 新增互動功能
-function quickSearch(query) {
-  document.getElementById('mainSearchInput').value = query;
-  localStorage.setItem('searchQuery', query);
-  window.location.href = 'search.html';
-}
-
-
-// 圖片放大模態框功能
-function showImageModal(imageSrc) {
-  const modal = document.getElementById('imageModal');
-  const modalImage = document.getElementById('modalImage');
-  if (modal && modalImage) {
-    modalImage.src = imageSrc;
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden'; // 防止背景滾動
-  }
-}
-
-function closeImageModal() {
-  const modal = document.getElementById('imageModal');
-  if (modal) {
-    modal.classList.add('hidden');
-    document.body.style.overflow = 'auto'; // 恢復滾動
-  }
-}
-
-
-function showAllNotifications() {
-  const notifications = [
-    "🌦 今日天氣：多雲時晴，適合外出",
-    "🗑 垃圾車將於 19:30 到達您的區域",
-    "🧾 最新發票開獎結果已公布",
-    "🚌 公車路線調整通知",
-    "🏦 銀行利率最新變動"
-  ];
-  
-  const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
-  showNotification(randomNotification, 'info');
-}
-
-function showNotification(message, type = 'info') {
-  const notification = document.createElement('div');
-  const colors = {
-    success: 'bg-green-500',
-    error: 'bg-red-500',
-    warning: 'bg-yellow-500',
-    info: 'bg-blue-500'
-  };
-  
-  notification.className = `fixed top-20 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300 max-w-sm`;
-  notification.innerHTML = `
-    <div class="flex items-center gap-2">
-      <span class="text-lg">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
-      <span>${message}</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-content">
+                <p>📍 四維商圈餐車月行程表</p>
+                <p>點擊餐車名稱即可開啟Google Maps導航</p>
+            </div>
+        </div>
+        
+        <!-- 醫療資訊彈窗 -->
+        <div id="medicalModal" class="sponsor-modal" onclick="hideMedicalInfo()">
+            <div class="sponsor-modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3>🏥 楊梅醫療服務資訊</h3>
+                    <span class="close-btn" onclick="hideMedicalInfo()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="medical-grid">
+                        <div class="medical-category">
+                            <h4>🏥 大型醫院</h4>
+                            <div class="medical-item">
+                                <div class="medical-name">楊梅天成醫院</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區新農街二段</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-3200" class="phone-link">03-478-3200</a></div>
+                                    <div class="medical-hours">🕒 24小時急診</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區新農街二段" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">楊梅敏盛醫院</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區新農街二段</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-3200" class="phone-link">03-478-3200</a></div>
+                                    <div class="medical-hours">🕒 24小時急診</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區新農街二段" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">怡仁綜合醫院</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區楊新北路321巷30號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-485-5678" class="phone-link">03-485-5678</a></div>
+                                    <div class="medical-hours">🕒 24小時急診</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區楊新北路321巷30號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">楊梅區衛生所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區大成路2號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-3683" class="phone-link">03-478-3683</a></div>
+                                    <div class="medical-hours">🕒 週一至週五 08:00-17:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區大成路2號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="medical-category">
+                            <h4>🏥 一般診所</h4>
+                            <div class="medical-item">
+                                <div class="medical-name">民安診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區大成路175號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-21:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區大成路175號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">明仁診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區楊新北路13號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-21:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區楊新北路13號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">孫浩診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區中興路132號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-21:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區中興路132號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">姜博文診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區永美路335號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-21:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區永美路335號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="medical-category">
+                            <h4>🦷 牙科診所</h4>
+                            <div class="medical-item">
+                                <div class="medical-name">楊梅牙醫診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區中興路50號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-18:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區中興路50號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">陳耀芳耳鼻喉科診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區大成路111號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-18:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區大成路111號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="medical-category">
+                            <h4>👁️ 專科診所</h4>
+                            <div class="medical-item">
+                                <div class="medical-name">呂眼科診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區大成路81號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-18:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區大成路81號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">楊梅小兒科診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區新農街15號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週日 08:00-22:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區新農街15號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="medical-category">
+                            <h4>🏥 其他診所</h4>
+                            <div class="medical-item">
+                                <div class="medical-name">勝遠診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區梅山東街150號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-21:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區梅山東街150號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medical-item">
+                                <div class="medical-name">鄭鈞源診所</div>
+                                <div class="medical-info">
+                                    <div class="medical-address">📍 桃園市楊梅區新成路201之1號</div>
+                                    <div class="medical-phone">📞 <a href="tel:03-478-2200" class="phone-link">03-478-2200</a></div>
+                                    <div class="medical-hours">🕒 週一至週六 09:00-21:00</div>
+                                    <div class="medical-navigation">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=桃園市楊梅區新成路201之1號" target="_blank" class="nav-link">🗺️ 導航</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="medical-note">
+                        <p>💡 <strong>注意事項：</strong></p>
+                        <ul>
+                            <li>建議就診前先電話確認營業時間</li>
+                            <li>急診請直接前往大型醫院</li>
+                            <li>健保卡請隨身攜帶</li>
+                            <li>如有緊急情況請撥打119</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 快速使用指南彈窗 -->
+        <div id="quickGuideModal" class="sponsor-modal" onclick="hideQuickGuide()">
+            <div class="sponsor-modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3>❓ 如何使用餐車月行程表</h3>
+                    <span class="close-btn" onclick="hideQuickGuide()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>選擇週次</h4>
+                                <p>點擊上方的週次標籤，查看不同週的餐車安排</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>查看餐車資訊</h4>
+                                <p>每個日期卡片顯示當天的餐車名稱和位置</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>一鍵導航</h4>
+                                <p>點擊餐車名稱即可開啟Google Maps導航到該位置</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>加入群組</h4>
+                                <p>點擊「歡迎加入四維商圈餐車群」獲取最新資訊</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="guide-tips">
+                        <h4>💡 小貼士</h4>
+                        <ul>
+                            <li>手機版支援觸控滑動查看圖片</li>
+                            <li>電腦版可使用滾輪控制圖片跑馬燈</li>
+                            <li>所有餐車位置都支援一鍵導航</li>
+                            <li>點擊餐車名稱即可開啟Google Maps導航</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  `;
-  
-  document.body.appendChild(notification);
-  
-  // 顯示動畫
-  setTimeout(() => {
-    notification.style.transform = 'translateX(0)';
-  }, 100);
-  
-  // 自動隱藏
-  setTimeout(() => {
-    notification.style.transform = 'translateX(100%)';
-    setTimeout(() => {
-      if (document.body.contains(notification)) {
-        document.body.removeChild(notification);
-      }
-    }, 300);
-  }, 4000);
-}
 
-// 滾動到頂部動畫
-function smoothScrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
-}
 
-// 添加滾動監聽
-window.addEventListener('scroll', () => {
-  const scrollButton = document.getElementById('scrollToTop');
-  if (scrollButton) {
-    if (window.pageYOffset > 300) {
-      scrollButton.classList.remove('hidden');
-    } else {
-      scrollButton.classList.add('hidden');
-    }
-  }
-});
-
-// 鍵盤快捷鍵
-document.addEventListener('keydown', (e) => {
-  // Ctrl/Cmd + K 開啟搜尋
-  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-    e.preventDefault();
-    document.getElementById('mainSearchInput')?.focus();
-  }
-  
-  // ESC 關閉所有彈窗
-  if (e.key === 'Escape') {
-    hideCardPreview();
-    const suggestions = document.getElementById('searchSuggestions');
-    if (suggestions) {
-      suggestions.classList.add('hidden');
-    }
-    // 關閉模態框
-    closeImageModal();
-    closeVendorModal();
-  }
-});
-
-// 添加回到頂部按鈕
-const scrollButton = document.createElement('button');
-scrollButton.id = 'scrollToTop';
-scrollButton.className = 'fixed bottom-20 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 z-40 hidden';
-scrollButton.innerHTML = '⬆️';
-scrollButton.onclick = smoothScrollToTop;
-document.body.appendChild(scrollButton);
-
-// 廠商進駐彈窗功能
-function showVendorPopup() {
-  const modal = document.getElementById('vendorModal');
-  if (modal) {
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden'; // 防止背景滾動
-    
-    // 添加動畫效果
-    setTimeout(() => {
-      const modalContent = modal.querySelector('.transform');
-      if (modalContent) {
-        modalContent.style.transform = 'scale(1)';
-      }
-    }, 10);
-  }
-}
-
-function closeVendorModal() {
-  const modal = document.getElementById('vendorModal');
-  if (modal) {
-    // 添加關閉動畫
-    const modalContent = modal.querySelector('.transform');
-    if (modalContent) {
-      modalContent.style.transform = 'scale(0.95)';
-    }
-    
-    setTimeout(() => {
-      modal.classList.add('hidden');
-      document.body.style.overflow = 'auto'; // 恢復滾動
-    }, 200);
-  }
-}
-
-function contactOfficialAccount() {
-  // 關閉彈窗
-  closeVendorModal();
-  
-  // 延遲一下再跳轉，讓動畫完成
-  setTimeout(() => {
-    // 連結到官方LINE帳號
-    window.open('https://lin.ee/Ij6z94H', '_blank', 'noopener,noreferrer');
-  }, 300);
-}
-</script>
+    <script src="script.js" defer></script>
 </body>
 </html>
