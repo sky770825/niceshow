@@ -747,7 +747,7 @@ async function initializeImageMarquee() {
             localStorage.setItem('foodTruckData', JSON.stringify(data));
         }
     } catch (error) {
-        console.error('無法載入餐車資料:', error);
+        console.warn('⚠️ 無法載入餐車資料（可能是在file://模式下），使用預設資料:', error.message);
         // 使用預設資料
         imageData = getActiveFoodTrucks();
     }
@@ -1077,9 +1077,14 @@ function checkDataUpdate() {
             console.error('❌ 解析 localStorage 資料失敗:', error);
         }
     } else {
-        // 如果沒有 localStorage 資料，嘗試從 data.json 載入
-        console.log('📥 沒有 localStorage 資料，嘗試從 data.json 載入');
-        initializeImageMarquee();
+        // 如果沒有 localStorage 資料，檢查是否已經嘗試載入過
+        const hasTriedLocalLoad = sessionStorage.getItem('hasTriedLocalLoad');
+        if (!hasTriedLocalLoad) {
+            console.log('📥 沒有 localStorage 資料，嘗試從 data.json 載入');
+            sessionStorage.setItem('hasTriedLocalLoad', 'true');
+            initializeImageMarquee();
+        }
+        // 如果已經嘗試過但失敗，不再重複嘗試
     }
 }
 
@@ -1215,8 +1220,8 @@ function initializeApp() {
         }
     }, 100);
     
-    // 設定定期檢查資料更新
-    setInterval(checkDataUpdate, 1000); // 每1秒檢查一次，提高同步速度
+    // 設定定期檢查資料更新（改為每30秒檢查一次，避免過度載入）
+    setInterval(checkDataUpdate, 30000); // 每30秒檢查一次
 }
 
 

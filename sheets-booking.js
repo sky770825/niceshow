@@ -175,6 +175,12 @@ function parseBookingDate(bookingDate) {
     if (match) {
         const month = parseInt(match[1]);
         const day = parseInt(match[2]);
+        
+        // 調試：顯示1月的日期
+        if (month === 1) {
+            console.log('⚠️ 發現1月的日期:', bookingDate);
+        }
+        
         const dayNameMap = {
             '一': '週一',
             '二': '週二',
@@ -213,6 +219,13 @@ function convertBookingToSchedule(bookingData) {
     // 按日期分組
     const dateMap = new Map();
     
+    // 獲取當前年份和月份
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    
+    console.log(`📅 當前日期: ${currentYear}年${currentMonth}月`);
+    
     bookingData.forEach(booking => {
         const dateInfo = parseBookingDate(booking.bookingDate);
         if (!dateInfo) {
@@ -226,6 +239,38 @@ function convertBookingToSchedule(bookingData) {
                 });
             }
             return;
+        }
+        
+        // 過濾掉1月的資料（2026年1月）
+        if (dateInfo.month === 1 && currentMonth !== 1) {
+            console.log('🚫 已隱藏1月資料:', booking.bookingDate, '時間戳記:', booking.timestamp);
+            return;
+        }
+        
+        // 如果是1月，檢查時間戳記年份，只保留當前年份的1月資料
+        if (dateInfo.month === 1 && currentMonth === 1) {
+            // 從時間戳記解析年份
+            let bookingYear = currentYear; // 預設為當前年份
+            if (booking.timestamp) {
+                try {
+                    const timestampDate = new Date(booking.timestamp);
+                    bookingYear = timestampDate.getFullYear();
+                    console.log('🔍 檢查1月資料:', {
+                        預約日期: booking.bookingDate,
+                        時間戳記: booking.timestamp,
+                        解析年份: bookingYear,
+                        當前年份: currentYear
+                    });
+                } catch (e) {
+                    // 解析失敗，使用預設值
+                }
+            }
+            
+            // 只保留當前年份的1月資料
+            if (bookingYear !== currentYear) {
+                console.log('🚫 已隱藏1月資料（年份不符）:', booking.bookingDate, '年份:', bookingYear);
+                return;
+            }
         }
         
         const address = extractAddress(booking.venue);
@@ -300,8 +345,9 @@ function convertBookingToSchedule(bookingData) {
             
             // 計算週次標題
             const weekNum = weeks.length + 1;
-            const weekTitle = generateWeekTitle(sortedDates.slice(index, index + 7));
-            const weekLabel = generateWeekLabel(sortedDates.slice(index, index + 7));
+            // 預設標題，稍後會根據實際資料更新
+            const weekTitle = `${dayData.month}月${dayData.day}日`;
+            const weekLabel = `${dayData.month}/${dayData.day}`;
             
             currentWeek = {
                 id: `week${weekNum - 1}`,
@@ -324,11 +370,31 @@ function convertBookingToSchedule(bookingData) {
         weeks.push(currentWeek);
     }
     
+    // 資料添加完成後，更新週次標題
+    weeks.forEach(week => {
+        if (week.days && week.days.length > 0) {
+            const firstDay = week.days[0];
+            const lastDay = week.days[week.days.length - 1];
+            if (firstDay && lastDay) {
+                // 解析日期字串 (如 "10/13")
+                const parseDateString = (dateStr) => {
+                    const parts = dateStr.split('/');
+                    return {
+                        month: parseInt(parts[0]),
+                        day: parseInt(parts[1])
+                    };
+                };
+                const firstDate = parseDateString(firstDay.date);
+                const lastDate = parseDateString(lastDay.date);
+                week.title = `${firstDate.month}月${firstDate.day}日 - ${lastDate.month}月${lastDate.day}日`;
+                week.tabLabel = `${firstDate.month}/${firstDate.day}-${lastDate.month}/${lastDate.day}`;
+            }
+        }
+    });
+    
     console.log('📅 資料轉換完成，共', weeks.length, '週');
     
     // 過濾已經過期的週次
-    const now = new Date();
-    const currentMonth = now.getMonth() + 1;
     const currentDate = now.getDate();
     
     console.log(`📅 當前日期: ${currentMonth}/${currentDate}`);
@@ -440,8 +506,12 @@ function convertBookingToSchedule(bookingData) {
 function generateWeekTitle(weekDays) {
     if (!weekDays || weekDays.length === 0) return '';
     
-    const firstDay = weekDays[0];
-    const lastDay = weekDays[weekDays.length - 1];
+    // 過濾掉無效的日期資料
+    const validDays = weekDays.filter(day => day && day.month && day.day);
+    if (validDays.length === 0) return '';
+    
+    const firstDay = validDays[0];
+    const lastDay = validDays[validDays.length - 1];
     
     return `${firstDay.month}月${firstDay.day}日 - ${lastDay.month}月${lastDay.day}日`;
 }
@@ -454,8 +524,12 @@ function generateWeekTitle(weekDays) {
 function generateWeekLabel(weekDays) {
     if (!weekDays || weekDays.length === 0) return '';
     
-    const firstDay = weekDays[0];
-    const lastDay = weekDays[weekDays.length - 1];
+    // 過濾掉無效的日期資料
+    const validDays = weekDays.filter(day => day && day.month && day.day);
+    if (validDays.length === 0) return '';
+    
+    const firstDay = validDays[0];
+    const lastDay = validDays[validDays.length - 1];
     
     return `${firstDay.month}/${firstDay.day}-${lastDay.month}/${lastDay.day}`;
 }
@@ -470,6 +544,17 @@ async function loadBookingSchedule() {
         if (!BOOKING_SHEETS_CONFIG.ENABLED) {
             console.log('ℹ️ 餐車報名表整合已停用');
             return null;
+        }
+        
+        // ==================== 檢查快取版本並清除舊快取 ====================
+        const cacheVersion = localStorage.getItem('scheduleData_booking_version');
+        const currentVersion = '1.2'; // 更新版本號以清除舊快取
+        
+        if (cacheVersion !== currentVersion) {
+            console.log('🔄 檢測到版本更新，清除舊快取...');
+            localStorage.removeItem('scheduleData_booking');
+            localStorage.removeItem('scheduleData_booking_timestamp');
+            localStorage.setItem('scheduleData_booking_version', currentVersion);
         }
         
         // ==================== 優先使用快取 ====================
