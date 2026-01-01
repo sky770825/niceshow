@@ -1,5 +1,28 @@
 // ==================== 全域變數與設定 ====================
 
+// 版本檢查機制：防止用戶使用舊版本
+(function() {
+    const CURRENT_VERSION = 'v1.0.0'; // 與 index.html 中的版本號保持一致
+    const VERSION_KEY = 'app_version';
+    
+    // 檢查版本是否更新
+    const storedVersion = localStorage.getItem(VERSION_KEY);
+    if (storedVersion && storedVersion !== CURRENT_VERSION) {
+        // 版本已更新，清除舊快取並提示用戶
+        console.log('🔄 檢測到新版本，清除舊快取...');
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // 顯示更新提示（可選）
+        if (window.APP_VERSION && window.APP_VERSION !== CURRENT_VERSION) {
+            console.warn('⚠️ 版本不匹配，建議刷新頁面');
+        }
+    }
+    
+    // 儲存當前版本
+    localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+})();
+
 // 地址對應表
 const addressMap = {
     '四維路59號': 'https://maps.app.goo.gl/jaKQjQ6jArFZda898',

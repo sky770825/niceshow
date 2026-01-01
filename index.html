@@ -9,6 +9,12 @@
     <meta name="author" content="四維商圈餐車月行程表">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <!-- 快取控制：防止瀏覽器快取舊版本 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <link rel="canonical" href="https://your-domain.com/">
     
     <!-- Open Graph / Facebook -->
@@ -96,11 +102,18 @@
         }
     }
     </script>
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- 版本號：更新時請修改此版本號以強制刷新快取 -->
+    <script>
+        // 版本號 - 每次更新時請修改此值（例如：v1.0.1, v1.0.2...）
+        window.APP_VERSION = 'v1.0.0';
+    </script>
+    
+    <link rel="stylesheet" href="style.css?v=1.0.0">
     
     <!-- 預載入關鍵資源 -->
-    <link rel="preload" href="style.css" as="style">
-    <link rel="preload" href="script.js" as="script">
+    <link rel="preload" href="style.css?v=1.0.0" as="style">
+    <link rel="preload" href="script.js?v=1.0.0" as="script">
     
     <!-- DNS 預解析 -->
     <link rel="dns-prefetch" href="//maps.app.goo.gl">
@@ -117,7 +130,7 @@
     <!-- <script src="sheets-simple.js" defer></script> -->
     
     <!-- Google Sheets 餐車報名表整合（推薦使用） -->
-    <script src="sheets-booking.js" defer></script>
+    <script src="sheets-booking.js?v=1.0.0" defer></script>
 </head>
 <body>
     <div class="container">
@@ -910,6 +923,6 @@
     </div>
 
 
-    <script src="script.js" defer></script>
+    <script src="script.js?v=1.0.0" defer></script>
 </body>
 </html>
