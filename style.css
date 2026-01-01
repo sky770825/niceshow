@@ -735,7 +735,7 @@ body.loaded {
 }
 
 .week-selector-header h3 {
-    font-size: 1.3em;
+    font-size: 1.5em;
     color: #2c3e50;
     margin-bottom: 5px;
     font-weight: 700;
@@ -743,7 +743,7 @@ body.loaded {
 
 .week-selector-desc {
     color: #6c757d;
-    font-size: 0.9em;
+    font-size: 1em;
     margin: 0;
 }
 
@@ -814,15 +814,15 @@ body.loaded {
     }
     
     .week-tab-title {
-        font-size: 0.8em;
+        font-size: 0.9em;
     }
     
     .week-tab-dates {
-        font-size: 0.7em;
+        font-size: 0.85em;
     }
     
     .week-tab-trucks {
-        font-size: 0.6em;
+        font-size: 0.75em;
     }
 }
 
@@ -857,7 +857,7 @@ body.loaded {
 }
 
 .week-tab-title {
-    font-size: 0.85em;
+    font-size: 1em;
     font-weight: 700;
     margin-bottom: 2px;
     color: #2c3e50;
@@ -869,7 +869,7 @@ body.loaded {
 }
 
 .week-tab-dates {
-    font-size: 0.75em;
+    font-size: 0.9em;
     font-weight: 600;
     margin-bottom: 2px;
     color: #495057;
@@ -881,7 +881,7 @@ body.loaded {
 }
 
 .week-tab-trucks {
-    font-size: 0.65em;
+    font-size: 0.8em;
     color: #6c757d;
     font-weight: 500;
     transition: color 0.3s ease;

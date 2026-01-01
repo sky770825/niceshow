@@ -2,7 +2,7 @@
 
 // 版本檢查機制：防止用戶使用舊版本
 (function() {
-    const CURRENT_VERSION = 'v1.0.0'; // 與 index.html 中的版本號保持一致
+    const CURRENT_VERSION = 'v1.0.1'; // 與 index.html 中的版本號保持一致
     const VERSION_KEY = 'app_version';
     
     // 檢查版本是否更新
