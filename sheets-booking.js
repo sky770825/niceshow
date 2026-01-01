@@ -324,22 +324,13 @@ function convertBookingToSchedule(bookingData) {
         }
     });
     
-    // 將日期按時間排序（處理跨年情況：12月在前，1月在後）
+    // 將日期按時間排序（從1月開始：1月、2月、3月...12月）
     const sortedDates = Array.from(dateMap.values()).sort((a, b) => {
-        // 處理跨年情況：確保12月排在1月之前
-        // 方法：將1月的月份值轉換為13，這樣12月（12）就會排在1月（13）之前
-        
-        let aMonth = a.month;
-        let bMonth = b.month;
-        
-        // 如果月份是1月，轉換為13以便排序（12月在前，1月在後）
-        if (aMonth === 1) aMonth = 13;
-        if (bMonth === 1) bMonth = 13;
-        
-        // 按轉換後的月份值排序
-        if (aMonth !== bMonth) {
-            return aMonth - bMonth;
+        // 按月份排序（1月、2月、3月...12月）
+        if (a.month !== b.month) {
+            return a.month - b.month;
         }
+        // 同月份按日期排序
         return a.day - b.day;
     });
     
@@ -357,12 +348,8 @@ function convertBookingToSchedule(bookingData) {
     let weekStartDay = null;
     
     sortedDates.forEach((dayData, index) => {
-        // 每7天開始新的一週，或第一天，或遇到月份邊界（從12月到1月）
-        const shouldStartNewWeek = index % 7 === 0 || 
-                                   !currentWeek || 
-                                   (currentWeek && currentWeek.days.length > 0 && 
-                                    currentWeek.days[currentWeek.days.length - 1].month === 12 && 
-                                    dayData.month === 1);
+        // 每7天開始新的一週，或第一天
+        const shouldStartNewWeek = index % 7 === 0 || !currentWeek;
         
         if (shouldStartNewWeek) {
             if (currentWeek && currentWeek.days.length > 0) {
@@ -406,19 +393,10 @@ function convertBookingToSchedule(bookingData) {
         if (week.days && week.days.length > 0) {
             const firstDay = week.days[0];
             const lastDay = week.days[week.days.length - 1];
-            if (firstDay && lastDay) {
-                // 解析日期字串 (如 "10/13")
-                const parseDateString = (dateStr) => {
-                    const parts = dateStr.split('/');
-                    return {
-                        month: parseInt(parts[0]),
-                        day: parseInt(parts[1])
-                    };
-                };
-                const firstDate = parseDateString(firstDay.date);
-                const lastDate = parseDateString(lastDay.date);
-                week.title = `${firstDate.month}月${firstDate.day}日 - ${lastDate.month}月${lastDate.day}日`;
-                week.tabLabel = `${firstDate.month}/${firstDate.day}-${lastDate.month}/${lastDate.day}`;
+            if (firstDay && lastDay && firstDay.month && lastDay.month) {
+                // 直接使用 month 和 day 屬性，不需要解析 date 字串
+                week.title = `${firstDay.month}月${firstDay.day}日 - ${lastDay.month}月${lastDay.day}日`;
+                week.tabLabel = `${firstDay.month}/${firstDay.day}-${lastDay.month}/${lastDay.day}`;
             }
         }
     });
@@ -447,19 +425,11 @@ function convertBookingToSchedule(bookingData) {
         console.log(`   lastDay:`, lastDay);
         console.log(`   week.days 長度:`, week.days.length);
         
-        // 解析日期字串 (如 "10/13")
-        const parseDateString = (dateStr) => {
-            const parts = dateStr.split('/');
-            return {
-                month: parseInt(parts[0]),
-                day: parseInt(parts[1])
-            };
-        };
+        // 直接使用 month 和 day 屬性
+        const firstDate = { month: firstDay.month, day: firstDay.day };
+        const lastDate = { month: lastDay.month, day: lastDay.day };
         
-        const firstDate = parseDateString(firstDay.date);
-        const lastDate = parseDateString(lastDay.date);
-        
-        console.log(`   解析後: ${firstDate.month}/${firstDate.day} - ${lastDate.month}/${lastDate.day}`);
+        console.log(`   日期: ${firstDate.month}/${firstDate.day} - ${lastDate.month}/${lastDate.day}`);
         
         // 檢查這週是否完全過期
         // 只有當整週的最後一天都過了，才過濾掉
@@ -795,7 +765,7 @@ function renderDayCardBooking(day) {
 }
 
 /**
- * 根據當前日期自動選擇週次（動態版）
+ * 自動選擇週次（預設顯示第1週）
  * @param {Object} scheduleData - 行程資料
  */
 function autoSelectWeekByCurrentDate(scheduleData) {
@@ -804,77 +774,14 @@ function autoSelectWeekByCurrentDate(scheduleData) {
         return;
     }
     
-    const now = new Date();
-    const currentDate = now.getDate();
-    const currentMonth = now.getMonth() + 1; // getMonth() 返回 0-11，需要 +1
+    console.log(`📊 共有 ${scheduleData.weeks.length} 個週次`);
+    console.log(`📍 預設顯示第1週`);
     
-    console.log(`📅 當前日期: ${currentMonth}/${currentDate}`);
-    console.log(`🔍 開始檢查週次匹配...`);
+    // 直接顯示第1週（索引 0）
+    const selectedWeekIndex = 0;
+    const selectedWeek = scheduleData.weeks[selectedWeekIndex];
     
-    let selectedWeekIndex = 0; // 預設第一週
-    let found = false;
-    
-    // 遍歷所有週次，尋找包含當前日期的週次
-    for (let i = 0; i < scheduleData.weeks.length; i++) {
-        const week = scheduleData.weeks[i];
-        
-        // 檢查這週的所有日期
-        for (const day of week.days) {
-            if (day.month === currentMonth && day.day === currentDate) {
-                selectedWeekIndex = i;
-                found = true;
-                console.log(`✅ 找到匹配週次: ${week.title}`);
-                break;
-            }
-        }
-        
-        if (found) break;
-        
-        // 如果當前日期在這週的日期範圍內
-        if (week.days.length > 0) {
-            const firstDay = week.days[0];
-            const lastDay = week.days[week.days.length - 1];
-            
-            // 檢查是否在範圍內（處理跨年情況）
-            let isInRange = false;
-            
-            // 處理跨年情況：如果當前是12月，1月是下個月
-            if (currentMonth === 12 && firstDay.month === 1) {
-                // 12月到1月的跨年情況
-                isInRange = (currentDate >= firstDay.day) || (currentDate <= lastDay.day);
-            }
-            // 處理跨年情況：如果當前是1月，12月是上個月
-            else if (currentMonth === 1 && lastDay.month === 12) {
-                // 12月到1月的跨年情況
-                isInRange = (currentDate >= firstDay.day) || (currentDate <= lastDay.day);
-            }
-            // 一般情況
-            else {
-                isInRange = (
-                    (currentMonth === firstDay.month && currentDate >= firstDay.day) &&
-                    (currentMonth === lastDay.month && currentDate <= lastDay.day)
-                ) || (
-                    // 跨月情況（非跨年）
-                    (currentMonth === firstDay.month && currentDate >= firstDay.day) ||
-                    (currentMonth === lastDay.month && currentDate <= lastDay.day)
-                );
-            }
-            
-            if (isInRange) {
-                selectedWeekIndex = i;
-                found = true;
-                console.log(`✅ 當前日期在週次範圍內: ${week.title}`);
-                break;
-            }
-        }
-    }
-    
-    if (!found) {
-        console.log(`⚠️ 當前日期不在任何週次範圍內，顯示第一週`);
-    }
-    
-    // 選擇週次
-    console.log(`📍 自動選擇週次: 第${selectedWeekIndex + 1}週`);
+    console.log(`✅ 選擇週次: 第${selectedWeekIndex + 1}週 (${selectedWeek ? selectedWeek.title : '未知'})`);
     if (typeof showWeek === 'function') {
         showWeek(selectedWeekIndex);
     }
