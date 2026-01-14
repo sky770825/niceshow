@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>裝潢補助 - 楊梅人在地生活</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --grad:linear-gradient(135deg,#f59e0b,#d97706);
+  --glass-bg:rgba(255,255,255,0.6);
+  --shadow-light:0 4px 12px rgba(0,0,0,.1);
+  --border-radius:1rem;
+  --transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body{
+  background:linear-gradient(to bottom,#fef3c7,#fff);
+  transition:var(--transition);
+  font-family:system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+}
+
+.glass-card{
+  background:var(--glass-bg);
+  backdrop-filter:blur(10px);
+  border-radius:var(--border-radius);
+  border:1px solid rgba(255,255,255,0.2);
+}
+
+.subsidy-card{
+  background:rgba(255,255,255,0.8);
+  border-radius:0.75rem;
+  padding:1rem;
+  margin-bottom:0.75rem;
+  transition:var(--transition);
+  border-left:4px solid #f59e0b;
+}
+</style>
+</head>
+<body>
+<!-- 返回按鈕 -->
+<button onclick="history.back()" class="fixed top-4 left-4 bg-white shadow-lg rounded-full p-3 z-50 hover:scale-105 transition">
+  ←
+</button>
+
+<!-- 標題區 -->
+<header class="text-center py-8" style="background:var(--grad);color:white;">
+  <h1 class="text-3xl font-bold">🔨 裝潢補助</h1>
+  <p class="text-sm opacity-90 mt-2">室內裝修補助優惠</p>
+</header>
+
+<main class="px-4 py-6 space-y-6">
+  <!-- 裝潢補助項目 -->
+  <section class="glass-card p-6 shadow-lg">
+    <h2 class="text-xl font-bold mb-4">🏠 裝潢補助項目</h2>
+    <div class="space-y-3">
+      <div class="subsidy-card">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="font-semibold">節能家電補助</h3>
+            <p class="text-sm text-gray-600">冷氣、冰箱等節能家電最高補助3萬元</p>
+          </div>
+          <button class="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600 transition">
+            申請
+          </button>
+        </div>
+      </div>
+      
+      <div class="subsidy-card">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="font-semibold">無障礙設施補助</h3>
+            <p class="text-sm text-gray-600">扶手、斜坡等設施最高補助10萬元</p>
+          </div>
+          <button class="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600 transition">
+            申請
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 申請流程 -->
+  <section class="glass-card p-6 shadow-lg">
+    <h2 class="text-xl font-bold mb-4">📋 申請流程</h2>
+    <div class="space-y-3 text-sm">
+      <div class="flex items-start space-x-3">
+        <span class="text-orange-500">1️⃣</span>
+        <span>準備相關證件和申請書</span>
+      </div>
+      <div class="flex items-start space-x-3">
+        <span class="text-orange-500">2️⃣</span>
+        <span>線上或臨櫃提交申請</span>
+      </div>
+      <div class="flex items-start space-x-3">
+        <span class="text-orange-500">3️⃣</span>
+        <span>審核通過後進行施工</span>
+      </div>
+      <div class="flex items-start space-x-3">
+        <span class="text-orange-500">4️⃣</span>
+        <span>驗收後撥付補助款</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 聯絡申請 -->
+  <section class="glass-card p-6 shadow-lg">
+    <h2 class="text-xl font-bold mb-4">📞 專人協助申請</h2>
+    <div class="text-center">
+      <div class="text-4xl mb-4">📱</div>
+      <div class="text-2xl font-bold text-orange-600 mb-2">0925-666-597</div>
+      <div class="text-sm text-gray-600 mb-4">專業顧問協助您申請各項補助</div>
+      <button class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition">
+        📞 立即諮詢
+      </button>
+    </div>
+  </section>
+</main>
+
+<script>
+// 申請按鈕功能
+document.querySelectorAll('button').forEach(button => {
+  if (button.textContent.includes('申請') || button.textContent.includes('諮詢')) {
+    button.addEventListener('click', function() {
+      alert('正在為您接通專員...\n電話：0925-666-597\n\n我們將協助您申請各項補助優惠！');
+    });
+  }
+});
+</script>
+</body>
+</html>

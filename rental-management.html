@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>包租代管廠商 - 楊梅人在地生活</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --grad:linear-gradient(135deg,#6366f1,#4f46e5);
+  --glass-bg:rgba(255,255,255,0.6);
+  --glass-dark:rgba(30,30,30,0.6);
+  --shadow-light:0 4px 12px rgba(0,0,0,.1);
+  --border-radius:1rem;
+  --transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body{
+  background:linear-gradient(to bottom,#e0e7ff,#fff);
+  transition:var(--transition);
+  font-family:system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+}
+
+.glass-card{
+  background:var(--glass-bg);
+  backdrop-filter:blur(10px);
+  border-radius:var(--border-radius);
+  border:1px solid rgba(255,255,255,0.2);
+}
+
+.contractor-card{
+  background:rgba(255,255,255,0.9);
+  border-radius:0.75rem;
+  padding:1.5rem;
+  margin-bottom:1rem;
+  transition:var(--transition);
+  border-left:4px solid #6366f1;
+}
+
+.contractor-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-light);
+}
+
+.contact-btn{
+  background:var(--grad);
+  color:white;
+  padding:0.5rem 1rem;
+  border-radius:9999px;
+  text-decoration:none;
+  font-weight:600;
+  transition:var(--transition);
+  display:inline-block;
+}
+
+.contact-btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 4px 15px rgba(99,102,241,0.3);
+}
+
+#themeToggle{
+  position:fixed;
+  top:1rem;
+  right:1rem;
+  background:var(--grad);
+  color:#fff;
+  border:none;
+  padding:.5rem .75rem;
+  border-radius:9999px;
+  z-index:50;
+  transition:var(--transition);
+  cursor:pointer;
+  font-size:1.2rem;
+}
+</style>
+</head>
+<body>
+<!-- 主題切換 -->
+<button id="themeToggle" aria-label="切換主題模式">🌞</button>
+
+<!-- 返回按鈕 -->
+<button onclick="history.back()" class="fixed top-4 left-4 bg-white shadow-lg rounded-full p-3 z-50 hover:scale-105 transition">
+  ←
+</button>
+
+<!-- 標題區 -->
+<header class="text-center py-8" style="background:var(--grad);color:white;">
+  <h1 class="text-3xl font-bold">🏠 包租代管廠商</h1>
+  <p class="text-sm opacity-90 mt-2">租賃管理，投資理財</p>
+</header>
+
+<main class="px-4 py-6 space-y-6">
+  <!-- 待廠商進駐 -->
+  <div class="contractor-card">
+    <div class="text-center p-8">
+      <div class="text-6xl mb-4">🏢</div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-4">待廠商進駐</h3>
+      <p class="text-gray-600 mb-6">我們正在尋找優質的包租代管廠商加入我們的平台</p>
+      <div class="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg p-6">
+        <h4 class="text-lg font-semibold text-gray-800 mb-3">歡迎廠商加入</h4>
+        <p class="text-gray-600 text-sm mb-4">如果您是專業的包租代管服務提供商，歡迎與我們聯繫</p>
+        <a href="https://line.me/ti/p/@931aeinu" class="contact-btn bg-gradient-to-r from-indigo-500 to-purple-500">
+          <span class="flex items-center gap-2">
+            <span>💬</span>
+            <span>聯繫我們</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// 主題切換
+document.getElementById('themeToggle').addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  document.getElementById('themeToggle').textContent = isDark ? '🌙' : '🌞';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="楊梅人在地生活 - 提供房產工具、生活服務、補助優惠等一站式服務">
+<meta name="keywords" content="房產,房貸,裝潢,補助,生活服務,房產計算器,房貸試算,裝潢估價">
+<meta name="author" content="楊梅人在地生活">
+<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- PWA相關 -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="楊梅人在地生活">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%238b5cf6;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='32' fill='url(%23grad1)'/%3E%3Ctext x='96' y='110' font-family='Arial, sans-serif' font-size='80' font-weight='bold' text-anchor='middle' fill='white'%3E🏠%3C/text%3E%3C/svg%3E">
+
+<!-- 結構化數據 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "楊梅人在地生活",
+  "url": "https://realtor-platform.com",
+  "description": "提供房產工具、生活服務、補助優惠等一站式服務",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://realtor-platform.com/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<title>楊梅人在地生活 - 房產工具、生活服務一站式平台</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" as="style">
+<style>
+:root{
+  --grad:linear-gradient(135deg,#6366f1,#8b5cf6);
+  --grad-secondary:linear-gradient(135deg,#f59e0b,#ef4444);
+  --grad-success:linear-gradient(135deg,#10b981,#059669);
+  --grad-warning:linear-gradient(135deg,#f59e0b,#d97706);
+  --grad-info:linear-gradient(135deg,#3b82f6,#1d4ed8);
+  --grad-worship:linear-gradient(135deg,#8b5cf6,#a855f7,#c084fc);
+  --glass-bg:rgba(255,255,255,0.7);
+  --glass-dark:rgba(30,30,30,0.7);
+  --glass-worship:rgba(139,92,246,0.15);
+  --shadow-light:0 4px 20px rgba(0,0,0,.08);
+  --shadow-hover:0 8px 30px rgba(0,0,0,.12);
+  --shadow-glow:0 0 30px rgba(99,102,241,0.4);
+  --shadow-worship:0 0 25px rgba(139,92,246,0.3);
+  --border-radius:1.25rem;
+  --transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --bounce:all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --backdrop-blur:blur(20px);
+}
+
+/* 基礎樣式 */
+body{
+  background:linear-gradient(135deg,#f0f4ff 0%,#e0e7ff 50%,#fff 100%);
+  background-attachment:fixed;
+  transition:var(--transition);
+  font-family:system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+  position:relative;
+}
+body::before{
+  content:'';
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle at 20% 80%,rgba(99,102,241,0.1) 0%,transparent 50%),
+              radial-gradient(circle at 80% 20%,rgba(139,92,246,0.1) 0%,transparent 50%),
+              radial-gradient(circle at 40% 40%,rgba(59,130,246,0.05) 0%,transparent 50%);
+  pointer-events:none;
+  z-index:-1;
+}
+body.dark{
+  background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#334155 100%);
+  color:#e2e8f0;
+}
+body.dark::before{
+  background:radial-gradient(circle at 20% 80%,rgba(99,102,241,0.15) 0%,transparent 50%),
+              radial-gradient(circle at 80% 20%,rgba(139,92,246,0.15) 0%,transparent 50%),
+              radial-gradient(circle at 40% 40%,rgba(59,130,246,0.1) 0%,transparent 50%);
+}
+
+/* 玻璃擬態效果 */
+.glass-card{
+  background:var(--glass-bg);
+  backdrop-filter:var(--backdrop-blur);
+  -webkit-backdrop-filter:var(--backdrop-blur);
+  border-radius:var(--border-radius);
+  border:1px solid rgba(255,255,255,0.3);
+  box-shadow:var(--shadow-light);
+  transition:var(--transition);
+}
+body.dark .glass-card{
+  background:var(--glass-dark);
+  border:1px solid rgba(255,255,255,0.15);
+}
+.glass-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-hover);
+}
+
+/* 應用卡片 */
+.app-card{
+  text-align:center;
+  padding:1rem;
+  border-radius:var(--border-radius);
+  box-shadow:var(--shadow-light);
+  cursor:pointer;
+  transition:var(--bounce);
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+  font-size:0.9rem;
+  position:relative;
+  overflow:hidden;
+}
+.app-card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+  transition:left 0.5s;
+}
+.app-card:hover::before{
+  left:100%;
+}
+.app-card:hover{
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:var(--shadow-hover);
+}
+.app-card:focus{
+  outline:3px solid #6366f1;
+  outline-offset:3px;
+}
+
+/* 特殊卡片樣式 */
+.app-card.property{background:var(--grad);color:#fff;box-shadow:0 4px 20px rgba(99,102,241,0.3);}
+.app-card.life{background:var(--grad-success);color:#fff;box-shadow:0 4px 20px rgba(16,185,129,0.3);}
+.app-card.fun{background:var(--grad-warning);color:#fff;box-shadow:0 4px 20px rgba(245,158,11,0.3);}
+.app-card.tool{background:var(--grad-info);color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.3);}
+.app-card.investment{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;box-shadow:0 4px 20px rgba(102,126,234,0.3);}
+.app-card.renovation{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:#fff;box-shadow:0 4px 20px rgba(67,233,123,0.3);}
+.app-card.subsidy{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;box-shadow:0 4px 20px rgba(250,112,154,0.3);}
+.app-card.local{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:#fff;box-shadow:0 4px 20px rgba(79,172,254,0.3);}
+.app-card.worship{
+  background:var(--grad-worship);
+  color:#fff;
+  box-shadow:var(--shadow-worship);
+  position:relative;
+  animation:worshipGlow 3s ease-in-out infinite;
+}
+.app-card.worship::after{
+  content:'✨';
+  position:absolute;
+  top:5px;
+  right:5px;
+  font-size:0.8rem;
+  animation:sparkle 2s ease-in-out infinite;
+}
+
+/* 趣味互動主題樣式 */
+.fun-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.fun-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+body.dark .fun-card {
+  background: rgba(30, 30, 30, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fortune-card {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  color: white;
+}
+
+.mbti-card {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: white;
+}
+
+.mini-fun-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mini-fun-card:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+body.dark .mini-fun-card {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 固定按鈕 */
+#themeToggle{
+  position:fixed;
+  top:1rem;
+  right:1rem;
+  background:var(--grad);
+  color:#fff;
+  border:none;
+  padding:.5rem .75rem;
+  border-radius:9999px;
+  z-index:50;
+  transition:var(--transition);
+  cursor:pointer;
+  font-size:1.2rem;
+}
+#themeToggle:hover{
+  transform:scale(1.1);
+}
+#themeToggle:focus{
+  outline:2px solid #fff;
+  outline-offset:2px;
+}
+
+#aiBtn{
+  position:fixed;
+  bottom:5rem;
+  right:1rem;
+  background:var(--grad);
+  color:#fff;
+  border:none;
+  padding:.75rem;
+  border-radius:50%;
+  font-size:1.4rem;
+  z-index:50;
+  transition:var(--transition);
+  cursor:pointer;
+  box-shadow:var(--shadow-light);
+}
+#aiBtn:hover{
+  transform:scale(1.1);
+  box-shadow:var(--shadow-hover);
+}
+#aiBtn:focus{
+  outline:2px solid #fff;
+  outline-offset:2px;
+}
+
+/* 載入動畫 */
+.loading{
+  opacity:0;
+  transform:translateY(20px);
+  transition:var(--transition);
+}
+.loading.loaded{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* 圖片載入錯誤處理 */
+.image-error{
+  background:linear-gradient(45deg,#f3f4f6,#e5e7eb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#6b7280;
+  font-size:0.875rem;
+}
+
+/* RWD 響應式設計 */
+@media (max-width: 640px) {
+  .grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-cols-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .app-card {
+    min-height: 50px;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+  #themeToggle {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.4rem 0.6rem;
+  }
+  #aiBtn {
+    bottom: 4rem;
+    right: 0.5rem;
+    padding: 0.6rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .app-card {
+    min-height: 60px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .app-card {
+    min-height: 60px;
+  }
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* 底部導航優化 */
+.bottom-nav {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* 無障礙設計 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 動畫效果 */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+/* 浮動動畫 */
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* 脈衝動畫 */
+.pulse-animation {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* 滑入動畫 */
+.slide-in {
+  animation: slideInUp 0.6s ease-out;
+}
+
+/* 彈跳動畫 */
+.bounce-animation {
+  animation: bounce 1s ease-in-out;
+}
+
+/* 拜拜專區特殊動畫 */
+@keyframes worshipGlow {
+  0%, 100% { 
+    box-shadow: 0 0 25px rgba(139,92,246,0.3);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 35px rgba(139,92,246,0.5);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% { 
+    opacity: 0.7;
+    transform: scale(1) rotate(0deg);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.2) rotate(180deg);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 中秋節特殊動畫 */
+@keyframes moonGlow {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 0, 0.5));
+  }
+  50% { 
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(255, 255, 0, 0.8));
+  }
+}
+
+@keyframes rabbitHop {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(5deg); }
+  50% { transform: translateY(-5px) rotate(0deg); }
+  75% { transform: translateY(-8px) rotate(-5deg); }
+}
+
+@keyframes lanternSway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+.moon-glow {
+  animation: moonGlow 3s ease-in-out infinite;
+}
+
+.rabbit-hop {
+  animation: rabbitHop 2s ease-in-out infinite;
+}
+
+.lantern-sway {
+  animation: lanternSway 4s ease-in-out infinite;
+}
+
+/* 動畫優化 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 🌙 主題切換與 AI -->
+<button id="themeToggle" aria-label="切換主題模式" title="切換日間/夜間模式">
+  <span class="theme-icon">🌞</span>
+  <span class="sr-only">切換主題模式</span>
+</button>
+<button id="aiBtn" aria-label="AI 小幫手" title="AI 智能助手">
+  🤖
+  <span class="sr-only">AI 小幫手</span>
+</button>
+
+<!-- 🌈 Hero 區 -->
+<header class="text-white text-center py-8 shadow-lg relative overflow-hidden" style="background:linear-gradient(135deg, #1e3a8a, #7c3aed, #ec4899);">
+  <!-- 中秋節裝飾 -->
+  <div class="absolute inset-0 opacity-20">
+    <div class="absolute top-4 left-4 text-4xl animate-pulse">🌕</div>
+    <div class="absolute top-8 right-8 text-3xl animate-bounce" style="animation-delay: 0.5s;">🐰</div>
+    <div class="absolute bottom-6 left-12 text-2xl animate-pulse" style="animation-delay: 1s;">🥮</div>
+    <div class="absolute bottom-4 right-4 text-3xl animate-pulse" style="animation-delay: 1.5s;">🏮</div>
+  </div>
+  
+  <div class="relative z-10">
+    <h1 class="text-3xl font-bold">🏠 楊梅人在地生活</h1>
+    <p class="text-sm opacity-90 mt-2">房產工具｜生活服務｜補助優惠｜趣味互動</p>
+    <div class="mt-3 text-yellow-200 animate-pulse">
+      <span class="text-lg">🌕 中秋佳節快樂！月圓人團圓 🥮</span>
+    </div>
+  </div>
+  
+  <!-- 搜尋框 -->
+  <div class="max-w-md mx-auto mt-4 relative">
+    <input 
+      type="text" 
+      id="mainSearchInput" 
+      class="w-full px-4 py-2 rounded-full text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600" 
+      placeholder="🔍 搜尋功能..."
+      onkeypress="handleSearchEnter(event)"
+    >
+    <button onclick="openSearch()" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm hover:bg-indigo-700 transition">
+      搜尋
+    </button>
+  </div>
+  
+  <div class="flex justify-center gap-4 mt-4">
+    <button onclick="openTool('https://liff.line.me/2008231108-p9kyed1G')" class="bg-white text-indigo-600 font-semibold px-5 py-2 rounded-full shadow hover:scale-105 transition focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600" aria-label="前往房貸試算工具">立即估價</button>
+    <button onclick="openTool('https://realtor.houseprice.tw/agent/buy/0925666597/')" class="bg-white text-indigo-600 font-semibold px-5 py-2 rounded-full shadow hover:scale-105 transition focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600" aria-label="前往委託服務頁面">立即委託</button>
+  </div>
+</header>
+
+<main class="px-3 py-2 pb-16 space-y-4">
+
+<!-- 🏠 核心服務 - 房產相關主要功能 -->
+<section class="glass-card p-4 shadow">
+  <h2 class="text-lg font-bold mb-3 text-gray-800 dark:text-gray-100 flex items-center gap-2">
+    <span class="text-xl">🏠</span>
+    <span>核心服務</span>
+    <div class="flex-1 h-px bg-gradient-to-r from-indigo-500 to-purple-500 ml-2"></div>
+  </h2>
+  <div class="grid grid-cols-3 gap-2">
+    <div class="app-card glass-card property" onclick="openTool('https://liff.line.me/2008231108-p9kyed1G')">💰 房貸試算</div>
+    <div class="app-card glass-card property" onclick="openTool('https://sky770825.github.io/junyang666/')">🌟 精選物件</div>
+    <div class="app-card glass-card worship" onclick="openTool('worship.html')">🙏 拜拜專區</div>
+    <div class="app-card glass-card tool" onclick="openTool('decor-calc.html')">🛋️ 裝潢估價</div>
+    <div class="app-card glass-card tool" onclick="openTool('tax-calc.html')">📄 稅費試算</div>
+    <div class="app-card glass-card investment" onclick="openTool('investor.html')">💰 投資專區</div>
+    <div class="app-card glass-card subsidy" onclick="openTool('subsidy.html')">💸 補助優惠</div>
+  </div>
+</section>
+
+<!-- 🌟 生活工具 - 實用功能整合 -->
+<section class="glass-card p-4 shadow">
+  <h2 class="text-lg font-bold mb-3 text-gray-800 dark:text-gray-100 flex items-center gap-2">
+    <span class="text-xl">🌟</span>
+    <span>生活工具</span>
+    <div class="flex-1 h-px bg-gradient-to-r from-emerald-500 to-teal-500 ml-2"></div>
+  </h2>
+  <div class="grid grid-cols-4 gap-2">
+    <div class="app-card glass-card life" onclick="openTool('weather.html')">🌦 天氣</div>
+    <div class="app-card glass-card life" onclick="openTool('garbage.html')">🗑 垃圾車</div>
+    <div class="app-card glass-card life" onclick="openTool('receipt.html')">🧾 發票</div>
+    <div class="app-card glass-card life" onclick="openTool('bus.html')">🚌 公車</div>
+    <div class="app-card glass-card life" onclick="openTool('https://sky770825.github.io/kungfuteahtml/')">🧋 功夫茶</div>
+    <div class="app-card glass-card life" onclick="openTool('https://sky770825.github.io/niceshow/')">🚚 餐車</div>
+    <div class="app-card glass-card life" onclick="openTool('inspection.html')">🔎 驗屋</div>
+    <div class="app-card glass-card life" onclick="openTool('rate.html')">🏦 利率</div>
+  </div>
+</section>
+
+<!-- 🎮 趣味互動 - 簡化版 -->
+<section class="glass-card p-4 shadow">
+  <h2 class="text-lg font-bold mb-3 text-gray-800 dark:text-gray-100 flex items-center gap-2">
+    <span class="text-xl">🎮</span>
+    <span>趣味互動</span>
+    <div class="flex-1 h-px bg-gradient-to-r from-orange-500 to-red-500 ml-2"></div>
+  </h2>
+  <div class="grid grid-cols-4 gap-2">
+    <div class="app-card glass-card games" onclick="openTool('games.html')">🎮 遊戲</div>
+    <div class="app-card glass-card fortune" onclick="openTool('fortune.html')">🔮 運勢</div>
+    <div class="app-card glass-card mbti" onclick="openTool('mbti.html')">🧩 MBTI</div>
+    <div class="app-card glass-card quote" onclick="openTool('daily-quote.html')">📝 金句</div>
+  </div>
+</section>
+
+
+</main>
+
+<!-- 📍 底部導航 -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-200 flex justify-around py-2 bottom-nav" role="navigation" aria-label="主要導航">
+  <button onclick="scrollTo(0,0)" class="flex flex-col items-center text-indigo-600 text-xs hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="回到首頁">
+    <span>🏠</span><span>首頁</span>
+  </button>
+  <button onclick="openTool('investor.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="投資專區">
+    <span>💰</span><span>投資</span>
+  </button>
+  <button onclick="openTool('games.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="遊戲大廳">
+    <span>🎮</span><span>遊戲</span>
+  </button>
+  <button onclick="window.location.href='https://flyjung168.pages.dev/'" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="房訊">
+    <span>🍹</span><span>房訊</span>
+  </button>
+  <button onclick="openTool('analytics.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="數據分析">
+    <span>📊</span><span>分析</span>
+  </button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="notification-system.js"></script>
+<script>
+// 應用程式主要功能
+class PropertyApp {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    this.setupThemeToggle();
+    this.setupAIBtn();
+    this.setupSwiper();
+    this.setupLoadingAnimation();
+    this.setupKeyboardNavigation();
+  }
+
+  // 工具開啟功能
+  openTool(url) {
+    if (url.startsWith('http')) {
+      // 外部連結在新視窗打開，保持主頁在原視窗
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      // 內部連結在原視窗打開
+      window.location.href = url;
+    }
+  }
+
+  // 主題切換功能
+  setupThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle.querySelector('.theme-icon');
+    
+    // 檢查本地存儲的主題偏好
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      themeIcon.textContent = '🌙';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark');
+      themeIcon.textContent = isDark ? '🌙' : '🌞';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+  }
+
+  // AI 按鈕功能
+  setupAIBtn() {
+    const aiBtn = document.getElementById('aiBtn');
+    aiBtn.addEventListener('click', () => {
+      // 添加點擊動畫
+      aiBtn.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        aiBtn.style.transform = '';
+      }, 150);
+      
+      // 顯示通知
+      this.showNotification('🤖 AI 小幫手即將上線！', 'info');
+    });
+  }
+
+  // Swiper 輪播設定
+  setupSwiper() {
+    if (document.querySelector('.mySwiper')) {
+      new Swiper('.mySwiper', {
+        loop: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+          dynamicBullets: true
+        },
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true
+        },
+        effect: 'slide',
+        speed: 600,
+        breakpoints: {
+          640: {
+            slidesPerView: 1,
+            spaceBetween: 20
+          },
+          768: {
+            slidesPerView: 1,
+            spaceBetween: 30
+          }
+        }
+      });
+    }
+  }
+
+  // 載入動畫
+  setupLoadingAnimation() {
+    // 簡化載入動畫，只在需要時使用
+    window.addEventListener('load', () => {
+      // 移除複雜的動畫邏輯
+    });
+  }
+
+  // 鍵盤導航支援
+  setupKeyboardNavigation() {
+    document.addEventListener('keydown', (e) => {
+      // ESC 鍵關閉任何彈窗
+      if (e.key === 'Escape') {
+        this.closeAllModals();
+      }
+      
+      // Alt + T 切換主題
+      if (e.altKey && e.key === 't') {
+        e.preventDefault();
+        document.getElementById('themeToggle').click();
+      }
+    });
+  }
+
+  // 顯示通知
+  showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-20 right-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // 顯示動畫
+    setTimeout(() => {
+      notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // 自動隱藏
+    setTimeout(() => {
+      notification.style.transform = 'translateX(full)';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
+
+  // 關閉所有彈窗
+  closeAllModals() {
+    // 這裡可以添加關閉彈窗的邏輯
+  }
+}
+
+// 全域函數（向後兼容）
+function openTool(url) {
+  app.openTool(url);
+}
+
+// 初始化應用
+const app = new PropertyApp();
+
+// 性能監控
+if ('performance' in window) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const perfData = performance.getEntriesByType('navigation')[0];
+      console.log('頁面載入時間:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+    }, 0);
+  });
+}
+
+// PWA安裝提示
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  console.log('PWA安裝提示觸發');
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // 顯示安裝按鈕
+  if (installBtn) {
+    installBtn.style.display = 'block';
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`用戶選擇: ${outcome}`);
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      }
+    });
+  }
+});
+
+// 檢查是否已安裝
+window.addEventListener('appinstalled', (evt) => {
+  console.log('PWA已安裝');
+  if (installBtn) {
+    installBtn.style.display = 'none';
+  }
+});
+
+// Service Worker註冊
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      console.log('Service Worker註冊成功:', registration.scope);
+      
+      // 檢查更新
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // 有新版本可用
+            if (confirm('發現新版本，是否立即更新？')) {
+              newWorker.postMessage({ action: 'skipWaiting' });
+              window.location.reload();
+            }
+          }
+        });
+      });
+    } catch (error) {
+      console.log('Service Worker註冊失敗:', error);
+    }
+  });
+}
+
+// 推播通知權限請求
+async function requestNotificationPermission() {
+  if ('Notification' in window) {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      console.log('推播通知權限已授予');
+      // 可以發送測試通知
+      new Notification('楊梅人在地生活', {
+        body: '歡迎使用楊梅人在地生活！',
+        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" rx="32" fill="%236366f1"/%3E%3Ctext x="96" y="110" font-size="80" text-anchor="middle" fill="white"%3E🏠%3C/text%3E%3C/svg%3E'
+      });
+    } else {
+      console.log('推播通知權限被拒絕');
+    }
+  }
+}
+
+// 社交分享功能
+function shareContent(title, text, url) {
+  if (navigator.share) {
+    navigator.share({
+      title: title,
+      text: text,
+      url: url
+    }).then(() => {
+      console.log('分享成功');
+    }).catch((error) => {
+      console.log('分享失敗:', error);
+    });
+  } else {
+    // 降級到複製連結
+    navigator.clipboard.writeText(url).then(() => {
+      alert('連結已複製到剪貼板！');
+    });
+  }
+}
+
+// 搜尋功能
+function openSearch() {
+  window.location.href = 'search.html';
+}
+
+function handleSearchEnter(event) {
+  if (event.key === 'Enter') {
+    const query = document.getElementById('mainSearchInput').value.trim();
+    if (query) {
+      // 儲存搜尋關鍵字
+      localStorage.setItem('searchQuery', query);
+      // 跳轉到搜尋頁面
+      window.location.href = 'search.html';
+    }
+  }
+}
+
+// 中秋節相關功能
+function showMooncakeRecommendations() {
+  const recommendations = [
+    "🥮 傳統廣式月餅 - 蓮蓉蛋黃、豆沙蛋黃",
+    "🥮 台式月餅 - 綠豆椪、蛋黃酥",
+    "🥮 冰皮月餅 - 芒果、草莓、巧克力",
+    "🥮 創意月餅 - 流心奶黃、抹茶紅豆",
+    "🥮 健康月餅 - 低糖、無麩質選擇"
+  ];
+  
+  const message = "🌕 中秋月餅推薦：\n\n" + recommendations.join("\n");
+  alert(message);
+}
+
+function showMoonViewingSpots() {
+  const spots = [
+    "🌙 陽明山 - 視野開闊，遠離光害",
+    "🌙 淡水漁人碼頭 - 海邊賞月，浪漫氛圍",
+    "🌙 象山 - 台北101夜景配明月",
+    "🌙 大安森林公園 - 市區便利選擇",
+    "🌙 碧潭 - 湖光月色，詩情畫意"
+  ];
+  
+  const message = "🌙 最佳賞月地點：\n\n" + spots.join("\n");
+  alert(message);
+}
+
+function showMidAutumnActivities() {
+  const activities = [
+    "🎊 中秋烤肉派對 - 親友團聚",
+    "🎊 猜燈謎活動 - 傳統文化體驗",
+    "🎊 放天燈祈福 - 許願祝福",
+    "🎊 柚子雕刻比賽 - 創意手作",
+    "🎊 中秋音樂會 - 戶外表演"
+  ];
+  
+  const message = "🎊 中秋節慶活動：\n\n" + activities.join("\n");
+  alert(message);
+}
+
+function showMidAutumnRecipes() {
+  const recipes = [
+    "👨‍🍳 自製月餅 - 簡單易學",
+    "👨‍🍳 柚子茶 - 潤燥養生",
+    "👨‍🍳 烤肉醃料 - 秘製配方",
+    "👨‍🍳 中秋湯圓 - 團圓象徵",
+    "👨‍🍳 桂花糕 - 應景甜點"
+  ];
+  
+  const message = "👨‍🍳 中秋節慶料理：\n\n" + recipes.join("\n");
+  alert(message);
+}
+
+function shareMidAutumnGreeting() {
+  const greetings = [
+    "🌕 中秋佳節快樂！月圓人團圓 🥮",
+    "🌙 但願人長久，千里共嬋娟 ✨",
+    "🥮 中秋月圓，幸福美滿 🐰",
+    "🏮 月圓花好，中秋快樂 🌸",
+    "🎊 中秋佳節，闔家歡樂 🎉"
+  ];
+  
+  const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+  
+  if (navigator.share) {
+    navigator.share({
+      title: '中秋祝福',
+      text: randomGreeting,
+      url: window.location.href
+    });
+  } else {
+    navigator.clipboard.writeText(randomGreeting).then(() => {
+      alert('中秋祝福已複製到剪貼板！\n\n' + randomGreeting);
+    });
+  }
+}
+
+function showMidAutumnEvents() {
+  const events = [
+    "🎪 台北101中秋煙火秀 - 9/29 20:00",
+    "🎭 中正紀念堂中秋音樂會 - 9/29 19:30",
+    "🏮 迪化街中秋燈會 - 9/28-10/1",
+    "🎊 大安森林公園中秋市集 - 9/29-10/1",
+    "🌙 淡水老街中秋遊行 - 9/29 18:00"
+  ];
+  
+  const message = "🎪 台北中秋節活動：\n\n" + events.join("\n");
+  alert(message);
+}
+
+function showMidAutumnFood() {
+  const food = [
+    "🥮 佳德鳳梨酥 - 台北市南京東路五段88號",
+    "🥮 微熱山丘 - 台北市信義區松高路9號",
+    "🥮 犁記餅店 - 台北市長安東路二段73號",
+    "🥮 郭元益 - 台北市士林區文林路546號",
+    "🥮 舊振南 - 台北市信義區松高路12號"
+  ];
+  
+  const message = "🥮 台北知名月餅店：\n\n" + food.join("\n");
+  alert(message);
+}
+</script>
+</body>
+</html>

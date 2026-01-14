@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>餐車排班 - 楊梅人在地生活</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+  --grad-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --grad-food: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: var(--grad-primary);
+  min-height: 100vh;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.schedule-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.schedule-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.truck-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 5px solid #fa709a;
+}
+
+.truck-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.truck-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.truck-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.truck-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.truck-status.open {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.truck-status.closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.truck-status.coming {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.truck-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.truck-description {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.truck-menu {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.truck-menu h4 {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.truck-menu ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  color: #4b5563;
+}
+
+.truck-menu li {
+  margin-bottom: 0.25rem;
+}
+
+.truck-schedule {
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.truck-schedule h4 {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.schedule-item:last-child {
+  border-bottom: none;
+}
+
+.schedule-day {
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.schedule-time {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.location-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.location-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.location-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.location-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.location-description {
+  color: #4b5563;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.day-filter {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+  background: #667eea;
+  color: white;
+}
+
+.filter-btn:hover {
+  background: #667eea;
+  color: white;
+}
+
+#themeToggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--grad-primary);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+#themeToggle:hover {
+  transform: scale(1.1);
+}
+
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.dark {
+  --grad-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.dark .schedule-card,
+.dark .truck-item,
+.dark .location-item {
+  background: rgba(30, 30, 30, 0.95);
+  color: white;
+}
+
+.dark .filter-btn {
+  background: rgba(30, 30, 30, 0.95);
+  border-color: #818cf8;
+  color: #818cf8;
+}
+
+.dark .filter-btn.active {
+  background: #818cf8;
+  color: white;
+}
+
+.dark .filter-btn:hover {
+  background: #818cf8;
+  color: white;
+}
+
+.dark .truck-title,
+.dark .location-title,
+.dark .truck-menu h4,
+.dark .truck-schedule h4,
+.dark .schedule-day {
+  color: #f9fafb;
+}
+
+.dark .truck-menu,
+.dark .truck-schedule {
+  background: rgba(55, 65, 81, 0.5);
+}
+
+.dark .schedule-item {
+  border-bottom-color: #4b5563;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+</style>
+</head>
+<body>
+<!-- 主題切換按鈕 -->
+<button id="themeToggle" onclick="toggleTheme()">🌓</button>
+
+<!-- 返回按鈕 -->
+<button class="back-btn" onclick="goBack()" title="返回主頁">←</button>
+
+<!-- 頁面標題 -->
+<div class="container mx-auto px-4 py-8">
+  <div class="text-center mb-8">
+    <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">🚚 餐車排班</h1>
+    <p class="text-xl text-white opacity-90">美味餐車，隨時為您服務</p>
+  </div>
+
+  <!-- 待廠商進駐 -->
+  <div class="schedule-card mb-8">
+    <div class="text-center p-8">
+      <div class="text-6xl mb-4">🏢</div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-4">待廠商進駐</h3>
+      <p class="text-gray-600 mb-6">我們正在尋找優質的餐車廠商加入我們的平台</p>
+      <div class="bg-gradient-to-r from-pink-100 to-purple-100 rounded-lg p-6">
+        <h4 class="text-lg font-semibold text-gray-800 mb-3">歡迎廠商加入</h4>
+        <p class="text-gray-600 text-sm mb-4">如果您是專業的餐車服務提供商，歡迎與我們聯繫</p>
+        <a href="https://line.me/ti/p/@931aeinu" class="contact-btn bg-gradient-to-r from-pink-500 to-purple-500">
+          <span class="flex items-center gap-2">
+            <span>💬</span>
+            <span>聯繫我們</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// 主題切換
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+}
+
+// 載入主題
+function loadTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+  }
+}
+
+// 返回主頁
+function goBack() {
+  window.location.href = 'index.html';
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+  loadTheme();
+});
+</script>
+</body>
+</html>

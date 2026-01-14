@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>裝修改造 - 楊梅人在地生活</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+  --grad-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --grad-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --grad-warning: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: var(--grad-primary);
+  min-height: 100vh;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.renovation-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.renovation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.step-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  border-left: 4px solid #667eea;
+}
+
+.step-number {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 30px;
+  height: 30px;
+  background: #667eea;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  background: rgba(102, 126, 234, 0.05);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.tool-item:hover {
+  background: rgba(102, 126, 234, 0.1);
+  transform: translateX(5px);
+}
+
+.case-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.case-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.case-image {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.case-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.case-meta {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.case-description {
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.budget-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.budget-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 0.5rem;
+}
+
+.budget-label {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.budget-breakdown {
+  text-align: left;
+}
+
+.budget-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.budget-item:last-child {
+  border-bottom: none;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.tip-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-left: 5px solid #10b981;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.tip-title {
+  color: #10b981;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.tip-content {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+#themeToggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--grad-primary);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+#themeToggle:hover {
+  transform: scale(1.1);
+}
+
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.dark {
+  --grad-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.dark .renovation-card,
+.dark .step-card,
+.dark .case-item,
+.dark .budget-card,
+.dark .tip-card {
+  background: rgba(30, 30, 30, 0.95);
+  color: white;
+}
+
+.dark .tool-item:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.dark .case-title {
+  color: #f9fafb;
+}
+
+.dark .budget-value {
+  color: #818cf8;
+}
+
+.dark .tip-title {
+  color: #34d399;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 圖片展示區域樣式 */
+.image-gallery-container {
+  position: relative;
+}
+
+.image-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gallery-main {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.main-image:hover {
+  transform: scale(1.05);
+}
+
+.gallery-thumbnails {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: space-between;
+}
+
+.thumbnail {
+  width: 20%;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.thumbnail:hover {
+  border-color: #667eea;
+  transform: scale(1.1);
+}
+
+.more-images {
+  width: 20%;
+  height: 40px;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.more-images:hover {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+  transform: scale(1.1);
+}
+
+/* 燈箱樣式 */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-prev {
+  left: 20px;
+}
+
+.lightbox-next {
+  right: 20px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+
+/* 深色模式適配 */
+.dark .thumbnail:hover {
+  border-color: #818cf8;
+}
+
+.dark .more-images {
+  background: rgba(129, 140, 248, 0.1);
+  color: #818cf8;
+}
+
+.dark .more-images:hover {
+  background: rgba(129, 140, 248, 0.2);
+  border-color: #818cf8;
+}
+</style>
+</head>
+<body>
+<!-- 主題切換按鈕 -->
+<button id="themeToggle" onclick="toggleTheme()">🌓</button>
+
+<!-- 返回按鈕 -->
+<button class="back-btn" onclick="goBack()" title="返回主頁">←</button>
+
+<!-- 頁面標題 -->
+<div class="container mx-auto px-4 py-8">
+  <div class="text-center mb-8">
+    <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">🏗️ 裝修改造</h1>
+    <p class="text-xl text-white opacity-90">專業裝潢指南，打造理想居家空間</p>
+  </div>
+
+  <!-- 推薦服務商 -->
+  <section class="glass rounded-2xl p-6 mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+        <span class="text-3xl">⭐</span>
+        <span>推薦服務商</span>
+      </h2>
+      <span class="text-sm bg-white/20 text-white px-3 py-1 rounded-full">推薦</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <!-- 嚴藝設計YANYI DESIGN -->
+      <div class="renovation-card h-full">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-800">嚴藝設計 YANYI DESIGN</h3>
+          <div class="flex gap-2">
+            <span class="text-xs bg-green-500 text-white px-2 py-1 rounded-full">專業</span>
+            <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">在地</span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="text-xs font-medium text-gray-800 mb-2">燈箱作品展示</h5>
+          <div class="image-gallery-container">
+            <div class="image-gallery" id="yanyi-gallery">
+              <div class="gallery-main">
+                <img src="https://i.postimg.cc/QMThYMxX/LINE-ALBUM-yan-yi-251028-31.jpg" 
+                     alt="燈箱作品1" class="main-image" onclick="openLightbox('yanyi-gallery', 0)">
+              </div>
+              <div class="gallery-thumbnails">
+                <img src="https://i.postimg.cc/ZRzZGhCH/LINE-ALBUM-yan-yi-251028-21.jpg" 
+                     alt="燈箱作品2" class="thumbnail" onclick="openLightbox('yanyi-gallery', 1)">
+                <img src="https://i.postimg.cc/3RQ7sHd9/LINE-ALBUM-yan-yi-251028-22.jpg" 
+                     alt="燈箱作品3" class="thumbnail" onclick="openLightbox('yanyi-gallery', 2)">
+                <img src="https://i.postimg.cc/76rDFyfK/LINE-ALBUM-yan-yi-251028-23.jpg" 
+                     alt="燈箱作品4" class="thumbnail" onclick="openLightbox('yanyi-gallery', 3)">
+                <img src="https://i.postimg.cc/NM8YYPH7/LINE-ALBUM-yan-yi-251028-24.jpg" 
+                     alt="燈箱作品5" class="thumbnail" onclick="openLightbox('yanyi-gallery', 4)">
+                <div class="more-images" onclick="openLightbox('yanyi-gallery', 5)">
+                  <span>+6</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 rounded-xl p-3 mb-4">
+          <h4 class="font-semibold text-blue-800 mb-2 flex items-center gap-2 text-sm">
+            <span>📞</span>
+            <span>聯絡資訊</span>
+          </h4>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-gray-600">聯絡人</span>
+              <span class="font-medium text-gray-800">嚴藝設計</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">電話</span>
+              <a href="tel:0958590616" class="font-medium text-blue-600 hover:underline">0958-590-616</a>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">營業時間</span>
+              <span class="font-medium text-gray-800">9:00-18:00</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">服務範圍</span>
+              <span class="font-medium text-gray-800 text-right">桃園市楊梅區萬大路158號</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 歡迎廠商進駐 -->
+      <div class="renovation-card h-full">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-800">歡迎廠商進駐</h3>
+          <div class="flex gap-2">
+            <span class="text-xs bg-green-500 text-white px-2 py-1 rounded-full">專業</span>
+            <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">在地</span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="text-xs font-medium text-gray-800 mb-2">服務展示</h5>
+          <div class="flex gap-2">
+            <div class="w-16 h-16 bg-gray-100 rounded overflow-hidden"></div>
+            <div class="w-16 h-16 bg-gray-100 rounded overflow-hidden"></div>
+            <div class="w-16 h-16 bg-gray-100 rounded overflow-hidden"></div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 rounded-xl p-3 mb-4">
+          <h4 class="font-semibold text-blue-800 mb-2 flex items-center gap-2 text-sm">
+            <span>📞</span>
+            <span>聯絡資訊</span>
+          </h4>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-gray-600">聯絡人</span>
+              <span class="font-medium text-gray-800">設計客服</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">電話</span>
+              <a href="tel:0925666597" class="font-medium text-blue-600 hover:underline">0925-666-597</a>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">營業時間</span>
+              <span class="font-medium text-gray-800">9:00-18:00</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">服務範圍</span>
+              <span class="font-medium text-gray-800 text-right">中壢｜楊梅｜平鎮</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2 text-xs text-gray-500">僅保留 1 家廠商，歡迎其他廠商進駐</div>
+      </div>
+    </div>
+  </section>
+
+  
+</div>
+
+<!-- 燈箱 -->
+<div id="lightbox" class="lightbox">
+  <div class="lightbox-content">
+    <img id="lightboxImage" class="lightbox-image" alt="燈箱作品">
+    <button class="lightbox-nav lightbox-prev" onclick="previousImage()">‹</button>
+    <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <div class="lightbox-counter">
+      <span id="imageCounter">1 / 11</span>
+    </div>
+  </div>
+</div>
+
+<!-- 📍 底部導航 -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-200 flex justify-around py-2 bottom-nav" role="navigation" aria-label="主要導航">
+  <button onclick="scrollTo(0,0)" class="flex flex-col items-center text-indigo-600 text-xs hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="回到首頁">
+    <span>🏠</span><span>首頁</span>
+  </button>
+  <button onclick="openTool('expense-tracker.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="記帳">
+    <span>📝</span><span>記帳</span>
+  </button>
+  <button onclick="openTool('games.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="遊戲大廳">
+    <span>🎮</span><span>遊戲</span>
+  </button>
+  <button onclick="window.location.href='https://flyjung168.pages.dev/'" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="房訊">
+    <span>🍹</span><span>房訊</span>
+  </button>
+  <button onclick="openTool('worship.html')" class="flex flex-col items-center text-gray-600 text-xs hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg px-2 py-1" aria-label="拜拜專區">
+    <span>🙏</span><span>拜拜</span>
+  </button>
+  </nav>
+
+<script>
+// 主題切換
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+}
+
+// 載入主題
+function loadTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+  }
+}
+
+// 返回主頁
+function goBack() {
+  window.location.href = 'index.html';
+}
+
+// 開啟工具
+function openTool(url) {
+  if (url.startsWith('http')) {
+    window.open(url, '_blank');
+  } else {
+    window.location.href = url;
+  }
+}
+
+// 燈箱功能
+let currentGallery = '';
+let currentImageIndex = 0;
+let imageUrls = [];
+
+// 嚴藝設計的圖片URLs
+const yanyiImages = [
+  'https://i.postimg.cc/QMThYMxX/LINE-ALBUM-yan-yi-251028-31.jpg',
+  'https://i.postimg.cc/ZRzZGhCH/LINE-ALBUM-yan-yi-251028-21.jpg',
+  'https://i.postimg.cc/3RQ7sHd9/LINE-ALBUM-yan-yi-251028-22.jpg',
+  'https://i.postimg.cc/76rDFyfK/LINE-ALBUM-yan-yi-251028-23.jpg',
+  'https://i.postimg.cc/NM8YYPH7/LINE-ALBUM-yan-yi-251028-24.jpg',
+  'https://i.postimg.cc/4yJG3bvT/LINE-ALBUM-yan-yi-251028-25.jpg',
+  'https://i.postimg.cc/SRy4K7L4/LINE-ALBUM-yan-yi-251028-26.jpg',
+  'https://i.postimg.cc/4yJG3bvX/LINE-ALBUM-yan-yi-251028-27.jpg',
+  'https://i.postimg.cc/6q9KQLVw/LINE-ALBUM-yan-yi-251028-28.jpg',
+  'https://i.postimg.cc/zv0rHbpK/LINE-ALBUM-yan-yi-251028-29.jpg',
+  'https://i.postimg.cc/prqH5hkD/LINE-ALBUM-yan-yi-251028-30.jpg'
+];
+
+function openLightbox(galleryId, imageIndex) {
+  currentGallery = galleryId;
+  currentImageIndex = imageIndex;
+  
+  // 根據畫廊ID設定圖片陣列
+  if (galleryId === 'yanyi-gallery') {
+    imageUrls = yanyiImages;
+  }
+  
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  const imageCounter = document.getElementById('imageCounter');
+  
+  lightboxImage.src = imageUrls[currentImageIndex];
+  imageCounter.textContent = `${currentImageIndex + 1} / ${imageUrls.length}`;
+  
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden'; // 防止背景滾動
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('active');
+  document.body.style.overflow = 'auto'; // 恢復滾動
+}
+
+function nextImage() {
+  currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+  updateLightboxImage();
+}
+
+function previousImage() {
+  currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+  updateLightboxImage();
+}
+
+function updateLightboxImage() {
+  const lightboxImage = document.getElementById('lightboxImage');
+  const imageCounter = document.getElementById('imageCounter');
+  
+  lightboxImage.src = imageUrls[currentImageIndex];
+  imageCounter.textContent = `${currentImageIndex + 1} / ${imageUrls.length}`;
+}
+
+// 鍵盤事件處理
+document.addEventListener('keydown', function(e) {
+  const lightbox = document.getElementById('lightbox');
+  if (lightbox.classList.contains('active')) {
+    switch(e.key) {
+      case 'Escape':
+        closeLightbox();
+        break;
+      case 'ArrowLeft':
+        previousImage();
+        break;
+      case 'ArrowRight':
+        nextImage();
+        break;
+    }
+  }
+});
+
+// 點擊背景關閉燈箱
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeLightbox();
+  }
+});
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+  loadTheme();
+});
+</script>
+</body>
+</html>
