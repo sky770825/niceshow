@@ -76,9 +76,29 @@ document.querySelectorAll('.clear').forEach(btn => {
   });
 });
 
-/* ---------------- 社群連結動態增減 ---------------- */
+/* ---------------- 社群連結動態增減（最多 3 個） ---------------- */
 const socialList = document.getElementById('socialList');
-document.getElementById('addSocial').addEventListener('click', () => {
+const addSocialBtn = document.getElementById('addSocial');
+const MAX_SOCIAL_LINKS = 3;
+
+function updateAddSocialBtn() {
+  const count = socialList.querySelectorAll('.social-row').length;
+  if (count >= MAX_SOCIAL_LINKS) {
+    addSocialBtn.disabled = true;
+    addSocialBtn.style.opacity = '0.4';
+    addSocialBtn.style.cursor = 'not-allowed';
+    addSocialBtn.textContent = `已達上限（最多 ${MAX_SOCIAL_LINKS} 個）`;
+  } else {
+    addSocialBtn.disabled = false;
+    addSocialBtn.style.opacity = '';
+    addSocialBtn.style.cursor = '';
+    addSocialBtn.textContent = '+ 加一個連結';
+  }
+}
+
+addSocialBtn.addEventListener('click', () => {
+  const count = socialList.querySelectorAll('.social-row').length;
+  if (count >= MAX_SOCIAL_LINKS) return;
   const row = document.createElement('div');
   row.className = 'social-row with-remove';
   row.innerHTML = `
@@ -92,9 +112,15 @@ document.getElementById('addSocial').addEventListener('click', () => {
     <input type="url" class="social-url" placeholder="https://...">
     <button type="button" class="remove">×</button>
   `;
-  row.querySelector('.remove').addEventListener('click', () => row.remove());
+  row.querySelector('.remove').addEventListener('click', () => {
+    row.remove();
+    updateAddSocialBtn();
+  });
   socialList.appendChild(row);
+  updateAddSocialBtn();
 });
+
+updateAddSocialBtn();
 
 /* ---------------- 上傳到 Cloudinary ---------------- */
 async function uploadToCloudinary(file) {
@@ -210,6 +236,7 @@ document.getElementById('anotherBtn').addEventListener('click', () => {
     uploadedImages[k + '_file'] = null;
   });
   document.querySelectorAll('#socialList .social-row.with-remove').forEach(r => r.remove());
+  if (typeof updateAddSocialBtn === 'function') updateAddSocialBtn();
   document.getElementById('successScreen').classList.remove('show');
   form.style.display = 'flex';
   hideStatus();

@@ -591,12 +591,8 @@ const foodTruckDatabase = [
         title: '版主：蔡濬瑒',
         link: [
             {
-                url: 'https://realtor.houseprice.tw/agent/buy/0925666597/',
+                url: 'https://flyjung168.pages.dev/',
                 text: '精選物件'
-            },
-            {
-                url: 'https://www.tiktok.com/@aihouse168?is_from_webapp=1&sender_device=pc',
-                text: 'Tiktok'
             }
         ],
         isActive: true,
@@ -872,9 +868,14 @@ async function initializeImageMarquee() {
     // 添加圖片到跑碼燈軌道（只添加一次，不重複）
     const imageItems = createImageItems(imageData);
     imageItems.forEach(item => marqueeTrack.appendChild(item));
-    // 複製一份用於無縫循環滾動
-    imageItems.forEach(item => marqueeTrack.appendChild(item.cloneNode(true)));
-    console.log(`📝 已添加 ${imageItems.length} 個餐車圖片（含循環複製）`);
+    // 只有當內容超過容器寬度時才複製一份用於循環滾動
+    requestAnimationFrame(() => {
+        const wrapper = document.querySelector('.marquee-wrapper');
+        if (wrapper && marqueeTrack.scrollWidth > wrapper.clientWidth * 1.2) {
+            imageItems.forEach(item => marqueeTrack.appendChild(item.cloneNode(true)));
+        }
+    });
+    console.log(`📝 已添加 ${imageItems.length} 個餐車圖片`);
     
     // 更新當前圖片數量
     currentImageCount = marqueeTrack.children.length;
@@ -1319,6 +1320,11 @@ function startMarqueeAutoScroll(wrapper, track) {
     
     function tick() {
         if (!paused && Date.now() > pauseUntil && halfWidth() > 0) {
+            // 內容沒有循環複製時不自動滾動
+            if (track.scrollWidth <= wrapper.clientWidth * 1.2) {
+                requestAnimationFrame(tick);
+                return;
+            }
             wrapper.scrollLeft += speed;
             if (wrapper.scrollLeft >= halfWidth()) {
                 wrapper.scrollLeft -= halfWidth();
