@@ -1,0 +1,618 @@
+/* ==========================================================================
+   四維商圈餐車 — v2 改造版
+   - 餐車街邊風：奶油紙底、磚紅、深墨綠、芥末黃
+   - 字體：Noto Serif TC（標題）+ Noto Sans TC（內文）
+   - 取消大量 emoji、紫漸層、3D 陰影
+   ========================================================================== */
+
+:root {
+  --paper:        #f6efe1;   /* 奶油紙底 */
+  --paper-soft:   #ede4d0;
+  --ink:          #1d1a16;   /* 主字色：墨黑 */
+  --ink-soft:     #5a544a;
+  --line:         #d8cdb6;
+  --brand:        #c0432a;   /* 招牌磚紅 */
+  --brand-deep:   #8c2c19;
+  --accent:       #d9a441;   /* 芥末黃 */
+  --green:        #244a3d;   /* 深墨綠 */
+  --shadow-card:  0 1px 0 rgba(29,26,22,.04), 0 8px 24px -12px rgba(29,26,22,.18);
+  --radius:       6px;
+  --radius-lg:    14px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  /* 紙紋背景 */
+  background-image:
+    radial-gradient(rgba(29,26,22,.025) 1px, transparent 1px),
+    radial-gradient(rgba(29,26,22,.018) 1px, transparent 1px);
+  background-size: 24px 24px, 7px 7px;
+  background-position: 0 0, 12px 12px;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+body.loaded { opacity: 1; }
+
+::selection { background: var(--accent); color: var(--ink); }
+
+a { color: inherit; text-decoration: none; }
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: relative;
+  border: 1px solid var(--line);
+  background: #fffaf0;
+  border-radius: var(--radius-lg);
+  padding: 36px 32px 30px;
+  text-align: left;
+  overflow: hidden;
+}
+.header::before {
+  content: "SHIWEI ST. FOOD TRUCKS · 四維商圈";
+  position: absolute;
+  top: 14px; right: 24px;
+  font-family: 'Bebas Neue', 'Noto Sans TC', sans-serif;
+  letter-spacing: .14em;
+  font-size: 12px;
+  color: var(--brand);
+  font-weight: 600;
+}
+.header-content { max-width: 100%; }
+.header h1 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+  text-shadow: none;
+  animation: none;
+}
+.header h1::first-letter { color: var(--brand); }
+.header-subtitle {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+  font-weight: 400;
+}
+.group-invite {
+  display: inline-flex;
+  margin: 4px 0 18px;
+}
+.group-invite .group-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 600;
+  font-size: .95rem;
+  border-radius: 999px;
+  border: 1px solid var(--green);
+  transition: transform .15s ease, background .15s ease;
+}
+.group-invite .group-link:hover { background: #1a3a2f; transform: translateY(-1px); }
+.header-cta {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 4px;
+}
+.cta-button {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: .92rem;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+  box-shadow: none;
+}
+.cta-button:hover { background: var(--ink); color: var(--paper); transform: none; }
+.cta-button.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+.cta-button.primary:hover { background: var(--brand-deep); border-color: var(--brand-deep); }
+
+/* ===== 跑馬燈 ===== */
+.image-marquee-container {
+  margin: 28px 0 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: #fffaf0;
+  padding: 14px 0;
+  overflow: hidden;
+}
+.marquee-wrapper { overflow: hidden; }
+.marquee-track {
+  display: flex;
+  gap: 14px;
+  padding: 0 14px;
+  animation: marquee-scroll 40s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-item {
+  flex-shrink: 0;
+  width: 140px; height: 140px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--paper-soft);
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+.marquee-item:hover { transform: translateY(-2px); }
+.marquee-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ===== 週次選擇 ===== */
+.week-selector {
+  margin: 32px 0 18px;
+}
+.week-selector-header {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ink);
+}
+.week-selector-header h3 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+.week-selector-desc {
+  color: var(--ink-soft);
+  font-size: .9rem;
+}
+.week-tabs {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.week-tab {
+  padding: 10px 18px;
+  background: #fffaf0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--ink-soft);
+  transition: all .15s ease;
+}
+.week-tab:hover { background: var(--paper-soft); color: var(--ink); }
+.week-tab.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+/* ===== 主內容（餐車排班） ===== */
+.content {
+  margin: 18px 0 32px;
+  background: #fffaf0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  min-height: 200px;
+}
+.loading-message {
+  text-align: center; padding: 60px 20px; color: var(--ink-soft);
+}
+.loading-message h3 {
+  font-family: 'Noto Serif TC', serif;
+  color: var(--brand);
+  font-size: 1.2rem;
+  margin-top: 12px;
+}
+.week-content { display: none; }
+.week-content.active { display: block; }
+.week-header {
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+}
+.week-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--brand);
+}
+
+/* 7 欄日曆網格 */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.calendar-grid .day-header {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 700;
+  font-size: .82rem;
+  text-align: center;
+  padding: 8px 4px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius);
+  letter-spacing: .08em;
+  margin: 0;
+  border: none;
+  display: block;
+}
+.day-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 8px;
+  background: var(--paper);
+  transition: border-color .15s ease, transform .15s ease;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.day-card:hover { border-color: var(--brand); transform: translateY(-1px); }
+.day-card.has-trucks { background: #fffaf0; }
+.day-number {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--ink);
+  line-height: 1;
+}
+.day-name {
+  font-size: .72rem;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.no-trucks {
+  margin-top: auto;
+  font-size: .72rem;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 6px 0;
+  font-style: italic;
+}
+.truck-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.truck-item {
+  padding: 4px 6px;
+  background: var(--paper);
+  border-radius: 4px;
+  border-left: 2px solid var(--brand);
+  font-size: .78rem;
+  line-height: 1.3;
+}
+.truck-name {
+  position: relative;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: border-color .15s ease;
+}
+.truck-name:hover { border-color: var(--brand); }
+
+/* 滑過顯示地址 + 導航提示 tooltip */
+.truck-name::before {
+  content: attr(data-address) " ↗";
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 4px 9px;
+  border-radius: 5px;
+  font-size: .68rem;
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: .01em;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.truck-name::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border: 5px solid transparent;
+  border-top-color: var(--ink);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  pointer-events: none;
+}
+.truck-name:hover::before,
+.truck-name:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+/* 沒有 data-address 屬性時不顯示 tooltip */
+.truck-name:not([data-address])::before,
+.truck-name:not([data-address])::after { display: none; }
+.truck-location {
+  color: var(--ink-soft);
+  font-size: .88rem;
+  margin-top: 2px;
+}
+.truck-time { color: var(--green); font-size: .85rem; font-weight: 600; }
+
+/* ===== 區段標題 ===== */
+.section-eyebrow {
+  font-family: 'Bebas Neue', 'Noto Sans TC', sans-serif;
+  letter-spacing: .18em;
+  font-size: 12px;
+  color: var(--brand);
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+.section-h {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.section-desc {
+  color: var(--ink-soft);
+  font-size: .92rem;
+  margin-bottom: 18px;
+}
+
+/* ===== 廣告區 ===== */
+.ad-section { margin: 36px 0; }
+.ad-container {
+  border-top: 2px solid var(--ink);
+  padding-top: 22px;
+}
+.ad-section-header { margin-bottom: 18px; }
+.ad-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.ad-section-desc { color: var(--ink-soft); font-size: .9rem; }
+.ad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.ad-item {
+  position: relative;
+  background: #fffaf0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: border-color .15s ease, transform .15s ease;
+  cursor: pointer;
+  min-height: 130px;
+}
+.ad-item:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+}
+.ad-item.featured {
+  border-color: var(--brand);
+  background: linear-gradient(180deg, #fff5e8 0%, #fffaf0 60%);
+}
+.ad-badge {
+  position: absolute;
+  top: -8px; right: 14px;
+  background: var(--brand);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  letter-spacing: .05em;
+}
+.ad-content { display: flex; align-items: flex-start; gap: 12px; }
+.ad-icon {
+  font-size: 1.6rem;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--paper-soft);
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+.ad-text { flex: 1; min-width: 0; }
+.ad-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.ad-desc { color: var(--ink-soft); font-size: .82rem; }
+.ad-link a {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--brand);
+  font-weight: 600;
+  font-size: .88rem;
+  border-bottom: 1px solid transparent;
+  transition: border-color .15s ease;
+}
+.ad-link a:hover { border-color: var(--brand); }
+.ad-link a.cta-link.primary {
+  background: var(--brand);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+.ad-link a.cta-link.primary:hover { background: var(--brand-deep); border-color: var(--brand-deep); }
+.link-arrow { transition: transform .15s ease; }
+.ad-link a:hover .link-arrow { transform: translateX(2px); }
+
+/* ===== TikTok 影片 ===== */
+.tiktok-section {
+  margin: 36px 0 !important;
+  border-top: 2px solid var(--ink);
+  padding-top: 22px;
+}
+.tiktok-title { text-align: left !important; margin-bottom: 18px !important; }
+.tiktok-title h3 {
+  font-family: 'Noto Serif TC', serif !important;
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  color: var(--ink) !important;
+  margin-bottom: 4px !important;
+}
+.tiktok-title p { color: var(--ink-soft) !important; font-size: .9rem !important; }
+.tiktok-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+}
+.tiktok-item {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card) !important;
+  overflow: hidden;
+  background: #fffaf0;
+}
+.tiktok-container { height: auto !important; aspect-ratio: 9 / 16; max-height: 720px; }
+.tiktok-embed { width: 100% !important; height: 100% !important; }
+.tiktok-embed iframe { border-radius: 0 !important; }
+.tiktok-dots { gap: 8px; justify-content: center; margin-top: 14px; }
+.tiktok-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--line); cursor: pointer;
+  transition: background .15s;
+}
+.tiktok-dot.active { background: var(--brand); }
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 2px solid var(--ink);
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: .88rem;
+}
+.footer-content p { margin-bottom: 4px; }
+
+/* ===== Modals (lightly themed) ===== */
+.sponsor-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(29,26,22,.55);
+  z-index: 9999;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  overflow-y: auto;
+}
+.sponsor-modal.show { display: flex; }
+.sponsor-modal-content {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  max-width: 720px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,.5);
+}
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 22px;
+  background: var(--ink);
+  color: #fff;
+}
+.modal-header h3 { font-family: 'Noto Serif TC', serif; font-size: 1.15rem; font-weight: 800; }
+.close-btn { font-size: 1.6rem; cursor: pointer; line-height: 1; opacity: .8; }
+.close-btn:hover { opacity: 1; }
+.modal-body { padding: 22px; max-height: 70vh; overflow-y: auto; }
+.modal-body h4 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.05rem;
+  margin: 16px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--line);
+  color: var(--brand);
+}
+.medical-item {
+  padding: 12px 0;
+  border-bottom: 1px dotted var(--line);
+}
+.medical-item:last-child { border-bottom: none; }
+.medical-name { font-weight: 700; margin-bottom: 4px; }
+.medical-info { font-size: .88rem; color: var(--ink-soft); display: flex; flex-direction: column; gap: 2px; }
+.nav-link, .phone-link { color: var(--brand); font-weight: 600; }
+.medical-note {
+  margin-top: 18px; padding: 14px;
+  background: #fff5e8; border-radius: var(--radius);
+  font-size: .88rem;
+}
+.medical-note ul { margin-top: 6px; padding-left: 18px; }
+.contact-grid { display: grid; gap: 14px; }
+.contact-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: #fffaf0;
+}
+
+/* ===== 響應式 ===== */
+@media (max-width: 768px) {
+  .container { padding: 14px 12px 40px; }
+  .header { padding: 26px 20px 22px; }
+  .header::before { font-size: 10px; right: 16px; top: 12px; }
+  .header h1 { font-size: 1.8rem; }
+  .week-selector-header { flex-direction: column; gap: 4px; align-items: flex-start; }
+  .ad-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ad-item { padding: 12px; min-height: 110px; }
+  .ad-icon { width: 36px; height: 36px; font-size: 1.4rem; }
+  .tiktok-grid { grid-template-columns: 1fr; gap: 12px; }
+  .marquee-item { width: 110px; height: 110px; }
+  .calendar-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .calendar-grid .day-header { display: none; }
+  .day-card { min-height: 90px; }
+  .day-card .day-name::before { content: attr(data-day); }
+}
+@media (max-width: 480px) {
+  .ad-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.55rem; }
+}
+
+/* ===== 隱藏舊版本中重複/不必要的內容 ===== */
+.tiktok-swipe-hint { display: none !important; }
+.alignment-hint { display: none !important; }
