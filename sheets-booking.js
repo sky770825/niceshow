@@ -806,7 +806,7 @@ function renderWeekContentBooking(weeks) {
 function renderDayCardBooking(day) {
     if (!day.hasTrucks || day.trucks.length === 0) {
         return `
-            <div class="day-card">
+            <div class="day-card" data-month="${day.month}" data-day="${day.date}">
                 <div class="day-number">${day.date}</div>
                 <div class="day-name">${day.dayName}</div>
                 <div class="no-trucks">無餐車</div>
@@ -825,7 +825,7 @@ function renderDayCardBooking(day) {
     }).join('');
     
     return `
-        <div class="day-card has-trucks">
+        <div class="day-card has-trucks" data-month="${day.month}" data-day="${day.date}">
             <div class="day-number">${day.date}</div>
             <div class="day-name">${day.dayName}</div>
             <ul class="truck-list">

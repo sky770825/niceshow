@@ -50,9 +50,25 @@
    */
   function getScheduledTruckNames() {
     const names = new Set();
-    document.querySelectorAll('.truck-name').forEach(el => {
-      const name = (el.getAttribute('data-truck-name') || el.textContent || '').trim();
-      if (name) names.add(name);
+    const now = new Date();
+    const todayMonth = now.getMonth() + 1;
+    const todayDay = now.getDate();
+    const todayYear = now.getFullYear();
+    const todayKey = todayYear * 10000 + todayMonth * 100 + todayDay;
+    
+    document.querySelectorAll('.day-card.has-trucks').forEach(card => {
+      const m = parseInt(card.getAttribute('data-month'), 10);
+      const d = parseInt(card.getAttribute('data-day'), 10);
+      if (m && d) {
+        // 跨年處理：1月當作明年
+        const y = (todayMonth >= 11 && m === 1) ? todayYear + 1 : todayYear;
+        const cardKey = y * 10000 + m * 100 + d;
+        if (cardKey < todayKey) return; // 過期日不納入跑馬燈
+      }
+      card.querySelectorAll('.truck-name').forEach(el => {
+        const name = (el.getAttribute('data-truck-name') || el.textContent || '').trim();
+        if (name) names.add(name);
+      });
     });
     return names;
   }
