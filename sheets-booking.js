@@ -814,11 +814,15 @@ function renderDayCardBooking(day) {
         `;
     }
     
-    const trucksHTML = day.trucks.map(truck => `
+    const trucksHTML = day.trucks.map(truck => {
+        const addr = (truck.address || '').trim();
+        return `
         <li class="truck-item">
-            <div class="truck-name" data-address="${truck.address}">${truck.name}</div>
+            <div class="truck-name" data-address="${addr}">${truck.name}</div>
+            ${addr ? '<div class="truck-location">📍' + addr + '</div>' : ''}
         </li>
-    `).join('');
+    `;
+    }).join('');
     
     return `
         <div class="day-card has-trucks">

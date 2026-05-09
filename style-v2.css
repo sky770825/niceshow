@@ -139,14 +139,20 @@ a { color: inherit; text-decoration: none; }
   padding: 14px 0;
   overflow: hidden;
 }
-.marquee-wrapper { overflow: hidden; }
+.marquee-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: auto;
+}
+.marquee-wrapper::-webkit-scrollbar { display: none; }
 .marquee-track {
   display: flex;
   gap: 14px;
   padding: 0 14px;
-  animation: marquee-scroll 40s linear infinite;
+  width: max-content;
 }
-.marquee-track:hover { animation-play-state: paused; }
 .marquee-item {
   flex-shrink: 0;
   width: 140px; height: 140px;
@@ -616,3 +622,99 @@ a { color: inherit; text-decoration: none; }
 /* ===== 隱藏舊版本中重複/不必要的內容 ===== */
 .tiktok-swipe-hint { display: none !important; }
 .alignment-hint { display: none !important; }
+
+/* ===== 圖片放大彈窗（修正 v2 漏掉的樣式） ===== */
+.image-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, .82);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: modalFadeIn .25s ease;
+}
+.image-modal.show { display: flex; }
+.image-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -10px rgba(0,0,0,.5);
+  display: flex;
+  flex-direction: column;
+  animation: modalZoomIn .28s cubic-bezier(.34,1.56,.64,1);
+}
+.image-modal-content img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.image-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,.65);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s ease;
+  z-index: 2;
+}
+.image-modal-close:hover { background: rgba(0,0,0,.9); transform: scale(1.08); }
+.link-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  background: #fff;
+  border-top: 1px solid #eef2f7;
+  flex-shrink: 0;
+}
+.link-button {
+  flex: 1;
+  max-width: 110px;
+  background: var(--brand-primary, #b8345a);
+  color: #fff !important;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all .2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.link-button:hover { background: var(--brand-primary-dark, #8e2444); transform: translateY(-1px); }
+@keyframes modalFadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes modalZoomIn {
+  from { opacity: 0; transform: scale(.92) }
+  to { opacity: 1; transform: scale(1) }
+}
+@media (max-width: 768px) {
+  .image-modal { padding: 12px; }
+  .image-modal-content { max-width: 96vw; max-height: 92vh; }
+  .image-modal-content img { max-height: 60vh; }
+  .image-modal-close { top: 8px; right: 8px; width: 34px; height: 34px; font-size: 20px; }
+}

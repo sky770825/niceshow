@@ -486,8 +486,7 @@ function updatePageTitle(weekNumber) {
         '10月27日-11月2日'
     ];
     
-    const title = weekTitles[weekNumber] || '餐車月行程表';
-    document.title = `四維商圈餐車月行程表 - ${title} | 楊梅美食地圖 | 一鍵導航`;
+    document.title = '四維商圈餐車月行程表 — 楊梅街邊美食';
 }
 
 /**
@@ -873,7 +872,9 @@ async function initializeImageMarquee() {
     // 添加圖片到跑碼燈軌道（只添加一次，不重複）
     const imageItems = createImageItems(imageData);
     imageItems.forEach(item => marqueeTrack.appendChild(item));
-    console.log(`📝 已添加 ${imageItems.length} 個餐車圖片`);
+    // 複製一份用於無縫循環滾動
+    imageItems.forEach(item => marqueeTrack.appendChild(item.cloneNode(true)));
+    console.log(`📝 已添加 ${imageItems.length} 個餐車圖片（含循環複製）`);
     
     // 更新當前圖片數量
     currentImageCount = marqueeTrack.children.length;
@@ -1301,6 +1302,33 @@ let marqueeInteraction = {
     isHorizontalSwipe: false
 };
 
+// 啟動跑馬燈自動滾動（CSS 動畫已移除，改用 JS 控制 scrollLeft）
+function startMarqueeAutoScroll(wrapper, track) {
+    let paused = false;
+    let pauseUntil = 0;
+    const speed = 0.5; // px / frame，約 30px/s
+    const halfWidth = () => track.scrollWidth / 2;
+    
+    const pauseFor = (ms) => { pauseUntil = Date.now() + ms; };
+    
+    wrapper.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+    wrapper.addEventListener('touchend', () => { paused = false; pauseFor(2500); }, { passive: true });
+    wrapper.addEventListener('mouseenter', () => { paused = true; });
+    wrapper.addEventListener('mouseleave', () => { paused = false; });
+    wrapper.addEventListener('wheel', () => { pauseFor(2000); }, { passive: true });
+    
+    function tick() {
+        if (!paused && Date.now() > pauseUntil && halfWidth() > 0) {
+            wrapper.scrollLeft += speed;
+            if (wrapper.scrollLeft >= halfWidth()) {
+                wrapper.scrollLeft -= halfWidth();
+            }
+        }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
 // 初始化跑馬燈互動功能
 function initializeMarqueeInteraction() {
     const marqueeTrack = document.getElementById('marqueeTrack');
@@ -1329,6 +1357,9 @@ function initializeMarqueeInteraction() {
         // 電腦版：滾輪 + 鍵盤 + 點擊
         initializeDesktopInteraction();
     }
+    
+    // 啟動自動滾動（支援使用者觸控/滑鼠暫停）
+    startMarqueeAutoScroll(wrapper, marqueeTrack);
     
     // 使用事件委託處理圖片點擊
     wrapper.addEventListener('click', handleImageClick);
