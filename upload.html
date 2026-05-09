@@ -169,6 +169,49 @@ form { display: flex; flex-direction: column; gap: 18px; }
   font-weight: 600;
 }
 .add-social:hover { border-color: var(--brand); color: var(--brand); }
+
+.upsell-box {
+  margin-top: 4px;
+  padding: 16px;
+  background: linear-gradient(135deg, #fff8f0, #fef3e8);
+  border: 1px solid #f0d9b8;
+  border-radius: 10px;
+}
+.upsell-title {
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.upsell-links { display: flex; flex-direction: column; gap: 6px; }
+.upsell-links a {
+  display: block;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #e8d4b0;
+  border-radius: 6px;
+  color: var(--brand);
+  text-decoration: none;
+  font-size: .9rem;
+  transition: all .15s ease;
+}
+.upsell-links a:hover {
+  border-color: var(--brand);
+  background: #fff8f0;
+  transform: translateX(2px);
+}
+.upload-footer {
+  margin-top: 24px;
+  padding: 16px 0 0;
+  border-top: 1px solid #eee;
+  text-align: center;
+  color: #888;
+  font-size: .8rem;
+  line-height: 1.7;
+}
+.upload-footer a { color: var(--brand); text-decoration: none; font-weight: 600; }
+.upload-footer a:hover { text-decoration: underline; }
+.copyright-warn { color: #b85a3a; font-size: .75rem; margin-top: 4px; }
 .social-row .remove {
   background: none;
   border: none;
@@ -338,10 +381,24 @@ form { display: flex; flex-direction: column; gap: 18px; }
       <button type="button" class="add-social" id="addSocial">+ 加一個連結</button>
     </div>
 
+    <div class="upsell-box">
+      <div class="upsell-title">沒有預訂網站？可以客製化</div>
+      <div class="upsell-links">
+        <a href="https://foodcarshop.pages.dev/WEB007/tutorial-site/" target="_blank">📺 餐車預訂系統展示</a>
+        <a href="https://foodcarshop.pages.dev/WEB007/" target="_blank">🛒 客製化預訂網站</a>
+        <a href="https://foodcarshop.pages.dev/WEB007/crm" target="_blank">⚙️ 客製化系統後台</a>
+      </div>
+    </div>
+
     <button type="submit" class="submit" id="submitBtn">送出登錄</button>
 
     <div class="status" id="status"></div>
   </form>
+
+  <div class="upload-footer">
+    <p>系統開發：<a href="https://line.me/R/ti/p/@878mspuj" target="_blank">快閃餐車小幫手</a> © 2025</p>
+    <p class="copyright-warn">⚠️ 本系統受著作權法保護，未經授權不得複製、修改或用於商業用途</p>
+  </div>
 
   <div class="success-screen" id="successScreen">
     <div class="check">✓</div>
