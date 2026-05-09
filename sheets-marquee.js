@@ -106,7 +106,7 @@
       const linkData = (truck.links || [])
         .map(l => `${l.url}|${l.text}`).join(',');
       if (linkData) item.setAttribute('data-link', linkData);
-      if (truck.menuUrl) item.setAttribute('data-img-link', truck.menuUrl);
+      if (truck.menuUrl) item.setAttribute('data-menu-img', truck.menuUrl);
 
       const img = document.createElement('img');
       img.src = truck.logoUrl || truck.menuUrl || '';

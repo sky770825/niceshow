@@ -1421,9 +1421,12 @@ function handleImageClick(e) {
             // 從圖片或容器中獲取超連結資訊
             const linkData = img.dataset.link || marqueeItem.dataset.link || '';
             const imgLink = img.dataset.imgLink || marqueeItem.dataset.imgLink || '';
+            // 菜單圖片：彈窗顯示菜單而非 logo
+            const menuImg = img.dataset.menuImg || marqueeItem.dataset.menuImg || '';
+            const modalSrc = menuImg || img.src;
             
             // 直接傳遞連結資料給 showImageModal，讓它處理格式解析
-            showImageModal(img.src, img.alt, marqueeItem.title || img.alt, linkData, imgLink);
+            showImageModal(modalSrc, img.alt, marqueeItem.title || img.alt, linkData, imgLink);
         }
     }
 }
