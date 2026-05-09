@@ -514,6 +514,11 @@ function initializeTruckNames() {
             }
         }
         
+        // 如果沒有預設的地圖連結但有地址文字，使用 Google Maps 通用搜尋
+        if (!mapUrl && locationText) {
+            mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('桃園市楊梅區 ' + locationText)}`;
+        }
+        
         if (mapUrl) {
             nameElement.style.cursor = 'pointer';
             nameElement.addEventListener('click', function() {
