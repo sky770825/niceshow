@@ -368,39 +368,31 @@ function convertBookingToSchedule(bookingData) {
         console.log('🔍 排序後的最後5個日期:', sortedDates.slice(-5).map(d => `${d.month}/${d.day} (${d.trucks.length}個餐車)`));
     }
     
-    // 按週次分組（每7天一組）
-    const weeks = [];
-    let currentWeek = null;
-    let weekStartMonth = null;
-    let weekStartDay = null;
+    // 按 ISO 週次分組（週一 ~ 週日）
+    const refYear = now.getFullYear();
+    const refMonth = now.getMonth() + 1;
     
-    sortedDates.forEach((dayData, index) => {
-        // 每7天開始新的一週，或第一天
-        const shouldStartNewWeek = index % 7 === 0 || !currentWeek;
-        
-        if (shouldStartNewWeek) {
-            if (currentWeek && currentWeek.days.length > 0) {
-                weeks.push(currentWeek);
-            }
-            
-            weekStartMonth = dayData.month;
-            weekStartDay = dayData.day;
-            
-            // 計算週次標題
-            const weekNum = weeks.length + 1;
-            // 預設標題，稍後會根據實際資料更新
-            const weekTitle = `${dayData.month}月${dayData.day}日`;
-            const weekLabel = `${dayData.month}/${dayData.day}`;
-            
-            currentWeek = {
-                id: `week${weekNum - 1}`,
-                title: weekTitle,
-                tabLabel: weekLabel,
-                days: []
-            };
+    function getMondayKey(month, day) {
+        let y = refYear;
+        if (refMonth >= 11 && month <= 2) y = refYear + 1;
+        else if (refMonth <= 2 && month >= 11) y = refYear - 1;
+        const d = new Date(y, month - 1, day);
+        const dow = d.getDay();
+        const offset = (dow === 0) ? 6 : (dow - 1);
+        const monday = new Date(y, month - 1, day - offset);
+        return {
+            key: monday.getFullYear() + '-' + (monday.getMonth() + 1) + '-' + monday.getDate(),
+            monday: monday
+        };
+    }
+    
+    const weekMap = new Map();
+    sortedDates.forEach(dayData => {
+        const { key, monday } = getMondayKey(dayData.month, dayData.day);
+        if (!weekMap.has(key)) {
+            weekMap.set(key, { monday: monday, days: [] });
         }
-        
-        currentWeek.days.push({
+        weekMap.get(key).days.push({
             date: dayData.date,
             dayName: dayData.dayName,
             month: dayData.month,
@@ -410,10 +402,20 @@ function convertBookingToSchedule(bookingData) {
         });
     });
     
-    // 添加最後一週
-    if (currentWeek && currentWeek.days.length > 0) {
-        weeks.push(currentWeek);
-    }
+    const weeks = [...weekMap.entries()]
+        .sort((a, b) => a[1].monday - b[1].monday)
+        .map(([key, val], index) => {
+            const monday = val.monday;
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            return {
+                id: 'week' + index,
+                title: (monday.getMonth() + 1) + '月' + monday.getDate() + '日 - ' + (sunday.getMonth() + 1) + '月' + sunday.getDate() + '日',
+                tabLabel: (monday.getMonth() + 1) + '/' + monday.getDate() + '-' + (sunday.getMonth() + 1) + '/' + sunday.getDate(),
+                days: val.days
+            };
+        });
+    
     
     // 資料添加完成後，更新週次標題
     weeks.forEach(week => {
