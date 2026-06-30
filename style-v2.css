@@ -504,7 +504,7 @@ a { color: inherit; text-decoration: none; }
 .tiktok-title p { color: var(--ink-soft) !important; font-size: .9rem !important; }
 .tiktok-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 18px;
 }
 .tiktok-item {
