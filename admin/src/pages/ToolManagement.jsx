@@ -60,7 +60,7 @@ export default function ToolManagement() {
         icon: '🧋',
         name: '功夫茶四維店',
         desc: '飲料訂購',
-        url: 'https://sky770825.github.io/kungfuteahtml/',
+        url: 'https://kungfuteahtml.pages.dev/',
         category: 'related',
       },
       {
