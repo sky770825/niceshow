@@ -515,15 +515,50 @@ a { color: inherit; text-decoration: none; }
   background: #fffaf0;
 }
 .tiktok-container { height: auto !important; aspect-ratio: 9 / 16; max-height: 720px; }
-.tiktok-embed { width: 100% !important; height: 100% !important; }
-.tiktok-embed iframe { border-radius: 0 !important; }
-.tiktok-dots { gap: 8px; justify-content: center; margin-top: 14px; }
-.tiktok-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--line); cursor: pointer;
-  transition: background .15s;
+.tiktok-embed {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
 }
-.tiktok-dot.active { background: var(--brand); }
+.tiktok-embed iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  border-radius: 0 !important;
+}
+.tiktok-dots {
+  display: none;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.tiktok-dot {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.tiktok-dot::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background .15s, width .15s;
+}
+.tiktok-dot.active::before {
+  width: 18px;
+  border-radius: 999px;
+  background: var(--brand);
+}
 
 /* ===== Footer ===== */
 .footer {
@@ -607,7 +642,35 @@ a { color: inherit; text-decoration: none; }
   .ad-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .ad-item { padding: 12px; min-height: 110px; }
   .ad-icon { width: 36px; height: 36px; font-size: 1.4rem; }
-  .tiktok-grid { grid-template-columns: 1fr; gap: 12px; }
+  .tiktok-section {
+    margin: 28px 0 !important;
+    padding-top: 18px;
+  }
+  .tiktok-title { margin-bottom: 12px !important; }
+  .tiktok-grid {
+    display: flex !important;
+    grid-template-columns: none;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding: 2px 4px 10px;
+    scroll-padding-inline: 4px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tiktok-grid::-webkit-scrollbar { display: none; }
+  .tiktok-item {
+    flex: 0 0 clamp(238px, 74vw, 300px);
+    width: clamp(238px, 74vw, 300px);
+    scroll-snap-align: start;
+  }
+  .tiktok-container {
+    aspect-ratio: 9 / 16;
+    max-height: 520px;
+    overflow: hidden;
+  }
+  .tiktok-dots { display: flex; }
   .marquee-item { width: 110px; height: 110px; }
   .calendar-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
   .calendar-grid .day-header { display: none; }

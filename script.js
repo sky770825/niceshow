@@ -580,6 +580,77 @@ function initializePageAnimation() {
 }
 
 /**
+ * 初始化手機版 TikTok 滑動輪播指示點
+ */
+function initializeTikTokCarousel() {
+    const grid = document.querySelector('.tiktok-grid');
+    if (!grid) return;
+
+    const items = Array.from(grid.querySelectorAll('.tiktok-item'));
+    if (items.length <= 1) return;
+
+    let dots = grid.parentElement.querySelector('.tiktok-dots');
+    if (!dots) {
+        dots = document.createElement('div');
+        dots.className = 'tiktok-dots';
+        grid.insertAdjacentElement('afterend', dots);
+    }
+
+    dots.innerHTML = '';
+
+    const setActive = (activeIndex) => {
+        dots.querySelectorAll('.tiktok-dot').forEach((dot, index) => {
+            dot.classList.toggle('active', index === activeIndex);
+            dot.setAttribute('aria-current', index === activeIndex ? 'true' : 'false');
+        });
+    };
+
+    items.forEach((item, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'tiktok-dot';
+        dot.setAttribute('aria-label', `切換到第${index + 1}支影片`);
+        dot.addEventListener('click', () => {
+            item.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'start'
+            });
+            setActive(index);
+        });
+        dots.appendChild(dot);
+    });
+
+    const updateActiveDot = () => {
+        const gridLeft = grid.getBoundingClientRect().left;
+        let activeIndex = 0;
+        let closestDistance = Infinity;
+
+        items.forEach((item, index) => {
+            const distance = Math.abs(item.getBoundingClientRect().left - gridLeft);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                activeIndex = index;
+            }
+        });
+
+        setActive(activeIndex);
+    };
+
+    let scrollFrame = null;
+    grid.addEventListener('scroll', () => {
+        if (scrollFrame) return;
+        scrollFrame = requestAnimationFrame(() => {
+            scrollFrame = null;
+            updateActiveDot();
+        });
+    }, { passive: true });
+
+    window.addEventListener('resize', debounce(updateActiveDot, 150));
+    updateActiveDot();
+}
+
+/**
  * 餐車圖片資料庫 - 方便管理上架/下架
  * 使用方式：
  * 1. 要上架：將 isActive 設為 true
@@ -1233,6 +1304,7 @@ function initializeApp() {
     initializeWeekTabs();
     initializePageAnimation();
     initializeImageMarquee();
+    initializeTikTokCarousel();
     
     // 延遲執行自動選擇週次或 Google Sheets 整合
     setTimeout(() => {
