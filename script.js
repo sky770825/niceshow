@@ -597,6 +597,18 @@ function initializeTikTokCarousel() {
     }
 
     dots.innerHTML = '';
+    if (!grid.id) {
+        grid.id = 'tiktokCarousel';
+    }
+
+    let controls = grid.parentElement.querySelector('.tiktok-controls');
+    if (!controls) {
+        controls = document.createElement('div');
+        controls.className = 'tiktok-controls';
+        dots.insertAdjacentElement('afterend', controls);
+    }
+
+    controls.innerHTML = '';
 
     const setActive = (activeIndex) => {
         dots.querySelectorAll('.tiktok-dot').forEach((dot, index) => {
@@ -605,23 +617,7 @@ function initializeTikTokCarousel() {
         });
     };
 
-    items.forEach((item, index) => {
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'tiktok-dot';
-        dot.setAttribute('aria-label', `切換到第${index + 1}支影片`);
-        dot.addEventListener('click', () => {
-            item.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'start'
-            });
-            setActive(index);
-        });
-        dots.appendChild(dot);
-    });
-
-    const updateActiveDot = () => {
+    const getActiveIndex = () => {
         const gridLeft = grid.getBoundingClientRect().left;
         let activeIndex = 0;
         let closestDistance = Infinity;
@@ -634,7 +630,50 @@ function initializeTikTokCarousel() {
             }
         });
 
-        setActive(activeIndex);
+        return activeIndex;
+    };
+
+    const goToItem = (targetIndex) => {
+        const normalizedIndex = (targetIndex + items.length) % items.length;
+        items[normalizedIndex].scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'start'
+        });
+        setActive(normalizedIndex);
+    };
+
+    items.forEach((item, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'tiktok-dot';
+        dot.setAttribute('aria-label', `切換到第${index + 1}支影片`);
+        dot.setAttribute('aria-controls', grid.id);
+        dot.addEventListener('click', () => goToItem(index));
+        dots.appendChild(dot);
+    });
+
+    const createNavButton = (className, label, direction) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `tiktok-nav ${className}`;
+        button.setAttribute('aria-label', label);
+        button.setAttribute('aria-controls', grid.id);
+        button.textContent = direction === 'prev' ? '‹' : '›';
+        button.addEventListener('click', () => {
+            const delta = direction === 'prev' ? -1 : 1;
+            goToItem(getActiveIndex() + delta);
+        });
+        return button;
+    };
+
+    controls.append(
+        createNavButton('tiktok-nav-prev', '上一支影片', 'prev'),
+        createNavButton('tiktok-nav-next', '下一支影片', 'next')
+    );
+
+    const updateActiveDot = () => {
+        setActive(getActiveIndex());
     };
 
     let scrollFrame = null;
