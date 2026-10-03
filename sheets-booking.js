@@ -107,7 +107,7 @@ async function fetchBookingData() {
         const { data, error } = await supabaseClient
             .from(SUPABASE_CONFIG.TABLE_NAME)
             .select('*')
-            .order('booking_date', { ascending: true });
+            .order('service_date', { ascending: true });
         
         console.timeEnd('⏱️ Supabase 載入時間');
         
@@ -222,6 +222,31 @@ function parseBookingDate(bookingDate) {
  * @param {Array} bookingData - 餐車報名表資料
  * @returns {Object} 格式化後的行程資料
  */
+function resolveBookingServiceDate(booking) {
+    const raw = String(booking.serviceDate || booking.service_date || booking.bookingDate || booking.booking_date || '').trim();
+    const full = raw.match(/^(\d{4})[年\/-](\d{1,2})[月\/-](\d{1,2})(?:日|$|[\sT(（])/);
+    const validDate = (year, month, day) => {
+        if (year < 1900 || year > 9999) return null;
+        const date = new Date(Date.UTC(year, month - 1, day));
+        return date.getUTCFullYear() === year && date.getUTCMonth() + 1 === month && date.getUTCDate() === day ? date : null;
+    };
+    if (full) return validDate(Number(full[1]), Number(full[2]), Number(full[3]));
+    if (booking.serviceDate || booking.service_date) return null;
+    const partial = raw.match(/^(\d{1,2})月(\d{1,2})日[（(]星期([日一二三四五六])[）)]$/);
+    if (!partial) return null;
+    const stamp = new Date(booking.timestamp || booking.created_at || 'invalid');
+    if (!Number.isFinite(stamp.getTime())) return null;
+    const year = Number(new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Taipei', year: 'numeric'
+    }).format(stamp));
+    const weekday = '日一二三四五六'.indexOf(partial[3]);
+    // Legacy rows must agree with their stated weekday within adjacent creation years.
+    const candidates = [year - 1, year, year + 1]
+        .map(y => validDate(y, Number(partial[1]), Number(partial[2])))
+        .filter(date => date && date.getUTCDay() === weekday);
+    return candidates.length === 1 ? candidates[0] : null;
+}
+
 function convertBookingToSchedule(bookingData) {
     const today = new Intl.DateTimeFormat('en-CA', {
         timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit'
@@ -230,27 +255,12 @@ function convertBookingToSchedule(bookingData) {
     const groups = new Map();
     for (const booking of bookingData || []) {
         if (!['己排班', '己排'].includes(booking.status)) continue;
-        const raw = String(booking.serviceDate || booking.bookingDate || '');
-        const full = raw.match(/(\d{4})[年\/-](\d{1,2})[月\/-](\d{1,2})/);
-        const partial = raw.match(/(\d{1,2})月(\d{1,2})日/);
-        if (!full && !partial) continue;
-        let year, month, day;
-        if (full) {
-            [, year, month, day] = full.map(Number);
-        } else {
-            month = Number(partial[1]);
-            day = Number(partial[2]);
-            // Legacy dates lack a year: anchor to creation date, never viewing date.
-            const stamp = new Date(booking.timestamp);
-            if (!Number.isFinite(stamp.getTime())) continue;
-            const anchor = new Intl.DateTimeFormat('en-CA', {
-                timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit'
-            }).format(stamp).split('-').map(Number);
-            year = anchor[0];
-            if (month < anchor[1]) year++;
+        const date = resolveBookingServiceDate(booking);
+        if (!date) {
+            console.warn('Unresolved booking date:', booking.bookingDate);
+            continue;
         }
-        const date = new Date(Date.UTC(year, month - 1, day));
-        if (date.getUTCFullYear() !== year || date.getUTCMonth() + 1 !== month || date.getUTCDate() !== day) continue;
+        const year = date.getUTCFullYear(), month = date.getUTCMonth() + 1, day = date.getUTCDate();
         const key = dateKey(year, month, day);
         if (!groups.has(key)) groups.set(key, {
             year, month, day, date: `${month}/${day}`, isoDate: key,
@@ -333,7 +343,7 @@ async function loadBookingSchedule() {
         
         // ==================== 檢查快取版本並清除舊快取 ====================
         const cacheVersion = localStorage.getItem('scheduleData_booking_version');
-        const currentVersion = '1.3'; // Year-aware schedule cache.
+        const currentVersion = '1.4'; // Validated full dates and legacy weekday resolution.
         
         if (cacheVersion !== currentVersion) {
             console.log('🔄 檢測到版本更新，清除舊快取...');
