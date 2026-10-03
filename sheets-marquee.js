@@ -51,6 +51,9 @@
   function getScheduledTruckNames() {
     const names = new Set();
     const now = new Date();
+    const taipeiToday = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(now);
     const todayMonth = now.getMonth() + 1;
     const todayDay = now.getDate();
     const todayYear = now.getFullYear();
@@ -59,7 +62,9 @@
     document.querySelectorAll('.day-card.has-trucks').forEach(card => {
       const m = parseInt(card.getAttribute('data-month'), 10);
       const d = parseInt(card.getAttribute('data-day'), 10);
-      if (m && d) {
+      const fullDate = card.getAttribute('data-date');
+      if (fullDate && fullDate < taipeiToday) return;
+      if (!fullDate && m && d) {
         // 跨年處理：1月當作明年
         const y = (todayMonth >= 11 && m === 1) ? todayYear + 1 : todayYear;
         const cardKey = y * 10000 + m * 100 + d;

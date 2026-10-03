@@ -122,6 +122,7 @@ async function fetchBookingData() {
             type: row.food_type || '',
             venue: row.location || '',
             bookingDate: row.booking_date || '',
+            serviceDate: row.service_date || '',
             status: row.status || '',
             fee: row.fee || '',
             paid: row.payment || '',
@@ -222,322 +223,64 @@ function parseBookingDate(bookingDate) {
  * @returns {Object} 格式化後的行程資料
  */
 function convertBookingToSchedule(bookingData) {
-    if (!bookingData || bookingData.length === 0) {
-        console.warn('⚠️ 沒有資料可以轉換');
-        return null;
-    }
-    
-    console.log('🔄 開始轉換餐車報名表資料...');
-    console.log('📊 原始資料筆數:', bookingData.length);
-    
-    // 按日期分組
-    const dateMap = new Map();
-    
-    // 獲取當前年份和月份
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
-    
-    console.log(`📅 當前日期: ${currentYear}年${currentMonth}月`);
-    
-    let processedCount = 0;
-    let skippedCount = 0;
-    let statusFilteredCount = 0;
-    
-    bookingData.forEach(booking => {
-        const dateInfo = parseBookingDate(booking.bookingDate);
-        if (!dateInfo) {
-            skippedCount++;
-            // 顯示前幾個解析失敗的資料
-            if (skippedCount <= 3) {
-                console.log('❌ 日期解析失敗:', {
-                    店名: booking.storeName,
-                    預約日期: booking.bookingDate,
-                    預約場地: booking.venue,
-                    狀態: booking.status
-                });
-            }
-            return;
-        }
-        
-        // 處理1月份的資料
-        if (dateInfo.month === 1) {
-            // 如果當前是12月，1月是下個月，應該保留
-            if (currentMonth === 12) {
-                console.log('✅ 保留1月資料（12月時的下個月）:', booking.bookingDate);
-                // 保留，不返回
-            }
-            // 如果當前是1月，檢查年份
-            else if (currentMonth === 1) {
-                // 從時間戳記解析年份
-                let bookingYear = currentYear; // 預設為當前年份
-                if (booking.timestamp) {
-                    try {
-                        const timestampDate = new Date(booking.timestamp);
-                        bookingYear = timestampDate.getFullYear();
-                        console.log('🔍 檢查1月資料:', {
-                            預約日期: booking.bookingDate,
-                            時間戳記: booking.timestamp,
-                            解析年份: bookingYear,
-                            當前年份: currentYear
-                        });
-                    } catch (e) {
-                        // 解析失敗，使用預設值
-                    }
-                }
-                
-                // 只保留當前年份的1月資料
-                if (bookingYear !== currentYear) {
-                    console.log('🚫 已隱藏1月資料（年份不符）:', booking.bookingDate, '年份:', bookingYear);
-                    return;
-                }
-            }
-            // 如果當前是其他月份（2-11月），1月可能是明年的，也應該保留
-            else {
-                console.log('✅ 保留1月資料（可能是明年的）:', booking.bookingDate);
-                // 保留，不返回
-            }
-        }
-        
-        const address = extractAddress(booking.venue);
-        
-        // 使用日期作為 key
-        const dateKey = `${dateInfo.month}-${dateInfo.day}`;
-        
-        if (!dateMap.has(dateKey)) {
-            dateMap.set(dateKey, {
-                date: dateInfo.date,
-                dayName: dateInfo.dayName,
-                month: dateInfo.month,
-                day: dateInfo.day,
-                trucks: []
-            });
-        }
-        
-        // 只添加已排班的餐車（支援 '己排班' 和 '己排' 兩種狀態）
-        if (booking.status === '己排班' || booking.status === '己排') {
-            dateMap.get(dateKey).trucks.push({
-                name: booking.storeName,
-                address: address,
-                type: booking.type,
-                venue: booking.venue
-            });
-            processedCount++;
+    const today = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+    const dateKey = (year, month, day) => `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const groups = new Map();
+    for (const booking of bookingData || []) {
+        if (!['己排班', '己排'].includes(booking.status)) continue;
+        const raw = String(booking.serviceDate || booking.bookingDate || '');
+        const full = raw.match(/(\d{4})[年\/-](\d{1,2})[月\/-](\d{1,2})/);
+        const partial = raw.match(/(\d{1,2})月(\d{1,2})日/);
+        if (!full && !partial) continue;
+        let year, month, day;
+        if (full) {
+            [, year, month, day] = full.map(Number);
         } else {
-            statusFilteredCount++;
-            // 顯示前幾個被過濾的資料
-            if (statusFilteredCount <= 3) {
-                console.log('⚠️ 狀態不符合，已過濾:', {
-                    店名: booking.storeName,
-                    日期: booking.bookingDate,
-                    狀態: `"${booking.status}"`,
-                    需要: '"己排班" 或 "己排"'
-                });
-            }
+            month = Number(partial[1]);
+            day = Number(partial[2]);
+            // Legacy dates lack a year: anchor to creation date, never viewing date.
+            const stamp = new Date(booking.timestamp);
+            if (!Number.isFinite(stamp.getTime())) continue;
+            const anchor = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit'
+            }).format(stamp).split('-').map(Number);
+            year = anchor[0];
+            if (month < anchor[1]) year++;
         }
-    });
-    
-    console.log('📊 轉換統計:', {
-        總資料: bookingData.length,
-        成功處理: processedCount,
-        日期解析失敗: skippedCount,
-        狀態過濾: statusFilteredCount,
-        有效日期數: dateMap.size
-    });
-    
-    // 將日期按時間排序（從1月開始：1月、2月、3月...12月）
-    const sortedDates = Array.from(dateMap.values()).sort((a, b) => {
-        // 按月份排序（1月、2月、3月...12月）
-        if (a.month !== b.month) {
-            return a.month - b.month;
-        }
-        // 同月份按日期排序
-        return a.day - b.day;
-    });
-    
-    console.log('📊 共有', sortedDates.length, '天有餐車資料');
-    
-    if (sortedDates.length === 0) {
-        console.warn('⚠️ 沒有有效的日期資料！可能原因：');
-        console.warn('1. 所有資料的狀態都不是 "己排班" 或 "己排"');
-        console.warn('2. 日期格式無法解析');
-        console.warn('3. 資料庫中沒有符合條件的資料');
-    } else {
-        // 調試：顯示排序後的前幾個日期
-        console.log('🔍 排序後的前5個日期:', sortedDates.slice(0, 5).map(d => `${d.month}/${d.day} (${d.trucks.length}個餐車)`));
-        console.log('🔍 排序後的最後5個日期:', sortedDates.slice(-5).map(d => `${d.month}/${d.day} (${d.trucks.length}個餐車)`));
-    }
-    
-    // 按 ISO 週次分組（週一 ~ 週日）
-    const refYear = now.getFullYear();
-    const refMonth = now.getMonth() + 1;
-    
-    function getMondayKey(month, day) {
-        let y = refYear;
-        if (refMonth >= 11 && month <= 2) y = refYear + 1;
-        else if (refMonth <= 2 && month >= 11) y = refYear - 1;
-        const d = new Date(y, month - 1, day);
-        const dow = d.getDay();
-        const offset = (dow === 0) ? 6 : (dow - 1);
-        const monday = new Date(y, month - 1, day - offset);
-        return {
-            key: monday.getFullYear() + '-' + (monday.getMonth() + 1) + '-' + monday.getDate(),
-            monday: monday
-        };
-    }
-    
-    const weekMap = new Map();
-    sortedDates.forEach(dayData => {
-        const { key, monday } = getMondayKey(dayData.month, dayData.day);
-        if (!weekMap.has(key)) {
-            weekMap.set(key, { monday: monday, days: [] });
-        }
-        weekMap.get(key).days.push({
-            date: dayData.date,
-            dayName: dayData.dayName,
-            month: dayData.month,
-            day: dayData.day,
-            hasTrucks: dayData.trucks.length > 0,
-            trucks: dayData.trucks
+        const date = new Date(Date.UTC(year, month - 1, day));
+        if (date.getUTCFullYear() !== year || date.getUTCMonth() + 1 !== month || date.getUTCDate() !== day) continue;
+        const key = dateKey(year, month, day);
+        if (!groups.has(key)) groups.set(key, {
+            year, month, day, date: `${month}/${day}`, isoDate: key,
+            dayName: ['週日', '週一', '週二', '週三', '週四', '週五', '週六'][date.getUTCDay()],
+            hasTrucks: true, trucks: []
         });
-    });
-    
-    const weeks = [...weekMap.entries()]
-        .sort((a, b) => a[1].monday - b[1].monday)
-        .map(([key, val], index) => {
-            const monday = val.monday;
-            const sunday = new Date(monday);
-            sunday.setDate(monday.getDate() + 6);
-            return {
-                id: 'week' + index,
-                title: (monday.getMonth() + 1) + '月' + monday.getDate() + '日 - ' + (sunday.getMonth() + 1) + '月' + sunday.getDate() + '日',
-                tabLabel: (monday.getMonth() + 1) + '/' + monday.getDate() + '-' + (sunday.getMonth() + 1) + '/' + sunday.getDate(),
-                days: val.days
-            };
+        groups.get(key).trucks.push({
+            name: booking.storeName, address: extractAddress(booking.venue),
+            type: booking.type, venue: booking.venue
         });
-    
-    
-    // 資料添加完成後，更新週次標題
-    weeks.forEach(week => {
-        if (week.days && week.days.length > 0) {
-            const firstDay = week.days[0];
-            const lastDay = week.days[week.days.length - 1];
-            if (firstDay && lastDay && firstDay.month && lastDay.month) {
-                // 直接使用 month 和 day 屬性，不需要解析 date 字串
-                week.title = `${firstDay.month}月${firstDay.day}日 - ${lastDay.month}月${lastDay.day}日`;
-                week.tabLabel = `${firstDay.month}/${firstDay.day}-${lastDay.month}/${lastDay.day}`;
-            }
-        }
-    });
-    
-    console.log('📅 資料轉換完成，共', weeks.length, '週');
-    
-    // 過濾已經過期的週次
-    const currentDate = now.getDate();
-    
-    console.log(`📅 當前日期: ${currentMonth}/${currentDate}`);
-    console.log('📊 週次過濾檢查：');
-    
-    const activeWeeks = weeks.filter(week => {
-        if (week.days.length === 0) {
-            console.log(`❌ 跳過空週次: ${week.title}`);
-            return false;
-        }
-        
-        // 取得這週的第一天和最後一天
-        const firstDay = week.days[0];
-        const lastDay = week.days[week.days.length - 1];
-        
-        // 調試：檢查資料結構
-        console.log(`🔍 檢查: ${week.title}`);
-        console.log(`   firstDay:`, firstDay);
-        console.log(`   lastDay:`, lastDay);
-        console.log(`   week.days 長度:`, week.days.length);
-        
-        // 直接使用 month 和 day 屬性
-        const firstDate = { month: firstDay.month, day: firstDay.day };
-        const lastDate = { month: lastDay.month, day: lastDay.day };
-        
-        console.log(`   日期: ${firstDate.month}/${firstDate.day} - ${lastDate.month}/${lastDate.day}`);
-        
-        // 檢查這週是否完全過期
-        // 只有當整週的最後一天都過了，才過濾掉
-        // 處理跨年情況：如果當前是12月，1月是下個月（未來）
-        const isFutureMonth = (lastDate.month > currentMonth) || 
-                              (currentMonth === 12 && lastDate.month === 1);
-        
-        if (isFutureMonth) {
-            console.log(`✅ 保留（未來月份）`);
-            return true; // 未來的月份
-        } else if (lastDate.month === currentMonth) {
-            if (lastDate.day >= currentDate) {
-                console.log(`✅ 保留（本月未過期）`);
-                return true; // 當月且最後一天還沒過
-            } else {
-                console.log(`❌ 隱藏（本月已過期）`);
-                return false; // 當月且最後一天已過
-            }
-        } else {
-            // 過去的月份，檢查是否最近（保留最近幾週）
-            // 處理跨年情況：如果當前是1月，12月是上個月
-            let daysDiff;
-            if (currentMonth === 1 && lastDate.month === 12) {
-                // 跨年情況：從12月到1月
-                daysDiff = (1 - lastDate.day) + currentDate;
-            } else {
-                daysDiff = (currentMonth - lastDate.month) * 30 + (currentDate - lastDate.day);
-            }
-            
-            if (daysDiff <= 7) {
-                console.log(`✅ 保留（最近過期，${daysDiff}天前）`);
-                return true; // 最近7天內過期的，仍然保留
-            } else {
-                console.log(`❌ 隱藏（過期太久，${daysDiff}天前）`);
-                return false; // 過期太久的，過濾掉
-            }
-        }
-    });
-    
-    console.log('🗓️ 過濾結果:', activeWeeks.length, '/', weeks.length, '週');
-    
-    // 如果過濾後沒有任何週次，至少要保留一週（最新的一週）
-    if (activeWeeks.length === 0) {
-        console.warn('⚠️ 過濾後沒有週次，保留最新一週');
-        const latestWeek = weeks[weeks.length - 1];
-        return { weeks: [latestWeek] };
     }
-    
-    // 調試：顯示所有週次的詳細資訊
-    console.log('📊 過濾前所有週次：');
-    weeks.forEach((week, index) => {
-        if (week.days.length > 0) {
-            const lastDay = week.days[week.days.length - 1];
-            console.log(`  週次 ${index + 1}: ${week.title} (最後一天: ${lastDay.month}/${lastDay.day})`);
-        }
-    });
-    
-    console.log('📊 過濾後保留週次：');
-    activeWeeks.forEach((week, index) => {
-        if (week.days.length > 0) {
-            const lastDay = week.days[week.days.length - 1];
-            console.log(`  週次 ${index + 1}: ${week.title} (最後一天: ${lastDay.month}/${lastDay.day})`);
-        }
-    });
-    
-    // 限制只顯示最近的4週
-    const maxWeeks = 4;
-    if (activeWeeks.length > maxWeeks) {
-        console.log(`📌 限制顯示週數：從 ${activeWeeks.length} 週減少到 ${maxWeeks} 週`);
-        activeWeeks.splice(maxWeeks); // 只保留前4週
+    const weeks = new Map();
+    for (const item of [...groups.values()].sort((a, b) => a.isoDate.localeCompare(b.isoDate))) {
+        const monday = new Date(`${item.isoDate}T00:00:00Z`);
+        monday.setUTCDate(monday.getUTCDate() - (monday.getUTCDay() + 6) % 7);
+        const key = monday.toISOString().slice(0, 10);
+        if (!weeks.has(key)) weeks.set(key, { days: [] });
+        weeks.get(key).days.push(item);
     }
-    
-    // 重新編號週次 ID（重要！）
-    activeWeeks.forEach((week, index) => {
-        week.id = `week${index}`;
-        console.log(`📝 週次 ${index + 1}: ${week.title} (ID: ${week.id})`);
-    });
-    
-    return { weeks: activeWeeks };
+    const cutoff = new Date(`${today}T00:00:00Z`);
+    cutoff.setUTCDate(cutoff.getUTCDate() - 7);
+    const all = [...weeks.values()];
+    let active = all.filter(week => week.days.at(-1).isoDate >= cutoff.toISOString().slice(0, 10));
+    if (!active.length && all.length) active = [all.at(-1)];
+    return { weeks: active.slice(0, 4).map((week, index) => {
+        const first = week.days[0], last = week.days.at(-1);
+        const label = day => `${day.year}/${day.month}/${day.day}`;
+        return { ...week, id: `week${index}`, title: `${label(first)} - ${label(last)}`,
+            tabLabel: `${label(first)}-${label(last)}` };
+    }) };
 }
 
 /**
@@ -590,7 +333,7 @@ async function loadBookingSchedule() {
         
         // ==================== 檢查快取版本並清除舊快取 ====================
         const cacheVersion = localStorage.getItem('scheduleData_booking_version');
-        const currentVersion = '1.2'; // 更新版本號以清除舊快取
+        const currentVersion = '1.3'; // Year-aware schedule cache.
         
         if (cacheVersion !== currentVersion) {
             console.log('🔄 檢測到版本更新，清除舊快取...');
@@ -808,7 +551,7 @@ function renderWeekContentBooking(weeks) {
 function renderDayCardBooking(day) {
     if (!day.hasTrucks || day.trucks.length === 0) {
         return `
-            <div class="day-card" data-month="${day.month}" data-day="${day.date}">
+            <div class="day-card" data-year="${day.year}" data-month="${day.month}" data-day="${day.day}" data-date="${day.isoDate}">
                 <div class="day-number">${day.date}</div>
                 <div class="day-name">${day.dayName}</div>
                 <div class="no-trucks">無餐車</div>
@@ -827,7 +570,7 @@ function renderDayCardBooking(day) {
     }).join('');
     
     return `
-        <div class="day-card has-trucks" data-month="${day.month}" data-day="${day.date}">
+        <div class="day-card has-trucks" data-year="${day.year}" data-month="${day.month}" data-day="${day.day}" data-date="${day.isoDate}">
             <div class="day-number">${day.date}</div>
             <div class="day-name">${day.dayName}</div>
             <ul class="truck-list">
